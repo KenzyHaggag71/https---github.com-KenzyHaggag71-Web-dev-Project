@@ -41,3 +41,26 @@
   font-size: 0.85rem;
   margin-bottom: 1rem;
 }
+
+#projectCompany,
+#projectCategory {
+  background: var(--bg-light);
+}
+
+#multiUserSelectGroup {
+  display: none;
+}
+
+#projectAssignedUsers {
+  height: 150px;
+}
+
+#assignProjectBtn {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.mentor-projects-list .text-center {
+  padding: 2rem;
+  color: var(--text-light);
+}
