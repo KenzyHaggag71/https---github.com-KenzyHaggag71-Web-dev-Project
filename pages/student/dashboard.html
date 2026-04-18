@@ -23,3 +23,34 @@
   <div id="savedInternshipsContainer" class="cards-grid"></div>
 </div>
 
+<div id="applyModal" class="modal">
+  <div class="modal-content">
+    <h3>📝 Apply for <span id="modalTitle"></span></h3>
+    <p class="apply-company-info">at <strong id="modalCompany"></strong> • <span id="modalWorkMode"></span></p>
+    
+    <div id="applyFormContent">
+      <div id="applyWarning" class="apply-warning" style="display: none;">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>Please complete your profile before applying</span>
+      </div>
+      
+      <p style="margin-bottom: 1rem; color: var(--text-light);">
+        <i class="fas fa-check-circle" style="color: var(--success);"></i> 
+        Your profile information will be shared with the company
+      </p>
+      
+      <div class="profile-preview">
+        <div><strong>Name:</strong> <span id="previewName"></span></div>
+        <div><strong>University:</strong> <span id="previewUniversity"></span></div>
+        <div><strong>Major:</strong> <span id="previewMajor"></span></div>
+      </div>
+      
+      <textarea id="applicantMsg" placeholder="Additional notes for the recruiter (optional)" rows="3" class="modal-input" style="width:100%; padding:0.8rem 1rem; border-radius:8px; border:2px solid var(--border); font-family:inherit;"></textarea>
+    </div>
+    
+    <div class="modal-buttons">
+      <button class="modal-cancel" id="closeApplyModalBtn">Cancel</button>
+      <button class="modal-submit" id="submitApplyBtn">✨ Submit Application</button>
+    </div>
+  </div>
+</div>
