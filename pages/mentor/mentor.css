@@ -64,3 +64,14 @@
   padding: 2rem;
   color: var(--text-light);
 }
+
+.mentor-submissions-list .text-center {
+  padding: 2rem;
+  color: var(--text-light);
+}
+
+.mentor-projects-list, .mentor-submissions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
