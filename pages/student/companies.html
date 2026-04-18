@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="student.css">
 </head>
 <body>
-
+    
 <div id="navbar-placeholder"></div>
 
 <div class="container" style="padding-top: 2rem; padding-bottom: 3rem;">
@@ -18,7 +18,7 @@
     <h1><i class="fas fa-building"></i> Partner Companies</h1>
     <p>Organizations verified and approved on InternHub</p>
   </div>
-  
+
   <div id="companiesContainer" class="companies-directory-grid"></div>
 </div>
 
@@ -27,5 +27,13 @@
 <script src="/shared/shared.js"></script>
 <script src="/shared/data/database.js"></script>
 <script src="student.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    loadSharedComponents();
+    renderCompanies();
+  });
+</script>
+</body>
+</html>
 
 
