@@ -1,3 +1,111 @@
+/* Company Page Styles */
+
 .page-header {
   margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.page-header p {
+  color: var(--text-light);
+}
+
+.company-post-section {
+  background: linear-gradient(135deg, #f0f7ff 0%, #fff8f5 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 2rem;
+}
+
+.company-post-section h3 {
+  color: var(--primary);
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.company-post-hint {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.company-internship-form .input-group {
+  margin-bottom: 0.75rem;
+}
+
+.company-listing-card {
+  background: white;
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  transition: var(--transition);
+}
+
+.company-listing-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.listing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.listing-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.listing-meta {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.listing-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.edit-btn, .delete-btn {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: var(--transition);
+}
+
+.edit-btn {
+  background: var(--warning);
+  color: white;
+}
+
+.delete-btn {
+  background: var(--error);
+  color: white;
+}
+
+.edit-btn:hover, .delete-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.95);
 }
