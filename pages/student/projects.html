@@ -21,3 +21,30 @@
   
   <div id="studentProjectsContainer" class="projects-list"></div>
 </div>
+
+<div id="submitWorkModal" class="modal">
+  <div class="modal-content">
+    <h3><i class="fas fa-upload"></i> Submit Your Work</h3>
+    <p id="submitWorkProjectTitle" style="color: var(--primary); font-weight: 600; margin-bottom: 1rem;"></p>
+    
+    <div class="input-group">
+      <i class="fas fa-heading"></i>
+      <input type="text" id="submissionTitle" placeholder="Submission Title" required>
+    </div>
+    
+    <div class="input-group">
+      <i class="fas fa-link"></i>
+      <input type="url" id="submissionLink" placeholder="Link to your work (Google Drive, GitHub, etc.)">
+    </div>
+    
+    <div class="input-group">
+      <i class="fas fa-align-left"></i>
+      <textarea id="submissionDescription" placeholder="Describe your work, approach, and any challenges faced" rows="5"></textarea>
+    </div>
+    
+    <div class="modal-buttons">
+      <button class="modal-cancel" id="closeWorkModalBtn">Cancel</button>
+      <button class="modal-submit" id="submitWorkBtn">Submit Work</button>
+    </div>
+  </div>
+</div>
