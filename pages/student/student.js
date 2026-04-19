@@ -147,3 +147,55 @@ function setupExploreEventListeners() {
     });
   }
 }
+
+function renderFilteredInternships() {
+  var internships = currentCategory ? window.db.getInternshipsByCategory(currentCategory) : window.db.getAllInternships();
+  var filtered = [];
+  
+  if (currentWorkModeFilter !== 'all') {
+    for (var i = 0; i < internships.length; i++) {
+      if (internships[i].workMode === currentWorkModeFilter) {
+        filtered.push(internships[i]);
+      }
+    }
+  } else {
+    filtered = internships.slice();
+  }
+  
+  if (currentSort === 'stipend-high') {
+    filtered.sort(function(a, b) { return (b.price || 0) - (a.price || 0); });
+  } else if (currentSort === 'stipend-low') {
+    filtered.sort(function(a, b) { return (a.price || 0) - (b.price || 0); });
+  } else {
+    filtered.sort(function(a, b) { return new Date(b.postedDate) - new Date(a.postedDate); });
+  }
+  
+  renderInternships(filtered, 'internshipsContainer');
+}
+
+function performSearch(term) {
+  var t = term.toLowerCase().trim();
+  var allInternships = window.db.getAllInternships();
+  var results = [];
+  for (var i = 0; i < allInternships.length; i++) {
+    var intern = allInternships[i];
+    if (intern.title.toLowerCase().indexOf(t) !== -1 || 
+        intern.company.toLowerCase().indexOf(t) !== -1 ||
+        intern.description.toLowerCase().indexOf(t) !== -1 || 
+        intern.category.toLowerCase().indexOf(t) !== -1) {
+      results.push(intern);
+    }
+  }
+  
+  if (currentWorkModeFilter !== 'all') {
+    var filtered = [];
+    for (var r = 0; r < results.length; r++) {
+      if (results[r].workMode === currentWorkModeFilter) {
+        filtered.push(results[r]);
+      }
+    }
+    results = filtered;
+  }
+  
+  renderInternships(results, 'internshipsContainer');
+}
