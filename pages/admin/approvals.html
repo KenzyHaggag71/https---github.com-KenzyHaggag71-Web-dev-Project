@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pending Approvals - InternHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/shared/shared.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<div id="navbar-placeholder"></div>
+
+<div class="container" style="padding-top: 2rem; padding-bottom: 3rem;">
+  <div class="page-header">
+    <h1><i class="fas fa-clock"></i> Pending Approvals</h1>
+    <p>Review and approve new company registrations and mentor applications</p>
+  </div>
+  
+  <div class="admin-section">
+    <h3><i class="fas fa-building"></i> Pending Company Approvals</h3>
+    <div id="pendingCompaniesList" class="pending-list">
+      <p class="text-center" style="padding: 1rem;">Loading...</p>
+    </div>
+  </div>
+  
+  <div class="admin-section">
+    <h3><i class="fas fa-chalkboard-teacher"></i> Pending Mentor Applications</h3>
+    <div id="pendingMentorsList" class="pending-list">
+      <p class="text-center" style="padding: 1rem;">Loading...</p>
+    </div>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="/shared/shared.js"></script>
+<script src="/shared/data/database.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
