@@ -188,3 +188,21 @@
   align-items: center;
   gap: 0.3rem;
 }
+
+.submission-status {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-submitted { background: rgba(59, 130, 246, 0.1); color: #1e40af; }
+.status-evaluated { background: rgba(34, 197, 94, 0.1); color: #166534; }
+.status-pending { background: rgba(245, 158, 11, 0.1); color: #92400e; }
+
+.evaluation-grade-A { background: rgba(34, 197, 94, 0.15); color: #166534; }
+.evaluation-grade-B { background: rgba(59, 130, 246, 0.15); color: #1e40af; }
+.evaluation-grade-C { background: rgba(245, 158, 11, 0.15); color: #92400e; }
+.evaluation-grade-D { background: rgba(249, 115, 22, 0.15); color: #9a3412; }
+.evaluation-grade-F { background: rgba(239, 68, 68, 0.15); color: #7f1d1d; }
