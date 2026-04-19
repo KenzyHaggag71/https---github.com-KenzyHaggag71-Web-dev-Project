@@ -45,6 +45,51 @@
   display: none;
 }
 
+.project-title-highlight {
+  color: var(--primary);
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.evaluation-box {
+  background: var(--bg-light);
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+
+.evaluation-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+
+.evaluation-grade-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+
+.evaluation-feedback {
+  color: var(--text-light);
+  margin-top: 0.5rem;
+  line-height: 1.5;
+}
+
+.evaluation-subtitle {
+  color: var(--text-light);
+  margin-bottom: 1rem;
+}
+
+.evaluation-label {
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
 .search-box {
   max-width: 600px;
   margin: 0 auto 2rem;
