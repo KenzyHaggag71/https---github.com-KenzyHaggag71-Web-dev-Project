@@ -147,3 +147,53 @@ function renderMentorDashboard() {
   }
 }
 
+// Fixing Function to multi-select dropdown with students
+function populateStudentMultiSelect() {
+  var studentSelect = document.getElementById('projectAssignedUsers');
+  if (!studentSelect) return;
+  
+  var students = window.db.getAllUsers();
+  var filteredStudents = [];
+  for (var s = 0; s < students.length; s++) {
+    if (students[s].role === 'user' && students[s].status === 'active') {
+      filteredStudents.push(students[s]);
+    }
+  }
+  
+  if (filteredStudents.length === 0) {
+    studentSelect.innerHTML = '<option value="">No students available</option>';
+    return;
+  }
+  
+  var studentOptions = '';
+  for (var u = 0; u < filteredStudents.length; u++) {
+    var student = filteredStudents[u];
+    var displayName = student.profile ? (student.profile.fullName || student.name) : student.name;
+    var major = student.profile ? (student.profile.major || 'No major') : 'No major';
+    studentOptions += '<option value="' + student.id + '">' + escapeHtml(displayName) + ' (Year ' + student.year + ') - ' + escapeHtml(major) + '</option>';
+  }
+  studentSelect.innerHTML = studentOptions;
+}
+
+function updateProjectInternshipDetails() {
+  var select = document.getElementById('projectInternshipSelect');
+  var selectedOption = select.options[select.selectedIndex];
+  var companyInput = document.getElementById('projectCompany');
+  var categoryInput = document.getElementById('projectCategory');
+  
+  if (selectedOption && selectedOption.value) {
+    if (companyInput) companyInput.value = selectedOption.getAttribute('data-company') || '';
+    if (categoryInput) categoryInput.value = selectedOption.getAttribute('data-category') || '';
+  } else {
+    if (companyInput) companyInput.value = '';
+    if (categoryInput) categoryInput.value = '';
+  }
+}
+
+function toggleMultiUserSelect() {
+  var targetYear = document.getElementById('projectTargetYear').value;
+  var multiSelectGroup = document.getElementById('multiUserSelectGroup');
+  if (multiSelectGroup) {
+    multiSelectGroup.style.display = targetYear === 'specific' ? 'block' : 'none';
+  }
+}
