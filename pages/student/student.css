@@ -96,3 +96,67 @@
   cursor: pointer;
   outline: none;
 }
+
+.companies-directory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.company-directory-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1.35rem;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.company-directory-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.company-directory-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary), #4a6fb3);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  margin-bottom: 0.85rem;
+}
+
+.company-directory-card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0 0 0.35rem 0;
+}
+
+.company-directory-meta {
+  font-size: 0.85rem;
+  color: var(--primary);
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.company-directory-desc {
+  font-size: 0.88rem;
+  color: #555;
+  line-height: 1.45;
+  margin: 0 0 0.75rem 0;
+}
+
+.company-directory-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--secondary);
+  text-decoration: none;
+}
