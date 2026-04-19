@@ -358,3 +358,53 @@ function closeEvaluateModal() {
   if (modal) modal.style.display = 'none';
   selectedSubmissionId = null;
 }
+//submit evaluation
+function submitEvaluation() {
+  var submissionId = selectedSubmissionId;
+  if (!submissionId) return;
+  
+  var grade = document.getElementById('evaluationGrade').value;
+  var feedback = document.getElementById('evaluationFeedback').value.trim();
+  
+  if (!grade) {
+    showToast('Please select a grade', false);
+    return;
+  }
+  
+  var submissions = window.db.submissions();
+  var submissionIndex = -1;
+  for (var i = 0; i < submissions.length; i++) {
+    if (submissions[i].id === submissionId) {
+      submissionIndex = i;
+      break;
+    }
+  }
+  
+  if (submissionIndex !== -1) {
+    submissions[submissionIndex].status = 'evaluated';
+    submissions[submissionIndex].evaluation = {
+      grade: grade,
+      feedback: feedback || 'No feedback provided.',
+      evaluatedAt: new Date().toISOString()
+    };
+    window.db.saveSubmissions();
+    
+    showToast('Evaluation submitted successfully!');
+    closeEvaluateModal();
+    renderMentorDashboard();
+    
+    // Also refresh student projects view if open
+    if (typeof renderStudentProjects === 'function') {
+      renderStudentProjects();
+    }
+  }
+}
+
+// Make functions global for onclick handlers
+window.renderMentorDashboard = renderMentorDashboard;
+window.updateProjectInternshipDetails = updateProjectInternshipDetails;
+window.toggleMultiUserSelect = toggleMultiUserSelect;
+window.assignProject = assignProject;
+window.openEvaluateModal = openEvaluateModal;
+window.closeEvaluateModal = closeEvaluateModal;
+window.submitEvaluation = submitEvaluation;
