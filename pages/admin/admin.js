@@ -280,3 +280,7 @@ window.approveCompany = approveCompany;
 window.rejectCompany = rejectCompany;
 window.approveMentor = approveMentor;
 window.rejectMentor = rejectMentor;
+window.blockUser = blockUser;
+window.unblockUser = unblockUser;
+window.deleteUserAccount = deleteUserAccount;
+window.loadAllUsers = loadAllUsers;
