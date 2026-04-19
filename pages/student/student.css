@@ -15,6 +15,11 @@
   color: var(--text-light);
 }
 
+.container-spacing {
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+}
+
 .search-box {
   max-width: 600px;
   margin: 0 auto 2rem;
