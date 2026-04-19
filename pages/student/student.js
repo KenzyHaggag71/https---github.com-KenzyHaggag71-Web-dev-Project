@@ -42,3 +42,34 @@ document.addEventListener('DOMContentLoaded', function() {
     renderCompanies();
   }
 });
+
+function setupDashboardEventListeners() {
+  var closeModalBtn = document.getElementById('closeApplyModalBtn');
+  if (closeModalBtn) {
+    closeModalBtn.addEventListener('click', closeApplyModal);
+  }
+  
+  var submitApplyBtn = document.getElementById('submitApplyBtn');
+  if (submitApplyBtn) {
+    submitApplyBtn.addEventListener('click', submitApplication);
+  }
+  
+  var modal = document.getElementById('applyModal');
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) closeApplyModal();
+    });
+  }
+}
+
+function renderSavedInternships() {
+  var savedIds = JSON.parse(localStorage.getItem('ih_saved') || '[]');
+  var allInternships = window.db.getAllInternships();
+  var savedInternships = [];
+  for (var i = 0; i < allInternships.length; i++) {
+    if (savedIds.indexOf(allInternships[i].id) !== -1) {
+      savedInternships.push(allInternships[i]);
+    }
+  }
+  renderInternships(savedInternships, 'savedInternshipsContainer');
+}
