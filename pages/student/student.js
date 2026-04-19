@@ -73,3 +73,25 @@ function renderSavedInternships() {
   }
   renderInternships(savedInternships, 'savedInternshipsContainer');
 }
+
+var currentWorkModeFilter = 'all';
+var currentSort = 'recent';
+var currentCategory = null;
+
+function initExplorePage() {
+  var urlParams = new URLSearchParams(window.location.search);
+  currentCategory = urlParams.get('category');
+  
+  if (currentCategory) {
+    var headerH1 = document.querySelector('.page-header h1');
+    if (headerH1) {
+      headerH1.innerHTML = '<i class="fas fa-folder-open"></i> ' + escapeHtml(currentCategory) + ' Internships';
+    }
+    var headerP = document.querySelector('.page-header p');
+    if (headerP) {
+      headerP.textContent = 'Explore internships in ' + escapeHtml(currentCategory);
+    }
+  }
+  
+  renderFilteredInternships();
+}
