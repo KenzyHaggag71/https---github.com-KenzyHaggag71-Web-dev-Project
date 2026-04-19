@@ -4,3 +4,13 @@
   margin-bottom: 2rem;
 }
 
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.page-header p {
+  color: var(--text-light);
+}
