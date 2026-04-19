@@ -23,3 +23,17 @@
     <i class="fas fa-search"></i>
     <input type="text" id="searchInput" placeholder="Search by title, company, or keyword...">
   </div>
+
+   <div class="filters-section">
+    <div class="work-mode-filters">
+      <button class="work-mode-btn active" data-mode="all"><i class="fas fa-globe"></i> All</button>
+      <button class="work-mode-btn" data-mode="Remote"><i class="fas fa-home"></i> Remote</button>
+      <button class="work-mode-btn" data-mode="Hybrid"><i class="fas fa-sync"></i> Hybrid</button>
+      <button class="work-mode-btn" data-mode="On-site"><i class="fas fa-building"></i> On-site</button>
+    </div>
+    <select id="sortSelect" class="sort-select">
+      <option value="recent">Most Recent</option>
+      <option value="stipend-high">Stipend: High to Low</option>
+      <option value="stipend-low">Stipend: Low to High</option>
+    </select>
+  </div>
