@@ -160,3 +160,31 @@
   color: var(--secondary);
   text-decoration: none;
 }
+
+.student-project-card {
+  background: white;
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  transition: var(--transition);
+}
+
+.student-project-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.project-meta {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.project-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
