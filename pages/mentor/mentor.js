@@ -399,3 +399,12 @@ function submitEvaluation() {
     }
   }
 }
+
+// Make functions global for onclick handlers
+window.renderMentorDashboard = renderMentorDashboard;
+window.updateProjectInternshipDetails = updateProjectInternshipDetails;
+window.toggleMultiUserSelect = toggleMultiUserSelect;
+window.assignProject = assignProject;
+window.openEvaluateModal = openEvaluateModal;
+window.closeEvaluateModal = closeEvaluateModal;
+window.submitEvaluation = submitEvaluation;
