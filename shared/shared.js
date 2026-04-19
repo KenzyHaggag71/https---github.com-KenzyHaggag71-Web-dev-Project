@@ -94,3 +94,101 @@ function setupNavLinks() {
     }
   }
 }
+
+function getCurrentUser() {
+  var userStr = localStorage.getItem('ih_current_user');
+  if (userStr) {
+    try {
+      return JSON.parse(userStr);
+    } catch (e) {
+      return null;
+    }
+  }
+  return null;
+}
+
+function isLoggedIn() {
+  return getCurrentUser() !== null;
+}
+
+function logout() {
+  localStorage.removeItem('ih_current_user');
+  window.location.href = '/index.html';
+}
+
+function checkAuthAndUpdateNav() {
+  currentUser = getCurrentUser();
+  setupNavLinks();
+}
+
+function showToast(msg, isSuccess) {
+  if (isSuccess === undefined) isSuccess = true;
+  var toast = document.getElementById('toastMsg');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toastMsg';
+    toast.className = 'toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = (isSuccess ? '✓ ' : '⚠ ') + msg;
+  toast.style.background = isSuccess ? 'rgba(46,54,72,0.95)' : 'rgba(180,30,30,0.92)';
+  toast.style.opacity = '1';
+  clearTimeout(toast._tmr);
+  toast._tmr = setTimeout(function() { toast.style.opacity = '0'; }, 3500);
+}
+
+function isValidUniversityEmail(email) {
+  var e = email.toLowerCase().trim();
+  return e.endsWith('.edu') || e.endsWith('.edu.eg');
+}
+
+function redirectToRoleDashboard() {
+  var user = getCurrentUser();
+  if (!user) {
+    window.location.href = '/pages/auth/login.html';
+    return;
+  }
+  
+  switch(user.role) {
+    case 'admin':
+      window.location.href = '/pages/admin/dashboard.html';
+      break;
+    case 'company':
+      window.location.href = '/pages/company/dashboard.html';
+      break;
+    case 'mentor':
+      window.location.href = '/pages/mentor/dashboard.html';
+      break;
+    case 'user':
+      window.location.href = '/pages/student/dashboard.html';
+      break;
+    default:
+      window.location.href = '/index.html';
+  }
+}
+
+function formatMonthlyStipend(usd) {
+  var n = Math.round(Number(usd));
+  if (!Number.isFinite(n) || n < 0) return 'See listing';
+  return '$' + n.toLocaleString('en-US') + '/mo';
+}
+
+function escapeHtml(s) {
+  if (!s) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+window.showToast = showToast;
+window.isValidUniversityEmail = isValidUniversityEmail;
+window.getCurrentUser = getCurrentUser;
+window.isLoggedIn = isLoggedIn;
+window.logout = logout;
+window.redirectToRoleDashboard = redirectToRoleDashboard;
+window.checkAuthAndUpdateNav = checkAuthAndUpdateNav;
+window.formatMonthlyStipend = formatMonthlyStipend;
+window.escapeHtml = escapeHtml;
+window.loadSharedComponents = loadSharedComponents;
