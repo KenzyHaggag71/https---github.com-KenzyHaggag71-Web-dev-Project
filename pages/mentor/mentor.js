@@ -197,3 +197,124 @@ function toggleMultiUserSelect() {
     multiSelectGroup.style.display = targetYear === 'specific' ? 'block' : 'none';
   }
 }
+
+// proper validation
+function assignProject() {
+  if (!currentMentor) return;
+  
+  // Get all form values
+  var internshipId = document.getElementById('projectInternshipSelect').value;
+  var title = document.getElementById('projectTitle').value.trim();
+  var description = document.getElementById('projectDescription').value.trim();
+  var deadline = document.getElementById('projectDeadline').value;
+  var targetYear = document.getElementById('projectTargetYear').value;
+  var instructions = document.getElementById('projectInstructions').value.trim();
+  
+  // Validation
+  if (!internshipId) {
+    showToast('Please select an internship', false);
+    return;
+  }
+  if (!title) {
+    showToast('Please enter a project title', false);
+    return;
+  }
+  if (!description) {
+    showToast('Please enter a project description', false);
+    return;
+  }
+  if (!deadline) {
+    showToast('Please select a deadline date', false);
+    return;
+  }
+  if (!targetYear) {
+    showToast('Please select a target year level', false);
+    return;
+  }
+  
+  // Find the selected internship
+  var allInternships = window.db.getAllInternships();
+  var internship = null;
+  for (var i = 0; i < allInternships.length; i++) {
+    if (allInternships[i].id === parseInt(internshipId)) {
+      internship = allInternships[i];
+      break;
+    }
+  }
+  if (!internship) {
+    showToast('Selected internship not found', false);
+    return;
+  }
+  
+  // Determine assigned students
+  var assignedStudents = [];
+  
+  if (targetYear === 'specific') {
+    var specificSelect = document.getElementById('projectAssignedUsers');
+    if (specificSelect) {
+      for (var opt = 0; opt < specificSelect.options.length; opt++) {
+        if (specificSelect.options[opt].selected) {
+          assignedStudents.push(parseInt(specificSelect.options[opt].value));
+        }
+      }
+    }
+    if (assignedStudents.length === 0) {
+      showToast('Please select at least one student', false);
+      return;
+    }
+  } 
+  else if (targetYear === 'both') {
+    var allUsers = window.db.getAllUsers();
+    for (var u = 0; u < allUsers.length; u++) {
+      if (allUsers[u].role === 'user' && allUsers[u].status === 'active' && (allUsers[u].year === 1 || allUsers[u].year === 2)) {
+        assignedStudents.push(allUsers[u].id);
+      }
+    }
+    if (assignedStudents.length === 0) {
+      showToast('No Year 1 or Year 2 students found', false);
+      return;
+    }
+  } 
+  else {
+    var allUsers = window.db.getAllUsers();
+    for (var us = 0; us < allUsers.length; us++) {
+      if (allUsers[us].role === 'user' && allUsers[us].status === 'active' && allUsers[us].year === parseInt(targetYear)) {
+        assignedStudents.push(allUsers[us].id);
+      }
+    }
+    if (assignedStudents.length === 0) {
+      showToast('No Year ' + targetYear + ' students found', false);
+      return;
+    }
+  }
+  
+  // Create new project
+  var newProject = {
+    id: Date.now(),
+    mentorId: currentMentor.id,
+    internshipId: parseInt(internshipId),
+    companyName: internship.company,
+    category: internship.category,
+    title: title,
+    description: description,
+    deadline: deadline,
+    instructions: instructions,
+    assignedTo: assignedStudents,
+    createdAt: new Date().toISOString()
+  };
+  
+  var projects = window.db.projects();
+  projects.push(newProject);
+  window.db.saveProjects();
+  
+  // Reset form
+  document.getElementById('projectTitle').value = '';
+  document.getElementById('projectDescription').value = '';
+  document.getElementById('projectDeadline').value = '';
+  document.getElementById('projectInstructions').value = '';
+  document.getElementById('projectTargetYear').value = '';
+  document.getElementById('multiUserSelectGroup').style.display = 'none';
+  
+  showToast('Project assigned to ' + assignedStudents.length + ' student(s)!');
+  renderMentorDashboard();
+}
