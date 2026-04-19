@@ -422,3 +422,125 @@ function renderCompanies() {
   }
   container.innerHTML = html;
 }
+
+function setupProjectsEventListeners() {
+  var closeWorkModalBtn = document.getElementById('closeWorkModalBtn');
+  if (closeWorkModalBtn) {
+    closeWorkModalBtn.addEventListener('click', closeSubmitWorkModal);
+  }
+  
+  var submitWorkBtn = document.getElementById('submitWorkBtn');
+  if (submitWorkBtn) {
+    submitWorkBtn.addEventListener('click', submitWork);
+  }
+  
+  var closeViewEvalModalBtn = document.getElementById('closeViewEvalModalBtn');
+  if (closeViewEvalModalBtn) {
+    closeViewEvalModalBtn.addEventListener('click', closeViewEvaluationModal);
+  }
+  
+  var workModal = document.getElementById('submitWorkModal');
+  if (workModal) {
+    workModal.addEventListener('click', function(e) {
+      if (e.target === workModal) closeSubmitWorkModal();
+    });
+  }
+  
+  var evalModal = document.getElementById('viewEvaluationModal');
+  if (evalModal) {
+    evalModal.addEventListener('click', function(e) {
+      if (e.target === evalModal) closeViewEvaluationModal();
+    });
+  }
+}
+
+function renderStudentProjects() {
+  var user = getCurrentUser();
+  if (!user || user.role !== 'user') return;
+  
+  var projects = window.db.getProjectsByStudent(user.id);
+  var submissions = window.db.getSubmissionsByStudent(user.id);
+  var container = document.getElementById('studentProjectsContainer');
+  
+  if (!container) return;
+  
+  if (projects.length === 0) {
+    container.innerHTML = '<p class="text-center" style="padding: 2rem;">No projects assigned yet.</p>';
+    return;
+  }
+  
+  var html = '';
+  for (var p = 0; p < projects.length; p++) {
+    var project = projects[p];
+    var existingSubmission = null;
+    for (var s = 0; s < submissions.length; s++) {
+      if (submissions[s].projectId === project.id) {
+        existingSubmission = submissions[s];
+        break;
+      }
+    }
+    var isSubmitted = !!existingSubmission;
+    var isEvaluated = existingSubmission && existingSubmission.status === 'evaluated';
+    
+    var gradeHtml = '';
+    if (isEvaluated && existingSubmission.evaluation) {
+      var grade = existingSubmission.evaluation.grade;
+      gradeHtml = '<div class="project-meta mt-2">' +
+        '<span class="evaluation-grade-' + grade + ' submission-status">Grade: ' + grade + '</span>' +
+        '</div>';
+    }
+    
+    html += '<div class="student-project-card">' +
+      '<div class="project-header">' +
+        '<div class="project-title">' + escapeHtml(project.title) + '</div>' +
+        '<span class="submission-status ' + (isEvaluated ? 'status-evaluated' : (isSubmitted ? 'status-submitted' : 'status-pending')) + '">' +
+          (isEvaluated ? '✓ Evaluated' : (isSubmitted ? '📤 Submitted' : '⏳ Pending')) +
+        '</span>' +
+      '</div>' +
+      '<div class="project-meta">' +
+        '<span><i class="fas fa-building"></i> ' + escapeHtml(project.companyName) + '</span>' +
+        '<span><i class="fas fa-tag"></i> ' + escapeHtml(project.category) + '</span>' +
+        '<span><i class="fas fa-calendar-alt"></i> Deadline: ' + project.deadline + '</span>' +
+      '</div>' +
+      '<p class="desc">' + escapeHtml(project.description) + '</p>';
+    
+    if (project.instructions) {
+      html += '<p class="desc" style="color: var(--primary);"><i class="fas fa-info-circle"></i> ' + escapeHtml(project.instructions) + '</p>';
+    }
+    
+    html += gradeHtml;
+    
+    if (!isSubmitted) {
+      html += '<button class="submit-work-btn mt-2" data-id="' + project.id + '">' +
+        '<i class="fas fa-upload"></i> Submit Your Work' +
+        '</button>';
+    } else if (isEvaluated) {
+      html += '<button class="view-submission-btn mt-2" data-id="' + existingSubmission.id + '">' +
+        '<i class="fas fa-chart-line"></i> View Evaluation' +
+        '</button>';
+    } else {
+      html += '<div class="project-meta mt-2">' +
+        '<span><i class="fas fa-check-circle" style="color: var(--success);"></i> Submitted! Mentor will review soon.</span>' +
+        '</div>';
+    }
+    
+    html += '</div>';
+  }
+  container.innerHTML = html;
+  
+  var submitBtns = container.querySelectorAll('.submit-work-btn');
+  for (var btn = 0; btn < submitBtns.length; btn++) {
+    submitBtns[btn].addEventListener('click', function() {
+      var id = parseInt(this.getAttribute('data-id'));
+      openSubmitWorkModal(id);
+    });
+  }
+  
+  var viewBtns = container.querySelectorAll('.view-submission-btn');
+  for (var vbtn = 0; vbtn < viewBtns.length; vbtn++) {
+    viewBtns[vbtn].addEventListener('click', function() {
+      var id = parseInt(this.getAttribute('data-id'));
+      openViewEvaluationModal(id);
+    });
+  }
+}
