@@ -662,3 +662,18 @@ function closeViewEvaluationModal() {
   if (modal) modal.style.display = 'none';
 }
 
+window.renderInternships = renderInternships;
+window.toggleSaveInternship = toggleSaveInternship;
+window.renderSavedInternships = renderSavedInternships;
+window.openApplyModal = openApplyModal;
+window.closeApplyModal = closeApplyModal;
+window.submitApplication = submitApplication;
+window.renderCompanies = renderCompanies;
+window.renderStudentProjects = renderStudentProjects;
+window.openSubmitWorkModal = openSubmitWorkModal;
+window.closeSubmitWorkModal = closeSubmitWorkModal;
+window.submitWork = submitWork;
+window.openViewEvaluationModal = openViewEvaluationModal;
+window.closeViewEvaluationModal = closeViewEvaluationModal;
+window.renderFilteredInternships = renderFilteredInternships;
+window.performSearch = performSearch; 
