@@ -199,3 +199,84 @@ function performSearch(term) {
   
   renderInternships(results, 'internshipsContainer');
 }
+
+function renderInternships(internshipsList, containerId) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
+  
+  if (!internshipsList || internshipsList.length === 0) {
+    container.innerHTML = '<div class="text-center" style="padding: 3rem; background: white; border-radius: var(--radius-lg);">' +
+      '<i class="fas fa-search" style="font-size: 3rem; color: #999;"></i>' +
+      '<p style="margin-top: 1rem; color: var(--text-light);">No internships found.</p>' +
+      '</div>';
+    return;
+  }
+  
+  var savedInternships = JSON.parse(localStorage.getItem('ih_saved') || '[]');
+  var html = '';
+  
+  for (var i = 0; i < internshipsList.length; i++) {
+    var intern = internshipsList[i];
+    var saved = savedInternships.indexOf(intern.id) !== -1;
+    var wmClass = 'work-mode-' + (intern.workMode || 'Remote').replace(/[^a-zA-Z]/g, '');
+    var typeClass = intern.type === 'Paid' ? 'type-paid' : intern.type === 'Volunteer' ? 'type-volunteer' : 'type-unpaid';
+    var priceLabel = intern.type === 'Paid' ? intern.stipend : (intern.type || 'Unpaid');
+    
+    html += '<div class="intern-card">' +
+      '<div class="card-header">' +
+        '<div class="company-icon"><i class="' + (intern.icon || 'fas fa-briefcase') + '"></i></div>' +
+        '<div style="display:flex;gap:0.4rem;flex-wrap:wrap;">' +
+          '<span class="work-mode-badge ' + wmClass + '">' + (intern.workMode || 'Remote') + '</span>' +
+          '<span class="type-badge ' + typeClass + '">' + (intern.type || 'Paid') + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<h3 class="intern-title">' + escapeHtml(intern.title) + '</h3>' +
+      '<div class="company-name"><i class="fas fa-building"></i> ' + escapeHtml(intern.company) + '</div>' +
+      '<div class="details">' +
+        '<span><i class="fas fa-map-marker-alt"></i> ' + escapeHtml(intern.location) + '</span>' +
+        '<span><i class="far fa-calendar-alt"></i> ' + escapeHtml(intern.duration) + '</span>' +
+        '<span><i class="fas fa-dollar-sign"></i> ' + escapeHtml(priceLabel) + '</span>' +
+      '</div>' +
+      '<p class="desc">' + escapeHtml(intern.description) + '</p>';
+    
+    if (intern.skills && intern.skills.length > 0) {
+      html += '<div class="skills-tags-small">';
+      for (var s = 0; s < Math.min(intern.skills.length, 4); s++) {
+        html += '<span class="skill-tag-small">' + escapeHtml(intern.skills[s]) + '</span>';
+      }
+      html += '</div>';
+    }
+    
+    html += '<div class="card-footer">' +
+        '<button class="apply-btn" data-id="' + intern.id + '">✨ Quick Apply</button>';
+    
+    if (intern.link) {
+      html += '<a href="' + intern.link + '" target="_blank" class="apply-btn" style="text-decoration:none;display:flex;align-items:center;justify-content:center;">🔗 Visit</a>';
+    }
+    
+    html += '<button class="save-btn ' + (saved ? 'saved' : '') + '" data-id="' + intern.id + '">' +
+          '<i class="' + (saved ? 'fas' : 'far') + ' fa-bookmark"></i>' +
+        '</button>' +
+      '</div>' +
+    '</div>';
+  }
+  
+  container.innerHTML = html;
+  
+  var applyBtns = container.querySelectorAll('.apply-btn');
+  for (var a = 0; a < applyBtns.length; a++) {
+    applyBtns[a].addEventListener('click', function(e) {
+      var id = parseInt(this.getAttribute('data-id'));
+      openApplyModal(id);
+    });
+  }
+  
+  var saveBtns = container.querySelectorAll('.save-btn');
+  for (var b = 0; b < saveBtns.length; b++) {
+    saveBtns[b].addEventListener('click', function(e) {
+      e.stopPropagation();
+      var id = parseInt(this.getAttribute('data-id'));
+      toggleSaveInternship(id);
+    });
+  }
+}
