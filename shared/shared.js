@@ -190,3 +190,5 @@ window.logout = logout;
 window.redirectToRoleDashboard = redirectToRoleDashboard;
 window.checkAuthAndUpdateNav = checkAuthAndUpdateNav;
 window.formatMonthlyStipend = formatMonthlyStipend;
+window.escapeHtml = escapeHtml;
+window.loadSharedComponents = loadSharedComponents;
