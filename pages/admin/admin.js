@@ -284,12 +284,3 @@ window.blockUser = blockUser;
 window.unblockUser = unblockUser;
 window.deleteUserAccount = deleteUserAccount;
 window.loadAllUsers = loadAllUsers;
-
-
-
-
-
-
-
-
-
