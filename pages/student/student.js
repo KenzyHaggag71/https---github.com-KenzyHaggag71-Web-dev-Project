@@ -309,3 +309,81 @@ function toggleSaveInternship(id) {
   }
 }
 
+function openApplyModal(internId) {
+  var allInternships = window.db.getAllInternships();
+  var intern = null;
+  for (var i = 0; i < allInternships.length; i++) {
+    if (allInternships[i].id === internId) {
+      intern = allInternships[i];
+      break;
+    }
+  }
+  if (!intern) return;
+  
+  var modal = document.getElementById('applyModal');
+  var modalTitle = document.getElementById('modalTitle');
+  var modalCompany = document.getElementById('modalCompany');
+  var modalWorkMode = document.getElementById('modalWorkMode');
+  
+  if (modalTitle) modalTitle.textContent = intern.title;
+  if (modalCompany) modalCompany.textContent = intern.company;
+  if (modalWorkMode) modalWorkMode.textContent = intern.workMode || 'Not specified';
+  
+  var user = getCurrentUser();
+  if (user && user.profile) {
+    var previewName = document.getElementById('previewName');
+    var previewUniversity = document.getElementById('previewUniversity');
+    var previewMajor = document.getElementById('previewMajor');
+    var applyWarning = document.getElementById('applyWarning');
+    
+    if (previewName) previewName.textContent = user.profile.fullName || user.name;
+    if (previewUniversity) previewUniversity.textContent = user.profile.university || 'Not set';
+    if (previewMajor) previewMajor.textContent = user.profile.major || 'Not set';
+    if (applyWarning) applyWarning.style.display = 'none';
+  } else {
+    var applyWarning = document.getElementById('applyWarning');
+    if (applyWarning) applyWarning.style.display = 'flex';
+  }
+  
+  if (modal) modal.style.display = 'flex';
+  selectedInternshipId = internId;
+}
+
+function closeApplyModal() {
+  var modal = document.getElementById('applyModal');
+  if (modal) modal.style.display = 'none';
+  selectedInternshipId = null;
+}
+
+function submitApplication() {
+  var allInternships = window.db.getAllInternships();
+  var intern = null;
+  for (var i = 0; i < allInternships.length; i++) {
+    if (allInternships[i].id === selectedInternshipId) {
+      intern = allInternships[i];
+      break;
+    }
+  }
+  if (!intern) return;
+  
+  var user = getCurrentUser();
+  if (!user || !user.profile) {
+    showToast('Please complete your profile first', false);
+    return;
+  }
+  
+  if (!user.takenInternships) user.takenInternships = [];
+  if (user.takenInternships.indexOf(selectedInternshipId) === -1) {
+    user.takenInternships.push(selectedInternshipId);
+    localStorage.setItem('ih_current_user', JSON.stringify(user));
+    
+    var userInDB = window.db.getUserById(user.id);
+    if (userInDB) {
+      userInDB.takenInternships = user.takenInternships;
+      window.db.saveUsers();
+    }
+  }
+  
+  showToast('Application submitted to ' + intern.company + '!');
+  closeApplyModal();
+}
