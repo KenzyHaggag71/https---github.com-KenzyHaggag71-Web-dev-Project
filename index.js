@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
   for (var i = 0; i < categoryCards.length; i++) {
     categoryCards[i].addEventListener('click', function() {
       var category = this.getAttribute('data-category');
-      window.location.href = 'pages/student/explore.html?category=' + encodeURIComponent(category);
+    
     });
   }
 });
