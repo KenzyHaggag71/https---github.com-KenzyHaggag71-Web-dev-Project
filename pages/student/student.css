@@ -20,6 +20,27 @@
   padding-bottom: 3rem;
 }
 
+.page-header i {
+  color: var(--secondary);
+}
+
+.apply-info-text {
+  margin-bottom: 1rem;
+  color: var(--text-light);
+}
+
+.apply-info-text i {
+  color: var(--success);
+}
+
+.modal-textarea {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  font-family: inherit;
+}
+
 .search-box {
   max-width: 600px;
   margin: 0 auto 2rem;
