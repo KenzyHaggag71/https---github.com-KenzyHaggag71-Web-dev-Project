@@ -418,3 +418,159 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 0.9rem;
 }
 
+/* ========== CARD GRID ========== */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.intern-card, .project-card, .submission-card, .student-project-card, .company-listing-card {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition: var(--transition);
+}
+
+.intern-card:hover, .project-card:hover, .submission-card:hover, .student-project-card:hover, .company-listing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.company-icon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.intern-title, .project-title, .listing-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.company-name {
+  color: var(--text-light);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.details span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.details i {
+  color: var(--secondary);
+  width: 16px;
+}
+
+.desc {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.skills-tags-small {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.skill-tag-small {
+  background: var(--bg-light);
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.card-footer {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.apply-btn, .save-btn, .submit-work-btn, .view-submission-btn, .evaluate-btn, .edit-btn, .delete-btn {
+  flex: 1;
+  padding: 0.8rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 700;
+  transition: var(--transition);
+  font-family: inherit;
+  font-size: 0.95rem;
+  text-align: center;
+  border: none;
+}
+
+.apply-btn, .submit-work-btn, .view-submission-btn, .evaluate-btn {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+}
+
+.apply-btn:hover, .submit-work-btn:hover, .view-submission-btn:hover, .evaluate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.save-btn {
+  background: white;
+  border: 2px solid var(--border);
+  color: var(--text-light);
+}
+
+.save-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.save-btn.saved {
+  background: var(--secondary);
+  border-color: var(--secondary);
+  color: white;
+}
+
+.edit-btn {
+  background: var(--warning);
+  color: white;
+}
+
+.delete-btn {
+  background: var(--error);
+  color: white;
+}
