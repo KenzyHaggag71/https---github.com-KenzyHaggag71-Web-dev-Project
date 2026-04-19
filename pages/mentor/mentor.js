@@ -318,3 +318,43 @@ function assignProject() {
   showToast('Project assigned to ' + assignedStudents.length + ' student(s)!');
   renderMentorDashboard();
 }
+// Evaluation Modal Functions
+function openEvaluateModal(submissionId) {
+  selectedSubmissionId = submissionId;
+  var submissions = window.db.submissions();
+  var submission = null;
+  for (var i = 0; i < submissions.length; i++) {
+    if (submissions[i].id === submissionId) {
+      submission = submissions[i];
+      break;
+    }
+  }
+  var student = window.db.getUserById(submission ? submission.studentId : null);
+  var projects = window.db.projects();
+  var project = null;
+  for (var p = 0; p < projects.length; p++) {
+    if (projects[p].id === (submission ? submission.projectId : null)) {
+      project = projects[p];
+      break;
+    }
+  }
+  
+  var studentNameSpan = document.getElementById('evaluateStudentName');
+  var projectTitleSpan = document.getElementById('evaluateProjectTitle');
+  var gradeSelect = document.getElementById('evaluationGrade');
+  var feedbackTextarea = document.getElementById('evaluationFeedback');
+  
+  if (studentNameSpan) studentNameSpan.textContent = (student && student.profile) ? (student.profile.fullName || student.name) : (student ? student.name : '');
+  if (projectTitleSpan) projectTitleSpan.textContent = project ? project.title : '';
+  if (gradeSelect) gradeSelect.value = '';
+  if (feedbackTextarea) feedbackTextarea.value = '';
+  
+  var modal = document.getElementById('evaluateModal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeEvaluateModal() {
+  var modal = document.getElementById('evaluateModal');
+  if (modal) modal.style.display = 'none';
+  selectedSubmissionId = null;
+}
