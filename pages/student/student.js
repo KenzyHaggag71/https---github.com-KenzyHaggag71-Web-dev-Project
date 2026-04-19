@@ -280,3 +280,32 @@ function renderInternships(internshipsList, containerId) {
     });
   }
 }
+
+function toggleSaveInternship(id) {
+  var user = getCurrentUser();
+  if (!user) {
+    window.location.href = '/pages/auth/login.html';
+    return;
+  }
+  
+  var saved = JSON.parse(localStorage.getItem('ih_saved') || '[]');
+  var idx = saved.indexOf(id);
+  
+  if (idx === -1) {
+    saved.push(id);
+    showToast('Internship saved!');
+  } else {
+    saved.splice(idx, 1);
+    showToast('Removed from saved list');
+  }
+  
+  localStorage.setItem('ih_saved', JSON.stringify(saved));
+  
+  var path = window.location.pathname;
+  if (path.includes('dashboard.html')) {
+    renderSavedInternships();
+  } else if (path.includes('explore.html')) {
+    renderFilteredInternships();
+  }
+}
+
