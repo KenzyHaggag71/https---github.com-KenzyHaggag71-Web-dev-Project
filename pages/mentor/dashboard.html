@@ -20,7 +20,7 @@
   </div>
   
   <!-- Assign Project Section -->
-div class="mentor-assign-section">
+<div class="mentor-assign-section">
     <h3><i class="fas fa-plus-circle"></i> Assign New Project</h3>
     <p class="form-hint">Create a project based on an internship you've taken, assign it to Year 1 or Year 2 students</p>
 
@@ -105,5 +105,41 @@ div class="mentor-assign-section">
   </div>
 </div>
 
+<!-- Evaluate -->
+<div id="evaluateModal" class="modal">
+  <div class="modal-content">
+    <h3><i class="fas fa-star"></i> Evaluate Submission</h3>
+    <p id="evaluateStudentName"></p>
+    <p id="evaluateProjectTitle"></p>
+
+ <div class="input-group">
+      <i class="fas fa-trophy"></i>
+      <select id="evaluationGrade" class="form-select" required>
+        <option value="">Select Grade</option>
+        <option value="A">A - Excellent (90-100%)</option>
+        <option value="B">B - Very Good (80-89%)</option>
+        <option value="C">C - Good (70-79%)</option>
+        <option value="D">D - Satisfactory (60-69%)</option>
+        <option value="F">F - Needs Improvement (Below 60%)</option>
+      </select>
+    </div>
+    
+    <div class="input-group">
+      <i class="fas fa-comment"></i>
+      <textarea id="evaluationFeedback" placeholder="Detailed feedback for the student (strengths, areas for improvement, suggestions)" rows="4"></textarea>
+    </div>
+    
+    <div class="modal-buttons">
+      <button class="modal-cancel" id="closeEvaluateModalBtn">Cancel</button>
+      <button class="modal-submit" id="submitEvaluationBtn">Submit Evaluation</button>
+    </div>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="/shared/shared.js"></script>
+<script src="/shared/data/database.js"></script>
+<script src="mentor.js"></script>
 </body>
-    </html>
+</html>

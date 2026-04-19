@@ -75,3 +75,14 @@
   flex-direction: column;
   gap: 1rem;
 }
+
+#evaluateStudentName {
+  color: var(--primary);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+#evaluateProjectTitle {
+  color: var(--text-light);
+  margin-bottom: 1rem;
+}
