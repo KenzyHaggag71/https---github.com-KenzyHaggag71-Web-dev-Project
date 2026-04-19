@@ -330,6 +330,3 @@ function deleteCompanyListing(listingId) {
   }
 }
 
-window.editCompanyListing = editCompanyListing;
-window.deleteCompanyListing = deleteCompanyListing;
-window.cancelCompanyInternshipEdit = cancelCompanyInternshipEdit;
