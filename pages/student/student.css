@@ -41,6 +41,10 @@
   font-family: inherit;
 }
 
+.hidden {
+  display: none;
+}
+
 .search-box {
   max-width: 600px;
   margin: 0 auto 2rem;
