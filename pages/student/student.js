@@ -387,3 +387,38 @@ function submitApplication() {
   showToast('Application submitted to ' + intern.company + '!');
   closeApplyModal();
 }
+
+function renderCompanies() {
+  var users = window.db.getAllUsers();
+  var approvedCompanies = [];
+  for (var i = 0; i < users.length; i++) {
+    if (users[i].role === 'company' && users[i].status === 'approved') {
+      approvedCompanies.push(users[i]);
+    }
+  }
+  var container = document.getElementById('companiesContainer');
+  
+  if (!container) return;
+  
+  if (approvedCompanies.length === 0) {
+    container.innerHTML = '<p class="text-center" style="padding: 2rem;">No approved companies yet.</p>';
+    return;
+  }
+  
+  var html = '';
+  for (var c = 0; c < approvedCompanies.length; c++) {
+    var company = approvedCompanies[c];
+    var site = (company.website || '').trim();
+    var href = site && (site.indexOf('http') === 0 ? site : 'https://' + site);
+    html += '<div class="company-directory-card">' +
+      '<div class="company-directory-icon"><i class="fas fa-building"></i></div>' +
+      '<h3>' + escapeHtml(company.companyName || company.name) + '</h3>' +
+      '<p class="company-directory-meta">' + escapeHtml(company.industry || 'Industry not specified') + '</p>' +
+      '<p class="company-directory-desc">' + escapeHtml(company.description || '') + '</p>';
+    if (href) {
+      html += '<a class="company-directory-link" href="' + escapeHtml(href) + '" target="_blank">Website <i class="fas fa-external-link-alt"></i></a>';
+    }
+    html += '</div>';
+  }
+  container.innerHTML = html;
+}
