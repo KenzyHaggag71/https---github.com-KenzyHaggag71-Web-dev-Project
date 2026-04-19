@@ -544,3 +544,121 @@ function renderStudentProjects() {
     });
   }
 }
+
+function openSubmitWorkModal(projectId) {
+  selectedProjectId = projectId;
+  var user = getCurrentUser();
+  var projects = window.db.getProjectsByStudent(user.id);
+  var project = null;
+  for (var i = 0; i < projects.length; i++) {
+    if (projects[i].id === projectId) {
+      project = projects[i];
+      break;
+    }
+  }
+  var modal = document.getElementById('submitWorkModal');
+  var projectTitle = document.getElementById('submitWorkProjectTitle');
+  
+  if (projectTitle) projectTitle.textContent = project ? project.title : '';
+  if (modal) modal.style.display = 'flex';
+  
+  document.getElementById('submissionTitle').value = '';
+  document.getElementById('submissionLink').value = '';
+  document.getElementById('submissionDescription').value = '';
+}
+
+function closeSubmitWorkModal() {
+  var modal = document.getElementById('submitWorkModal');
+  if (modal) modal.style.display = 'none';
+  selectedProjectId = null;
+}
+
+function submitWork() {
+  var projectId = selectedProjectId;
+  var user = getCurrentUser();
+  if (!projectId || !user) return;
+  
+  var title = document.getElementById('submissionTitle').value.trim();
+  var link = document.getElementById('submissionLink').value.trim();
+  var description = document.getElementById('submissionDescription').value.trim();
+  
+  if (!title) {
+    showToast('Please enter a submission title', false);
+    return;
+  }
+  
+  var existingSubmissions = window.db.getSubmissionsByStudent(user.id);
+  var existing = null;
+  for (var i = 0; i < existingSubmissions.length; i++) {
+    if (existingSubmissions[i].projectId === projectId) {
+      existing = existingSubmissions[i];
+      break;
+    }
+  }
+  
+  if (existing) {
+    showToast('You have already submitted work for this project', false);
+    closeSubmitWorkModal();
+    return;
+  }
+  
+  var newSubmission = {
+    id: Date.now(),
+    projectId: projectId,
+    studentId: user.id,
+    title: title,
+    link: link,
+    description: description,
+    status: 'submitted',
+    submittedAt: new Date().toISOString(),
+    evaluation: null
+  };
+  
+  var submissions = window.db.submissions();
+  submissions.push(newSubmission);
+  window.db.saveSubmissions();
+  
+  showToast('Work submitted successfully!');
+  closeSubmitWorkModal();
+  renderStudentProjects();
+}
+
+function openViewEvaluationModal(submissionId) {
+  var submissions = window.db.submissions();
+  var submission = null;
+  for (var i = 0; i < submissions.length; i++) {
+    if (submissions[i].id === submissionId) {
+      submission = submissions[i];
+      break;
+    }
+  }
+  var projects = window.db.projects();
+  var project = null;
+  for (var p = 0; p < projects.length; p++) {
+    if (projects[p].id === submission.projectId) {
+      project = projects[p];
+      break;
+    }
+  }
+  
+  if (submission && submission.evaluation) {
+    var modal = document.getElementById('viewEvaluationModal');
+    var projectTitle = document.getElementById('viewEvalProjectTitle');
+    var submissionTitle = document.getElementById('viewEvalSubmissionTitle');
+    var gradeSpan = document.getElementById('viewEvalGrade');
+    var feedbackSpan = document.getElementById('viewEvalFeedback');
+    
+    if (projectTitle) projectTitle.textContent = project ? project.title : '';
+    if (submissionTitle) submissionTitle.textContent = submission.title || '';
+    if (gradeSpan) gradeSpan.textContent = submission.evaluation.grade;
+    if (feedbackSpan) feedbackSpan.textContent = submission.evaluation.feedback || 'No feedback provided.';
+    
+    if (modal) modal.style.display = 'flex';
+  }
+}
+
+function closeViewEvaluationModal() {
+  var modal = document.getElementById('viewEvaluationModal');
+  if (modal) modal.style.display = 'none';
+}
+
