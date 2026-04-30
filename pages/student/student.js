@@ -586,6 +586,18 @@ function submitWork() {
     showToast('Please enter a submission title', false);
     return;
   }
+
+  if (!link) {
+  showToast('Please enter a submission link', false);
+  return;
+}
+
+try {
+  var url = new URL(link);
+} catch (e) {
+  showToast('Please enter a valid URL (must include https://)', false);
+  return;
+}
   
   var existingSubmissions = window.db.getSubmissionsByStudent(user.id);
   var existing = null;
