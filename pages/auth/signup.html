@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - InternHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/shared/shared.css">
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+
+<div id="navbar-placeholder"></div>
+
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h2>Create Account</h2>
+      <p>Join InternHub today</p>
+    </div>
+    
+    <div class="signup-role-tabs">
+      <div class="signup-role-tab active" data-role="student">
+        <i class="fas fa-user-graduate"></i> Student
+      </div>
+      <div class="signup-role-tab" data-role="mentor">
+        <i class="fas fa-chalkboard-teacher"></i> Mentor
+      </div>
+      <div class="signup-role-tab" data-role="company">
+        <i class="fas fa-building"></i> Company
+      </div>
+    </div>
+    
+    <!-- Student Signup Form -->
+    <div id="studentForm" class="role-form">
+      <p class="form-hint"><i class="fas fa-info-circle"></i> Only .edu or .edu.eg emails allowed</p>
+      
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" id="studentName" placeholder="Full Name" required>
+      </div>
+      
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" id="studentEmail" placeholder="University Email" required>
+        <span class="email-validation"></span>
+      </div>
+      
+      <div class="input-group">
+        <i class="fas fa-university"></i>
+        <input type="text" id="studentUniversity" placeholder="University Name" required>
+      </div>
+      
+      <div class="input-row">
+        <div class="input-group half">
+          <i class="fas fa-graduation-cap"></i>
+          <select id="studentMajor" class="form-select" required>
+            <option value="">Select Major</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Engineering">Engineering</option>
+            <option value="Business">Business</option>
+            <option value="Law">Law</option>
+            <option value="Pharmacy">Pharmacy</option>
+            <option value="Architecture">Architecture</option>
+            <option value="Mass Communication">Mass Communication</option>
+            <option value="Arts & Design">Arts & Design</option>
+            <option value="Science">Science</option>
+          </select>
+        </div>
+        <div class="input-group half">
+          <i class="fas fa-calendar"></i>
+          <select id="studentYear" class="form-select" required>
+            <option value="">Year of Study</option>
+            <option value="1">Year 1</option>
+            <option value="2">Year 2</option>
+            <option value="3">Year 3</option>
+            <option value="4">Year 4</option>
+            <option value="5">Year 5</option>
+            <option value="6">Year 6</option>
+            <option value="7">Year 7</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="studentPassword" placeholder="Password (min 6 characters)" required>
+      </div>
+      
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="studentConfirmPassword" placeholder="Confirm Password" required>
+      </div>
+      
+      <div class="terms-checkbox">
+        <input type="checkbox" id="studentTerms">
+        <label>I confirm I'm a current university student</label>
+      </div>
+      
+      <button id="studentSignupBtn" class="btn-primary" style="width:100%;">Create Student Account</button>
+    </div>
+    
+    <!-- Mentor Signup Form -->
+    <div id="mentorForm" class="role-form" style="display:none;">
+      <p class="form-hint"><i class="fas fa-info-circle"></i> Mentors must be Year 2-7. Admin approval required.</p>
+      
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" id="mentorName" placeholder="Full Name" required>
+      </div>
+      
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" id="mentorEmail" placeholder="University Email" required>
+        <span class="email-validation"></span>
+      </div>
+      
+      <div class="input-group">
+        <i class="fas fa-university"></i>
+        <input type="text" id="mentorUniversity" placeholder="University Name" required>
+      </div>
+      
+      <div class="input-row">
+        <div class="input-group half">
+          <i class="fas fa-graduation-cap"></i>
+          <select id="mentorMajor" class="form-select" required>
+            <option value="">Select Major</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Engineering">Engineering</option>
+            <option value="Business">Business</option>
+            <option value="Law">Law</option>
+            <option value="Pharmacy">Pharmacy</option>
+            <option value="Architecture">Architecture</option>
+            <option value="Mass Communication">Mass Communication</option>
+            <option value="Arts & Design">Arts & Design</option>
+            <option value="Science">Science</option>
+          </select>
+        </div>
+        <div class="input-group half">
+          <i class="fas fa-calendar"></i>
+          <select id="mentorYear" class="form-select" required>
+            <option value="">Year of Study</option>
+            <option value="2">Year 2</option>
+            <option value="3">Year 3</option>
+            <option value="4">Year 4</option>
+            <option value="5">Year 5</option>
+            <option value="6">Year 6</option>
+            <option value="7">Year 7</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="mentorPassword" placeholder="Password (min 6 characters)" required>
+      </div>
+      
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="mentorConfirmPassword" placeholder="Confirm Password" required>
+      </div>
+      
+      <div class="terms-checkbox">
+        <input type="checkbox" id="mentorTerms">
+        <label>I confirm I'm in Year 2 or above</label>
+      </div>
+      
+      <button id="mentorSignupBtn" class="btn-primary" style="width:100%;">Apply as Mentor</button>
+    </div>
+    
+    <!-- Company Signup Form -->
+    <div id="companyForm" class="role-form" style="display:none;">
+      <p class="form-hint"><i class="fas fa-info-circle"></i> Company accounts require admin approval.</p>
+      
+      <div class="input-group">
+        <i class="fas fa-building"></i>
+        <input type="text" id="companyName" placeholder="Company Name" required>
+      </div>
+      
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" id="companyEmail" placeholder="Business Email" required>
+      </div>
+      
+      <div class="input-group">
+        <i class="fas fa-industry"></i>
+        <select id="companyIndustry" class="form-select" required>
+          <option value="">Select Industry</option>
+          <option value="Technology">Technology</option>
+          <option value="Finance">Finance</option>
+          <option value="Healthcare">Healthcare</option>
+          <option value="Engineering">Engineering</option>
+          <option value="Law">Law</option>
+          <option value="Media">Media</option>
+          <option value="Retail">Retail</option>
+          <option value="Education">Education</option>
+        </select>
+      </div>
+      
+      <div class="input-group">
+        <i class="fas fa-globe"></i>
+        <input type="url" id="companyWebsite" placeholder="Company Website (optional)">
+      </div>
+      
+      <div class="input-group">
+        <i class="fas fa-align-left"></i>
+        <textarea id="companyDescription" placeholder="Brief company description" rows="3"></textarea>
+      </div>
+      
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="companyPassword" placeholder="Password (min 6 characters)" required>
+      </div>
+      
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="companyConfirmPassword" placeholder="Confirm Password" required>
+      </div>
+      
+      <div class="terms-checkbox">
+        <input type="checkbox" id="companyTerms">
+        <label>I confirm I'm an authorized representative</label>
+      </div>
+      
+      <button id="companySignupBtn" class="btn-primary" style="width:100%;">Register Company</button>
+    </div>
+    
+    <p class="auth-switch">
+      Already have an account? <a href="login.html">Sign In</a>
+    </p>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="/shared/shared.js"></script>
+<script src="/shared/data/database.js"></script>
+<script src="signup.js"></script>
+</body>
+</html>
