@@ -1,6 +1,57 @@
 var currentMentor = null;
 var selectedSubmissionId = null;
 
+function showFieldError(fieldEl, message) {
+  if (!fieldEl) return;
+  var wrapper = fieldEl.closest('.input-group') || fieldEl.parentElement;
+  wrapper.classList.add('input-error');
+
+  // Remove any existing error message for this field
+  var existing = wrapper.parentElement.querySelector('.field-error-msg[data-for="' + fieldEl.id + '"]');
+  if (existing) existing.remove();
+
+  var errEl = document.createElement('p');
+  errEl.className = 'field-error-msg';
+  errEl.setAttribute('data-for', fieldEl.id);
+  errEl.textContent = message;
+  wrapper.insertAdjacentElement('afterend', errEl);
+}
+
+/** Clears the error state from a single field. */
+function clearFieldError(fieldEl) {
+  if (!fieldEl) return;
+  var wrapper = fieldEl.closest('.input-group') || fieldEl.parentElement;
+  wrapper.classList.remove('input-error');
+  var existing = wrapper.parentElement.querySelector('.field-error-msg[data-for="' + fieldEl.id + '"]');
+  if (existing) existing.remove();
+}
+
+/** Clears ALL field errors inside a given container element. */
+function clearAllErrors(containerEl) {
+  if (!containerEl) return;
+  containerEl.querySelectorAll('.input-error').forEach(function(el) { el.classList.remove('input-error'); });
+  containerEl.querySelectorAll('.field-error-msg').forEach(function(el) { el.remove(); });
+}
+
+/**
+ * Validates an email address.
+ * Accepted formats: anything@something.edu  or  anything@something.edu.eg
+ */
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.edu(\.eg)?$/i.test(email.trim());
+}
+
+/**
+ * Returns true if a date string (YYYY-MM-DD) is strictly in the future
+ * (today is allowed — only strictly past dates are rejected).
+ */
+function isDateNotInPast(dateStr) {
+  var today = new Date();
+  today.setHours(0, 0, 0, 0);
+  var chosen = new Date(dateStr);
+  return chosen >= today;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   loadSharedComponents();
   
@@ -17,13 +68,37 @@ document.addEventListener('DOMContentLoaded', function() {
 function setupMentorEventListeners() {
   var internshipSelect = document.getElementById('projectInternshipSelect');
   if (internshipSelect) {
-    internshipSelect.addEventListener('change', updateProjectInternshipDetails);
+    internshipSelect.addEventListener('change', function() {
+      clearFieldError(internshipSelect);
+      updateProjectInternshipDetails();
+    });
   }
   
   var targetYearSelect = document.getElementById('projectTargetYear');
   if (targetYearSelect) {
-    targetYearSelect.addEventListener('change', toggleMultiUserSelect);
+    targetYearSelect.addEventListener('change', function() {
+      clearFieldError(targetYearSelect);
+      toggleMultiUserSelect();
+    });
   }
+
+  // Live clear errors on input for text/textarea/date fields
+  ['projectTitle', 'projectDescription', 'projectDeadline', 'projectInstructions'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', function() { clearFieldError(el); });
+      el.addEventListener('change', function() { clearFieldError(el); });
+    }
+  });
+
+  // Live clear for modal fields
+  ['evaluationGrade', 'evaluationFeedback'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', function() { clearFieldError(el); });
+      el.addEventListener('change', function() { clearFieldError(el); });
+    }
+  });
   
   var assignBtn = document.getElementById('assignProjectBtn');
   if (assignBtn) {
@@ -73,7 +148,7 @@ function renderMentorDashboard() {
     }
   }
   
-  // Populate student multiselect 
+  // Populate student multiselect - FIXED
   populateStudentMultiSelect();
   
   // Render mentor's projects
@@ -82,7 +157,7 @@ function renderMentorDashboard() {
   
   if (projectsContainer) {
     if (mentorProjects.length === 0) {
-      projectsContainer.innerHTML = '<p class="text-center">No projects created yet. Use the form above to assign projects.</p>';
+      projectsContainer.innerHTML = '<p class="text-center" style="padding: 2rem; color: var(--text-light);">No projects created yet. Use the form above to assign projects.</p>';
     } else {
       var projectsHtml = '';
       for (var p = 0; p < mentorProjects.length; p++) {
@@ -90,7 +165,7 @@ function renderMentorDashboard() {
         projectsHtml += '<div class="project-card">' +
           '<div class="project-header">' +
             '<div class="project-title">' + escapeHtml(project.title) + '</div>' +
-            '<span class="submission-status status-pending" >Deadline: ' + project.deadline + '</span>' +
+            '<span class="submission-status status-pending" style="background:rgba(245,158,11,0.1);color:#92400e;">Deadline: ' + project.deadline + '</span>' +
           '</div>' +
           '<div class="project-meta">' +
             '<span><i class="fas fa-building"></i> ' + escapeHtml(project.companyName) + '</span>' +
@@ -99,7 +174,7 @@ function renderMentorDashboard() {
           '</div>' +
           '<p class="project-description">' + escapeHtml(project.description) + '</p>';
         if (project.instructions) {
-          projectsHtml += '<p class="project-instructions" ><i class="fas fa-info-circle"></i> ' + escapeHtml(project.instructions) + '</p>';
+          projectsHtml += '<p class="project-description" style="color: var(--primary);"><i class="fas fa-info-circle"></i> ' + escapeHtml(project.instructions) + '</p>';
         }
         projectsHtml += '</div>';
       }
@@ -113,7 +188,7 @@ function renderMentorDashboard() {
   
   if (submissionsContainer) {
     if (pendingSubmissions.length === 0) {
-      submissionsContainer.innerHTML = '<p class="text-center">No pending submissions to evaluate.</p>';
+      submissionsContainer.innerHTML = '<p class="text-center" style="padding: 2rem; color: var(--text-light);">No pending submissions to evaluate.</p>';
     } else {
       var subsHtml = '';
       for (var sub = 0; sub < pendingSubmissions.length; sub++) {
@@ -147,7 +222,7 @@ function renderMentorDashboard() {
   }
 }
 
-// Fixing Function to multi-select dropdown with students
+// FIXED: Function to populate the multi-select dropdown with students
 function populateStudentMultiSelect() {
   var studentSelect = document.getElementById('projectAssignedUsers');
   if (!studentSelect) return;
@@ -198,39 +273,60 @@ function toggleMultiUserSelect() {
   }
 }
 
-// proper validation
+// Assign project function with specific per-field validation
 function assignProject() {
   if (!currentMentor) return;
-  
-  // Get all form values
-  var internshipId = document.getElementById('projectInternshipSelect').value;
-  var title = document.getElementById('projectTitle').value.trim();
-  var description = document.getElementById('projectDescription').value.trim();
-  var deadline = document.getElementById('projectDeadline').value;
-  var targetYear = document.getElementById('projectTargetYear').value;
-  var instructions = document.getElementById('projectInstructions').value.trim();
-  
-  // Validation
+
+  // Clear previous errors
+  var form = document.getElementById('assignProjectForm');
+  clearAllErrors(form);
+
+  // Collect values
+  var internshipSelectEl = document.getElementById('projectInternshipSelect');
+  var titleEl            = document.getElementById('projectTitle');
+  var descriptionEl      = document.getElementById('projectDescription');
+  var deadlineEl         = document.getElementById('projectDeadline');
+  var targetYearEl       = document.getElementById('projectTargetYear');
+  var instructionsEl     = document.getElementById('projectInstructions');
+
+  var internshipId = internshipSelectEl.value;
+  var title        = titleEl.value.trim();
+  var description  = descriptionEl.value.trim();
+  var deadline     = deadlineEl.value;
+  var targetYear   = targetYearEl.value;
+  var instructions = instructionsEl.value.trim();
+
+  var hasError = false;
+
   if (!internshipId) {
-    showToast('Please select an internship', false);
-    return;
+    showFieldError(internshipSelectEl, 'Please select an internship from your completed internships.');
+    hasError = true;
   }
+
   if (!title) {
-    showToast('Please enter a project title', false);
-    return;
+    showFieldError(titleEl, 'Please fill in the Project Title field.');
+    hasError = true;
   }
+
   if (!description) {
-    showToast('Please enter a project description', false);
-    return;
+    showFieldError(descriptionEl, 'Please fill in the Project Description field.');
+    hasError = true;
   }
+
   if (!deadline) {
-    showToast('Please select a deadline date', false);
-    return;
+    showFieldError(deadlineEl, 'Please select a deadline date.');
+    hasError = true;
+  } else if (!isDateNotInPast(deadline)) {
+    showFieldError(deadlineEl, 'The deadline cannot be a past date. Please choose today or a future date.');
+    hasError = true;
   }
+
   if (!targetYear) {
-    showToast('Please select a target year level', false);
-    return;
+    showFieldError(targetYearEl, 'Please select a year level to assign this project to.');
+    hasError = true;
   }
+
+  if (hasError) return;
   
   // Find the selected internship
   var allInternships = window.db.getAllInternships();
@@ -246,7 +342,6 @@ function assignProject() {
     return;
   }
   
-  // Determine assigned students
   var assignedStudents = [];
   
   if (targetYear === 'specific') {
@@ -259,7 +354,7 @@ function assignProject() {
       }
     }
     if (assignedStudents.length === 0) {
-      showToast('Please select at least one student', false);
+      showFieldError(specificSelect, 'Please select at least one student from the list.');
       return;
     }
   } 
@@ -271,7 +366,7 @@ function assignProject() {
       }
     }
     if (assignedStudents.length === 0) {
-      showToast('No Year 1 or Year 2 students found', false);
+      showToast('No Year 1 or Year 2 students are currently registered in the system.', false);
       return;
     }
   } 
@@ -283,7 +378,7 @@ function assignProject() {
       }
     }
     if (assignedStudents.length === 0) {
-      showToast('No Year ' + targetYear + ' students found', false);
+      showToast('No Year ' + targetYear + ' students are currently registered in the system.', false);
       return;
     }
   }
@@ -314,11 +409,12 @@ function assignProject() {
   document.getElementById('projectInstructions').value = '';
   document.getElementById('projectTargetYear').value = '';
   document.getElementById('multiUserSelectGroup').style.display = 'none';
+  clearAllErrors(document.getElementById('assignProjectForm'));
   
   showToast('Project assigned to ' + assignedStudents.length + ' student(s)!');
   renderMentorDashboard();
 }
-// Evaluation Modal Functions
+
 function openEvaluateModal(submissionId) {
   selectedSubmissionId = submissionId;
   var submissions = window.db.submissions();
@@ -356,20 +452,34 @@ function openEvaluateModal(submissionId) {
 function closeEvaluateModal() {
   var modal = document.getElementById('evaluateModal');
   if (modal) modal.style.display = 'none';
+  clearAllErrors(modal);
   selectedSubmissionId = null;
 }
-//submit evaluation
+
 function submitEvaluation() {
   var submissionId = selectedSubmissionId;
   if (!submissionId) return;
-  
-  var grade = document.getElementById('evaluationGrade').value;
-  var feedback = document.getElementById('evaluationFeedback').value.trim();
-  
+
+  var gradeEl    = document.getElementById('evaluationGrade');
+  var feedbackEl = document.getElementById('evaluationFeedback');
+  var grade      = gradeEl.value;
+  var feedback   = feedbackEl.value.trim();
+
+  // Clear previous modal errors
+  clearAllErrors(document.getElementById('evaluateModal'));
+
+  var hasError = false;
+
   if (!grade) {
-    showToast('Please select a grade', false);
-    return;
+    showFieldError(gradeEl, 'Please select a grade before submitting the evaluation.');
+    hasError = true;
   }
+  if (!feedback) {
+    showFieldError(feedbackEl, 'Please provide feedback for the student in the Feedback field.');
+    hasError = true;
+  }
+
+  if (hasError) return;
   
   var submissions = window.db.submissions();
   var submissionIndex = -1;
