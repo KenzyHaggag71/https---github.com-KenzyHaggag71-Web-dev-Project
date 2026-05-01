@@ -208,3 +208,54 @@
   gap: 0.3rem;
   margin-right: 1rem;
 }
+
+.application-info {
+  font-size: 0.85rem;
+  color: var(--text-dark);
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--border);
+}
+
+.feedback-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.feedback-given {
+  background: rgba(34, 197, 94, 0.1);
+  color: #166534;
+}
+
+.feedback-none {
+  background: rgba(245, 158, 11, 0.1);
+  color: #92400e;
+}
+
+.student-actions {
+  flex: 0 0 auto;
+}
+
+.feedback-btn {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.feedback-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
