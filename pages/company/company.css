@@ -153,3 +153,58 @@
 .tab-content {
   animation: fadeIn 0.3s ease;
 }
+
+.company-students-section {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+}
+
+.students-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.student-card {
+  background: var(--bg-light);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  transition: var(--transition);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.student-card:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+}
+
+.student-info {
+  flex: 2;
+}
+
+.student-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.25rem;
+}
+
+.student-details {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-bottom: 0.5rem;
+}
+
+.student-details span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-right: 1rem;
+}
