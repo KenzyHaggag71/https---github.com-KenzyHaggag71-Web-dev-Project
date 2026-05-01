@@ -108,3 +108,11 @@
   transform: translateY(-1px);
   filter: brightness(0.95);
 }
+
+.company-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 0;
+}
