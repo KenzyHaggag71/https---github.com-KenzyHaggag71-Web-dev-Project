@@ -1,6 +1,9 @@
+// Company Module JavaScript - NO HTML
 
 var currentCompany = null;
 var editingListingId = null;
+var selectedStudentId = null;
+var selectedInternshipIdForFeedback = null;
 
 document.addEventListener('DOMContentLoaded', function() {
   loadSharedComponents();
@@ -21,26 +24,38 @@ document.addEventListener('DOMContentLoaded', function() {
     return;
   }
   
-  var path = window.location.pathname;
-  
-  if (path.includes('manage-listings.html')) {
-    renderCompanyListings();
-  } 
-  else if (path.includes('post-internship.html')) {
-    setupPostInternshipEventListeners();
-  }
-  else {
-    renderCompanyDashboard();
-  }
+  setupTabs();
+  renderCompanyListings();
+  renderStudentsList();
+  populateInternshipFilter();
+  setupCompanyEventListeners();
 });
 
-function renderCompanyDashboard() {
-  renderCompanyListings();
-  resetCompanyInternshipForm();
-  setupPostInternshipEventListeners();
+function setupTabs() {
+  var tabs = document.querySelectorAll('.tab-btn');
+  for (var i = 0; i < tabs.length; i++) {
+    tabs[i].addEventListener('click', function() {
+      var tabId = this.getAttribute('data-tab');
+      
+      // Remove active class from all tabs and contents
+      var allTabs = document.querySelectorAll('.tab-btn');
+      for (var t = 0; t < allTabs.length; t++) {
+        allTabs[t].classList.remove('active');
+      }
+      var allContents = document.querySelectorAll('.tab-content');
+      for (var c = 0; c < allContents.length; c++) {
+        allContents[c].style.display = 'none';
+      }
+      
+      // Activate current tab
+      this.classList.add('active');
+      var activeContent = document.getElementById(tabId + 'Tab');
+      if (activeContent) activeContent.style.display = 'block';
+    });
+  }
 }
 
-function setupPostInternshipEventListeners() {
+function setupCompanyEventListeners() {
   var submitBtn = document.getElementById('ciSubmitBtn');
   if (submitBtn) {
     submitBtn.addEventListener('click', submitCompanyInternship);
@@ -55,8 +70,94 @@ function setupPostInternshipEventListeners() {
   if (typeSelect) {
     typeSelect.addEventListener('change', updateCiPriceRowVisibility);
   }
+  
+  var linkInput = document.getElementById('ciLink');
+  if (linkInput) {
+    linkInput.addEventListener('input', validateUrlInput);
+  }
+  
+  var filterSelect = document.getElementById('filterInternshipSelect');
+  if (filterSelect) {
+    filterSelect.addEventListener('change', function() {
+      renderStudentsList();
+    });
+  }
+  
+  var closeFeedbackBtn = document.getElementById('closeFeedbackModalBtn');
+  if (closeFeedbackBtn) {
+    closeFeedbackBtn.addEventListener('click', closeFeedbackModal);
+  }
+  
+  var submitFeedbackBtn = document.getElementById('submitFeedbackBtn');
+  if (submitFeedbackBtn) {
+    submitFeedbackBtn.addEventListener('click', submitFeedback);
+  }
+  
+  var feedbackModal = document.getElementById('feedbackModal');
+  if (feedbackModal) {
+    feedbackModal.addEventListener('click', function(e) {
+      if (e.target === feedbackModal) closeFeedbackModal();
+    });
+  }
 }
 
+// ========== URL VALIDATION ==========
+function validateUrlInput() {
+  var urlInput = document.getElementById('ciLink');
+  var errorMsg = document.querySelector('.url-error-message');
+  var url = urlInput.value.trim();
+  
+  if (url.length === 0) {
+    if (errorMsg) errorMsg.style.display = 'none';
+    urlInput.parentElement.classList.remove('error');
+    return true;
+  }
+  
+  var isValid = isValidUrl(url);
+  
+  if (!isValid) {
+    if (errorMsg) errorMsg.style.display = 'block';
+    urlInput.parentElement.classList.add('error');
+    return false;
+  } else {
+    if (errorMsg) errorMsg.style.display = 'none';
+    urlInput.parentElement.classList.remove('error');
+    return true;
+  }
+}
+
+function isValidUrl(string) {
+  try {
+    // Check if it starts with http:// or https://
+    if (!string.startsWith('http://') && !string.startsWith('https://')) {
+      return false;
+    }
+    var url = new URL(string);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch (e) {
+    return false;
+  }
+}
+
+// ========== DURATION FORMATTING ==========
+function formatDuration(value, unit) {
+  var unitText = '';
+  if (unit === 'days') unitText = value === '1' ? 'day' : 'days';
+  else if (unit === 'weeks') unitText = value === '1' ? 'week' : 'weeks';
+  else if (unit === 'months') unitText = value === '1' ? 'month' : 'months';
+  return value + ' ' + unitText;
+}
+
+function parseDuration(durationString) {
+  // Parse "12 weeks" into {value: 12, unit: "weeks"}
+  var parts = durationString.split(' ');
+  if (parts.length === 2) {
+    return { value: parts[0], unit: parts[1] };
+  }
+  return { value: '12', unit: 'weeks' };
+}
+
+// ========== RENDER COMPANY LISTINGS ==========
 function renderCompanyListings() {
   var companyInternships = window.db.companyInternships();
   var myListings = [];
@@ -99,6 +200,243 @@ function renderCompanyListings() {
   container.innerHTML = html;
 }
 
+// ========== RENDER STUDENTS LIST ==========
+function renderStudentsList() {
+  var allUsers = window.db.getAllUsers();
+  var allInternships = window.db.getAllInternships();
+  var companyInternships = window.db.companyInternships();
+  var myInternshipIds = [];
+  
+  // Get IDs of internships posted by this company
+  for (var i = 0; i < companyInternships.length; i++) {
+    if (companyInternships[i].postedByUserId === currentCompany.id) {
+      myInternshipIds.push(companyInternships[i].id);
+    }
+  }
+  
+  // Get filter value
+  var filterInternshipId = document.getElementById('filterInternshipSelect').value;
+  
+  // Collect all students who applied to my internships
+  var studentsMap = {};
+  
+  for (var u = 0; u < allUsers.length; u++) {
+    var user = allUsers[u];
+    if (user.role === 'user' && user.takenInternships && user.takenInternships.length > 0) {
+      for (var t = 0; t < user.takenInternships.length; t++) {
+        var internshipId = user.takenInternships[t];
+        if (myInternshipIds.indexOf(internshipId) !== -1) {
+          // Check filter
+          if (filterInternshipId !== 'all' && parseInt(filterInternshipId) !== internshipId) {
+            continue;
+          }
+          
+          var internship = null;
+          for (var inv = 0; inv < allInternships.length; inv++) {
+            if (allInternships[inv].id === internshipId) {
+              internship = allInternships[inv];
+              break;
+            }
+          }
+          
+          var key = user.id + '_' + internshipId;
+          if (!studentsMap[key]) {
+            studentsMap[key] = {
+              studentId: user.id,
+              studentName: user.profile ? (user.profile.fullName || user.name) : user.name,
+              studentEmail: user.email,
+              studentUniversity: user.profile ? user.profile.university : 'N/A',
+              studentMajor: user.profile ? user.profile.major : 'N/A',
+              studentYear: user.year || 'N/A',
+              internshipId: internshipId,
+              internshipTitle: internship ? internship.title : 'Unknown',
+              companyName: internship ? internship.company : 'Unknown',
+              feedback: getCompanyFeedback(user.id, internshipId)
+            };
+          }
+        }
+      }
+    }
+  }
+  
+  var studentsArray = [];
+  for (var key in studentsMap) {
+    studentsArray.push(studentsMap[key]);
+  }
+  
+  var container = document.getElementById('studentsListContainer');
+  if (!container) return;
+  
+  if (studentsArray.length === 0) {
+    container.innerHTML = '<p class="text-center" style="padding: 2rem; color: var(--text-light);">No students have applied to your internships yet.</p>';
+    return;
+  }
+  
+  var html = '';
+  for (var s = 0; s < studentsArray.length; s++) {
+    var student = studentsArray[s];
+    var hasFeedback = student.feedback && student.feedback.text;
+    
+    html += '<div class="student-card">' +
+      '<div class="student-info">' +
+        '<div class="student-name">' + escapeHtml(student.studentName) + '</div>' +
+        '<div class="student-details">' +
+          '<span><i class="fas fa-envelope"></i> ' + escapeHtml(student.studentEmail) + '</span>' +
+          '<span><i class="fas fa-university"></i> ' + escapeHtml(student.studentUniversity) + '</span>' +
+          '<span><i class="fas fa-graduation-cap"></i> Year ' + student.studentYear + '</span>' +
+          '<span><i class="fas fa-book"></i> ' + escapeHtml(student.studentMajor) + '</span>' +
+        '</div>' +
+        '<div class="application-info">' +
+          '<strong>Applied to:</strong> ' + escapeHtml(student.internshipTitle) + ' at ' + escapeHtml(student.companyName) +
+        '</div>';
+    
+    if (hasFeedback) {
+      var ratingStars = '';
+      for (var r = 0; r < 5; r++) {
+        if (r < student.feedback.rating) {
+          ratingStars += '<i class="fas fa-star" style="color: #FFD700;"></i>';
+        } else {
+          ratingStars += '<i class="far fa-star" style="color: #FFD700;"></i>';
+        }
+      }
+      html += '<div class="feedback-badge feedback-given">' +
+        '<i class="fas fa-check-circle"></i> Feedback Given: ' + ratingStars + ' - ' + escapeHtml(student.feedback.text.substring(0, 100)) +
+        '</div>';
+    } else {
+      html += '<div class="feedback-badge feedback-none"><i class="fas fa-clock"></i> No feedback yet</div>';
+    }
+    
+    html += '</div>' +
+      '<div class="student-actions">';
+    
+    if (hasFeedback) {
+      html += '<button class="view-feedback-btn" onclick="viewFeedback(' + student.studentId + ', ' + student.internshipId + ', \'' + escapeHtml(student.studentName) + '\', \'' + escapeHtml(student.internshipTitle) + '\')">📖 View Feedback</button>';
+    }
+    
+    html += '<button class="feedback-btn" onclick="openFeedbackModal(' + student.studentId + ', ' + student.internshipId + ', \'' + escapeHtml(student.studentName) + '\', \'' + escapeHtml(student.internshipTitle) + '\')">' +
+        '<i class="fas fa-comment"></i> Add Feedback' +
+      '</button>' +
+    '</div></div>';
+  }
+  container.innerHTML = html;
+}
+
+// ========== FEEDBACK FUNCTIONS ==========
+function getCompanyFeedback(studentId, internshipId) {
+  var allFeedback = JSON.parse(localStorage.getItem('ih_company_feedback') || '[]');
+  for (var i = 0; i < allFeedback.length; i++) {
+    if (allFeedback[i].studentId === studentId && 
+        allFeedback[i].internshipId === internshipId && 
+        allFeedback[i].companyId === currentCompany.id) {
+      return allFeedback[i];
+    }
+  }
+  return null;
+}
+
+function saveFeedback(studentId, internshipId, rating, text) {
+  var allFeedback = JSON.parse(localStorage.getItem('ih_company_feedback') || '[]');
+  
+  // Remove existing feedback
+  allFeedback = allFeedback.filter(function(f) {
+    return !(f.studentId === studentId && f.internshipId === internshipId && f.companyId === currentCompany.id);
+  });
+  
+  // Add new feedback
+  allFeedback.push({
+    studentId: studentId,
+    internshipId: internshipId,
+    companyId: currentCompany.id,
+    rating: rating,
+    text: text,
+    date: new Date().toISOString()
+  });
+  
+  localStorage.setItem('ih_company_feedback', JSON.stringify(allFeedback));
+}
+
+function openFeedbackModal(studentId, internshipId, studentName, internshipTitle) {
+  selectedStudentId = studentId;
+  selectedInternshipIdForFeedback = internshipId;
+  
+  var existingFeedback = getCompanyFeedback(studentId, internshipId);
+  
+  document.getElementById('feedbackStudentName').textContent = studentName;
+  document.getElementById('feedbackInternshipTitle').textContent = internshipTitle;
+  
+  if (existingFeedback) {
+    document.getElementById('feedbackRating').value = existingFeedback.rating;
+    document.getElementById('feedbackText').value = existingFeedback.text;
+  } else {
+    document.getElementById('feedbackRating').value = '';
+    document.getElementById('feedbackText').value = '';
+  }
+  
+  document.getElementById('feedbackModal').style.display = 'flex';
+}
+
+function closeFeedbackModal() {
+  document.getElementById('feedbackModal').style.display = 'none';
+  selectedStudentId = null;
+  selectedInternshipIdForFeedback = null;
+}
+
+function submitFeedback() {
+  var rating = document.getElementById('feedbackRating').value;
+  var text = document.getElementById('feedbackText').value.trim();
+  
+  if (!rating) {
+    showToast('Please select a rating', false);
+    return;
+  }
+  
+  if (!text) {
+    showToast('Please enter feedback text', false);
+    return;
+  }
+  
+  saveFeedback(selectedStudentId, selectedInternshipIdForFeedback, parseInt(rating), text);
+  showToast('Feedback saved successfully!');
+  closeFeedbackModal();
+  renderStudentsList();
+}
+
+function viewFeedback(studentId, internshipId, studentName, internshipTitle) {
+  var feedback = getCompanyFeedback(studentId, internshipId);
+  if (feedback) {
+    var ratingStars = '';
+    for (var r = 0; r < 5; r++) {
+      if (r < feedback.rating) {
+        ratingStars += '⭐';
+      } else {
+        ratingStars += '☆';
+      }
+    }
+    alert('Student: ' + studentName + '\nInternship: ' + internshipTitle + '\n\nRating: ' + ratingStars + ' (' + feedback.rating + '/5)\n\nFeedback:\n' + feedback.text);
+  }
+}
+
+// ========== POPULATE INTERNSHIP FILTER ==========
+function populateInternshipFilter() {
+  var companyInternships = window.db.companyInternships();
+  var myListings = [];
+  for (var i = 0; i < companyInternships.length; i++) {
+    if (companyInternships[i].postedByUserId === currentCompany.id) {
+      myListings.push(companyInternships[i]);
+    }
+  }
+  
+  var filterSelect = document.getElementById('filterInternshipSelect');
+  if (!filterSelect) return;
+  
+  var options = '<option value="all">All Internships</option>';
+  for (var l = 0; l < myListings.length; l++) {
+    options += '<option value="' + myListings[l].id + '">' + escapeHtml(myListings[l].title) + '</option>';
+  }
+  filterSelect.innerHTML = options;
+}
+
+// ========== CRUD OPERATIONS ==========
 function resetCompanyInternshipForm() {
   editingListingId = null;
   document.getElementById('ciEditingId').value = '';
@@ -107,7 +445,8 @@ function resetCompanyInternshipForm() {
   document.getElementById('ciType').value = 'Paid';
   document.getElementById('ciCategory').value = 'Computer Science';
   document.getElementById('ciWorkMode').value = 'Hybrid';
-  document.getElementById('ciDuration').value = '';
+  document.getElementById('ciDurationValue').value = '';
+  document.getElementById('ciDurationUnit').value = 'weeks';
   document.getElementById('ciPriceMonthly').value = '';
   document.getElementById('ciLocation').value = '';
   document.getElementById('ciDescription').value = '';
@@ -122,6 +461,7 @@ function resetCompanyInternshipForm() {
   if (cancelBtn) cancelBtn.style.display = 'none';
   
   updateCiPriceRowVisibility();
+  validateUrlInput();
 }
 
 function updateCiPriceRowVisibility() {
@@ -164,7 +504,11 @@ function editCompanyListing(listingId) {
   document.getElementById('ciType').value = listing.type || 'Paid';
   document.getElementById('ciCategory').value = listing.category || 'Computer Science';
   document.getElementById('ciWorkMode').value = listing.workMode || 'Hybrid';
-  document.getElementById('ciDuration').value = listing.duration || '';
+  
+  // Parse duration
+  var durationParts = parseDuration(listing.duration);
+  document.getElementById('ciDurationValue').value = durationParts.value;
+  document.getElementById('ciDurationUnit').value = durationParts.unit;
   
   var priceInput = document.getElementById('ciPriceMonthly');
   if (priceInput) {
@@ -188,7 +532,13 @@ function editCompanyListing(listingId) {
   if (cancelBtn) cancelBtn.style.display = 'inline-block';
   
   updateCiPriceRowVisibility();
-  var postSection = document.getElementById('companyPostSection');
+  validateUrlInput();
+  
+  // Switch to post tab
+  var postTab = document.querySelector('.tab-btn[data-tab="post"]');
+  if (postTab) postTab.click();
+  
+  var postSection = document.getElementById('postTab');
   if (postSection) postSection.scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -209,25 +559,36 @@ function submitCompanyInternship() {
   var type = document.getElementById('ciType').value;
   var category = document.getElementById('ciCategory').value;
   var workMode = document.getElementById('ciWorkMode').value;
-  var duration = document.getElementById('ciDuration').value.trim();
+  var durationValue = document.getElementById('ciDurationValue').value.trim();
+  var durationUnit = document.getElementById('ciDurationUnit').value;
   var priceInput = document.getElementById('ciPriceMonthly').value.trim();
   var location = document.getElementById('ciLocation').value.trim() || 'See listing';
   var description = document.getElementById('ciDescription').value.trim() || 'Apply via the link below. Posted by a verified partner on InternHub.';
   
-  if (!title || !linkRaw) {
-    showToast('Title and link are required.', false);
+  // Validation
+  if (!title) {
+    showToast('Please enter a title', false);
     return;
   }
   
-  if (!duration) {
-    showToast('Please enter a duration.', false);
+  if (!linkRaw) {
+    showToast('Please enter a URL', false);
     return;
   }
+  
+  if (!isValidUrl(linkRaw)) {
+    showToast('Please enter a valid URL starting with http:// or https://', false);
+    return;
+  }
+  
+  if (!durationValue || isNaN(durationValue) || durationValue < 1) {
+    showToast('Please enter a valid duration number', false);
+    return;
+  }
+  
+  var duration = formatDuration(durationValue, durationUnit);
   
   var link = linkRaw;
-  if (link.indexOf('http://') !== 0 && link.indexOf('https://') !== 0) {
-    link = 'https://' + link;
-  }
   
   var stipend = '';
   var price = 0;
@@ -283,6 +644,8 @@ function submitCompanyInternship() {
     showToast('Internship updated successfully!');
     resetCompanyInternshipForm();
     renderCompanyListings();
+    renderStudentsList();
+    populateInternshipFilter();
     return;
   }
   
@@ -312,6 +675,8 @@ function submitCompanyInternship() {
   showToast('Internship published successfully!');
   resetCompanyInternshipForm();
   renderCompanyListings();
+  renderStudentsList();
+  populateInternshipFilter();
 }
 
 function deleteCompanyListing(listingId) {
@@ -327,9 +692,14 @@ function deleteCompanyListing(listingId) {
     window.db.saveCompanyInternships();
     showToast('Internship deleted successfully!');
     renderCompanyListings();
+    renderStudentsList();
+    populateInternshipFilter();
   }
 }
 
+// Make functions global
 window.editCompanyListing = editCompanyListing;
 window.deleteCompanyListing = deleteCompanyListing;
 window.cancelCompanyInternshipEdit = cancelCompanyInternshipEdit;
+window.openFeedbackModal = openFeedbackModal;
+window.viewFeedback = viewFeedback;
