@@ -128,3 +128,28 @@
   border-radius: var(--radius-sm) var(--radius-sm) 0 0;
   position: relative;
 }
+
+.tab-btn:hover {
+  color: var(--primary);
+  background: rgba(46, 80, 144, 0.05);
+}
+
+.tab-btn.active {
+  color: var(--primary);
+  background: rgba(46, 80, 144, 0.08);
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 3px 3px 0 0;
+}
+
+.tab-content {
+  animation: fadeIn 0.3s ease;
+}
