@@ -259,3 +259,39 @@
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
+.view-feedback-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--primary);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-left: 0.5rem;
+}
+
+/* URL Error Message */
+.url-error-message {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.7rem;
+}
+
+.input-group.error {
+  border-color: var(--error);
+}
+
+/* Rating Stars in Feedback */
+.rating-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.85rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
