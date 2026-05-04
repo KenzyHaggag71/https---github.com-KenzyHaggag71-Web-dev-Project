@@ -86,8 +86,38 @@ function handleStudentSignup() {
   var confirm = document.getElementById('studentConfirmPassword').value;
   var terms = document.getElementById('studentTerms').checked;
   
-  if (!name || !email || !university || !major || !year || !password) {
-    showToast('Please fill in all required fields', false);
+  // Specific field validation
+  if (!name) {
+    showToast('Please enter your full name', false);
+    return;
+  }
+  if (!email) {
+    showToast('Please enter your university email address', false);
+    return;
+  }
+  // Check for @ sign in email
+  if (email.indexOf('@') === -1) {
+    showToast('Email must contain an @ symbol', false);
+    return;
+  }
+  if (!university) {
+    showToast('Please enter your university name', false);
+    return;
+  }
+  if (!major) {
+    showToast('Please select your major', false);
+    return;
+  }
+  if (!year) {
+    showToast('Please select your year of study', false);
+    return;
+  }
+  if (!password) {
+    showToast('Please enter a password', false);
+    return;
+  }
+  if (!confirm) {
+    showToast('Please confirm your password', false);
     return;
   }
   
@@ -154,8 +184,38 @@ function handleMentorSignup() {
   var confirm = document.getElementById('mentorConfirmPassword').value;
   var terms = document.getElementById('mentorTerms').checked;
   
-  if (!name || !email || !university || !major || !year || !password) {
-    showToast('Please fill in all required fields', false);
+  // Specific field validation
+  if (!name) {
+    showToast('Please enter your full name', false);
+    return;
+  }
+  if (!email) {
+    showToast('Please enter your university email address', false);
+    return;
+  }
+  // Check for @ sign in email
+  if (email.indexOf('@') === -1) {
+    showToast('Email must contain an @ symbol', false);
+    return;
+  }
+  if (!university) {
+    showToast('Please enter your university name', false);
+    return;
+  }
+  if (!major) {
+    showToast('Please select your major', false);
+    return;
+  }
+  if (!year) {
+    showToast('Please select your year of study', false);
+    return;
+  }
+  if (!password) {
+    showToast('Please enter a password', false);
+    return;
+  }
+  if (!confirm) {
+    showToast('Please confirm your password', false);
     return;
   }
   
@@ -223,8 +283,30 @@ function handleCompanySignup() {
   var confirm = document.getElementById('companyConfirmPassword').value;
   var terms = document.getElementById('companyTerms').checked;
   
-  if (!companyName || !email || !industry || !password) {
-    showToast('Please fill in all required fields', false);
+  // Specific field validation
+  if (!companyName) {
+    showToast('Please enter your company name', false);
+    return;
+  }
+  if (!email) {
+    showToast('Please enter your business email address', false);
+    return;
+  }
+  // Check for @ sign in email
+  if (email.indexOf('@') === -1) {
+    showToast('Email must contain an @ symbol', false);
+    return;
+  }
+  if (!industry) {
+    showToast('Please select your industry', false);
+    return;
+  }
+  if (!password) {
+    showToast('Please enter a password', false);
+    return;
+  }
+  if (!confirm) {
+    showToast('Please confirm your password', false);
     return;
   }
   
