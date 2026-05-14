@@ -1,14 +1,26 @@
 var currentMentor = null;
 var selectedSubmissionId = null;
 
-function showFieldError(fieldEl, message) {
-  if (!fieldEl) return;
-  var wrapper = fieldEl.closest('.input-group') || fieldEl.parentElement;
+function showFieldError(fieldEl, message)
+{
+  if (!fieldEl)
+  {
+    return;
+  }
+
+  var wrapper = fieldEl.closest('.input-group');
+  if (!wrapper)
+  {
+    wrapper = fieldEl.parentElement;
+  }
+
   wrapper.classList.add('input-error');
 
-  // Remove any existing error message for this field
   var existing = wrapper.parentElement.querySelector('.field-error-msg[data-for="' + fieldEl.id + '"]');
-  if (existing) existing.remove();
+  if (existing)
+  {
+    existing.remove();
+  }
 
   var errEl = document.createElement('p');
   errEl.className = 'field-error-msg';
@@ -17,373 +29,541 @@ function showFieldError(fieldEl, message) {
   wrapper.insertAdjacentElement('afterend', errEl);
 }
 
-/** Clears the error state from a single field. */
-function clearFieldError(fieldEl) {
-  if (!fieldEl) return;
-  var wrapper = fieldEl.closest('.input-group') || fieldEl.parentElement;
-  wrapper.classList.remove('input-error');
-  var existing = wrapper.parentElement.querySelector('.field-error-msg[data-for="' + fieldEl.id + '"]');
-  if (existing) existing.remove();
-}
-
-/** Clears ALL field errors inside a given container element. */
-function clearAllErrors(containerEl) {
-  if (!containerEl) return;
-  containerEl.querySelectorAll('.input-error').forEach(function(el) { el.classList.remove('input-error'); });
-  containerEl.querySelectorAll('.field-error-msg').forEach(function(el) { el.remove(); });
-}
-
-/**
- * Validates an email address.
- * Accepted formats: anything@something.edu  or  anything@something.edu.eg
- */
-function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.edu(\.eg)?$/i.test(email.trim());
-}
-
-/**
- * Returns true if a date string (YYYY-MM-DD) is strictly in the future
- * (today is allowed — only strictly past dates are rejected).
- */
-function isDateNotInPast(dateStr) {
-  var today = new Date();
-  today.setHours(0, 0, 0, 0);
-  var chosen = new Date(dateStr);
-  return chosen >= today;
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  loadSharedComponents();
-  
-  currentMentor = getCurrentUser();
-  if (!currentMentor || currentMentor.role !== 'mentor') {
-    window.location.href = '/pages/auth/login.html';
+function clearFieldError(fieldEl)
+{
+  if (!fieldEl)
+  {
     return;
   }
-  
-  renderMentorDashboard();
-  setupMentorEventListeners();
-});
 
-function setupMentorEventListeners() {
-  var internshipSelect = document.getElementById('projectInternshipSelect');
-  if (internshipSelect) {
-    internshipSelect.addEventListener('change', function() {
-      clearFieldError(internshipSelect);
-      updateProjectInternshipDetails();
-    });
-  }
-  
-  var targetYearSelect = document.getElementById('projectTargetYear');
-  if (targetYearSelect) {
-    targetYearSelect.addEventListener('change', function() {
-      clearFieldError(targetYearSelect);
-      toggleMultiUserSelect();
-    });
+  var wrapper = fieldEl.closest('.input-group');
+  if (!wrapper)
+  {
+    wrapper = fieldEl.parentElement;
   }
 
-  // Live clear errors on input for text/textarea/date fields
-  ['projectTitle', 'projectDescription', 'projectDeadline', 'projectInstructions'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) {
-      el.addEventListener('input', function() { clearFieldError(el); });
-      el.addEventListener('change', function() { clearFieldError(el); });
-    }
-  });
+  wrapper.classList.remove('input-error');
 
-  // Live clear for modal fields
-  ['evaluationGrade', 'evaluationFeedback'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) {
-      el.addEventListener('input', function() { clearFieldError(el); });
-      el.addEventListener('change', function() { clearFieldError(el); });
-    }
-  });
-  
-  var assignBtn = document.getElementById('assignProjectBtn');
-  if (assignBtn) {
-    assignBtn.addEventListener('click', assignProject);
-  }
-  
-  var closeEvaluateBtn = document.getElementById('closeEvaluateModalBtn');
-  if (closeEvaluateBtn) {
-    closeEvaluateBtn.addEventListener('click', closeEvaluateModal);
-  }
-  
-  var submitEvalBtn = document.getElementById('submitEvaluationBtn');
-  if (submitEvalBtn) {
-    submitEvalBtn.addEventListener('click', submitEvaluation);
-  }
-  
-  var evalModal = document.getElementById('evaluateModal');
-  if (evalModal) {
-    evalModal.addEventListener('click', function(e) {
-      if (e.target === evalModal) closeEvaluateModal();
-    });
+  var existing = wrapper.parentElement.querySelector('.field-error-msg[data-for="' + fieldEl.id + '"]');
+  if (existing)
+  {
+    existing.remove();
   }
 }
 
-function renderMentorDashboard() {
-  if (!currentMentor) return;
-  
-  // Populate internship dropdown
+function clearAllErrors(containerEl)
+{
+  if (!containerEl)
+  {
+    return;
+  }
+
+  var errors = containerEl.querySelectorAll('.input-error');
+  for (var i = 0; i < errors.length; i++)
+  {
+    errors[i].classList.remove('input-error');
+  }
+
+  var messages = containerEl.querySelectorAll('.field-error-msg');
+  for (var j = 0; j < messages.length; j++)
+  {
+    messages[j].remove();
+  }
+}
+
+function isDateNotInPast(dateStr)
+{
+  var today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  var chosen = new Date(dateStr);
+
+  if (chosen >= today)
+  {
+    return true;
+  }
+
+  return false;
+}
+
+document.addEventListener(
+  'DOMContentLoaded',
+  function()
+  {
+    loadSharedComponents();
+    currentMentor = getCurrentUser();
+
+    if (!currentMentor || currentMentor.role !== 'mentor')
+    {
+      window.location.href = '../../pages/auth/login.html';
+      return;
+    }
+
+    renderMentorDashboard();
+    setupMentorEvents();
+  }
+);
+
+function setupMentorEvents()
+{
+  var internshipSelect = document.getElementById('projectInternshipSelect');
+  if (internshipSelect)
+  {
+    internshipSelect.addEventListener(
+      'change',
+      function()
+      {
+        clearFieldError(internshipSelect);
+        updateProjectInternshipDetails();
+      }
+    );
+  }
+
+  var targetYearSelect = document.getElementById('projectTargetYear');
+  if (targetYearSelect)
+  {
+    targetYearSelect.addEventListener(
+      'change',
+      function()
+      {
+        clearFieldError(targetYearSelect);
+        toggleMultiUserSelect();
+      }
+    );
+  }
+
+  var fieldIds = ['projectTitle', 'projectDescription', 'projectDeadline', 'projectInstructions'];
+  for (var i = 0; i < fieldIds.length; i++)
+  {
+    var el = document.getElementById(fieldIds[i]);
+    if (el)
+    {
+      el.addEventListener(
+        'input',
+        function()
+        {
+          clearFieldError(this);
+        }
+      );
+      el.addEventListener(
+        'change',
+        function()
+        {
+          clearFieldError(this);
+        }
+      );
+    }
+  }
+
+  var modalFieldIds = ['evaluationGrade', 'evaluationFeedback'];
+  for (var j = 0; j < modalFieldIds.length; j++)
+  {
+    var modalEl = document.getElementById(modalFieldIds[j]);
+    if (modalEl)
+    {
+      modalEl.addEventListener(
+        'input',
+        function()
+        {
+          clearFieldError(this);
+        }
+      );
+      modalEl.addEventListener(
+        'change',
+        function()
+        {
+          clearFieldError(this);
+        }
+      );
+    }
+  }
+
+  document.getElementById('assignProjectBtn').addEventListener('click', assignProject);
+
+  document.getElementById('closeEvaluateModalBtn').addEventListener(
+    'click',
+    function()
+    {
+      document.getElementById('evaluateModal').style.display = 'none';
+      clearAllErrors(document.getElementById('evaluateModal'));
+    }
+  );
+
+  document.getElementById('submitEvaluationBtn').addEventListener('click', submitEvaluation);
+
+  document.getElementById('evaluateModal').addEventListener(
+    'click',
+    function(e)
+    {
+      if (e.target === this)
+      {
+        this.style.display = 'none';
+        clearAllErrors(this);
+      }
+    }
+  );
+}
+
+function renderMentorDashboard()
+{
   var allInternships = window.db.getAllInternships();
+
   var takenInternships = [];
-  for (var i = 0; i < allInternships.length; i++) {
-    if (currentMentor.takenInternships && currentMentor.takenInternships.indexOf(allInternships[i].id) !== -1) {
+  for (var i = 0; i < allInternships.length; i++)
+  {
+    if (currentMentor.takenInternships && currentMentor.takenInternships.indexOf(allInternships[i].id) !== -1)
+    {
       takenInternships.push(allInternships[i]);
     }
   }
-  
-  var internshipSelect = document.getElementById('projectInternshipSelect');
-  if (internshipSelect) {
-    if (takenInternships.length === 0) {
-      internshipSelect.innerHTML = '<option value="">No internships taken yet. Complete internships to assign projects.</option>';
-    } else {
-      var options = '<option value="">Select Internship</option>';
-      for (var t = 0; t < takenInternships.length; t++) {
-        options += '<option value="' + takenInternships[t].id + '" data-company="' + escapeHtml(takenInternships[t].company) + '" data-category="' + escapeHtml(takenInternships[t].category) + '">' + escapeHtml(takenInternships[t].title) + ' - ' + escapeHtml(takenInternships[t].company) + '</option>';
+
+  var select = document.getElementById('projectInternshipSelect');
+  if (select)
+  {
+    if (takenInternships.length === 0)
+    {
+      select.innerHTML = '<option value="">No internships taken yet</option>';
+    }
+    else
+    {
+      var optionsHtml = '<option value="">Select Internship</option>';
+      for (var t = 0; t < takenInternships.length; t++)
+      {
+        optionsHtml = optionsHtml + '<option value="' + takenInternships[t].id + '" data-company="' + escapeHtml(takenInternships[t].company) + '" data-category="' + escapeHtml(takenInternships[t].category) + '">' + escapeHtml(takenInternships[t].title) + ' - ' + escapeHtml(takenInternships[t].company) + '</option>';
       }
-      internshipSelect.innerHTML = options;
+      select.innerHTML = optionsHtml;
     }
   }
-  
-  // Populate student multiselect - FIXED
+
   populateStudentMultiSelect();
-  
-  // Render mentor's projects
+
   var mentorProjects = window.db.getProjectsByMentor(currentMentor.id);
   var projectsContainer = document.getElementById('mentorProjectsList');
-  
-  if (projectsContainer) {
-    if (mentorProjects.length === 0) {
-      projectsContainer.innerHTML = '<p class="text-center" style="padding: 2rem; color: var(--text-light);">No projects created yet. Use the form above to assign projects.</p>';
-    } else {
+  if (projectsContainer)
+  {
+    if (mentorProjects.length === 0)
+    {
+      projectsContainer.innerHTML = '<p style="text-align:center;padding:2rem;">No projects created yet.</p>';
+    }
+    else
+    {
       var projectsHtml = '';
-      for (var p = 0; p < mentorProjects.length; p++) {
+      for (var p = 0; p < mentorProjects.length; p++)
+      {
         var project = mentorProjects[p];
-        projectsHtml += '<div class="project-card">' +
-          '<div class="project-header">' +
-            '<div class="project-title">' + escapeHtml(project.title) + '</div>' +
-            '<span class="submission-status status-pending" style="background:rgba(245,158,11,0.1);color:#92400e;">Deadline: ' + project.deadline + '</span>' +
-          '</div>' +
-          '<div class="project-meta">' +
-            '<span><i class="fas fa-building"></i> ' + escapeHtml(project.companyName) + '</span>' +
-            '<span><i class="fas fa-tag"></i> ' + escapeHtml(project.category) + '</span>' +
-            '<span><i class="fas fa-users"></i> Assigned to ' + project.assignedTo.length + ' student(s)</span>' +
-          '</div>' +
-          '<p class="project-description">' + escapeHtml(project.description) + '</p>';
-        if (project.instructions) {
-          projectsHtml += '<p class="project-description" style="color: var(--primary);"><i class="fas fa-info-circle"></i> ' + escapeHtml(project.instructions) + '</p>';
+        projectsHtml = projectsHtml + '<div class="project-card">';
+        projectsHtml = projectsHtml + '<div class="project-header">';
+        projectsHtml = projectsHtml + '<div class="project-title">' + escapeHtml(project.title) + '</div>';
+        projectsHtml = projectsHtml + '<span class="submission-status status-pending">Deadline: ' + project.deadline + '</span>';
+        projectsHtml = projectsHtml + '</div>';
+        projectsHtml = projectsHtml + '<div class="project-meta">';
+        projectsHtml = projectsHtml + '<span>' + escapeHtml(project.companyName) + '</span>';
+        projectsHtml = projectsHtml + '<span>' + escapeHtml(project.category) + '</span>';
+        projectsHtml = projectsHtml + '<span>Assigned to ' + project.assignedTo.length + ' student(s)</span>';
+        projectsHtml = projectsHtml + '</div>';
+        projectsHtml = projectsHtml + '<p class="project-description">' + escapeHtml(project.description) + '</p>';
+
+        if (project.instructions)
+        {
+          projectsHtml = projectsHtml + '<p style="color:var(--purple);">' + escapeHtml(project.instructions) + '</p>';
         }
-        projectsHtml += '</div>';
+
+        projectsHtml = projectsHtml + '</div>';
       }
       projectsContainer.innerHTML = projectsHtml;
     }
   }
-  
-  // Render pending submissions
+
   var pendingSubmissions = window.db.getPendingSubmissionsForMentor(currentMentor.id);
   var submissionsContainer = document.getElementById('mentorSubmissionsList');
-  
-  if (submissionsContainer) {
-    if (pendingSubmissions.length === 0) {
-      submissionsContainer.innerHTML = '<p class="text-center" style="padding: 2rem; color: var(--text-light);">No pending submissions to evaluate.</p>';
-    } else {
+  if (submissionsContainer)
+  {
+    if (pendingSubmissions.length === 0)
+    {
+      submissionsContainer.innerHTML = '<p style="text-align:center;padding:2rem;">No pending submissions.</p>';
+    }
+    else
+    {
       var subsHtml = '';
-      for (var sub = 0; sub < pendingSubmissions.length; sub++) {
-        var submission = pendingSubmissions[sub];
-        var projects = window.db.projects();
+
+      for (var s = 0; s < pendingSubmissions.length; s++)
+      {
+        var sub = pendingSubmissions[s];
+
+        var allProjects = window.db.projects();
         var project = null;
-        for (var proj = 0; proj < projects.length; proj++) {
-          if (projects[proj].id === submission.projectId) {
-            project = projects[proj];
+        for (var proj = 0; proj < allProjects.length; proj++)
+        {
+          if (allProjects[proj].id === sub.projectId)
+          {
+            project = allProjects[proj];
             break;
           }
         }
-        var student = window.db.getUserById(submission.studentId);
-        subsHtml += '<div class="submission-card">' +
-          '<div class="project-header">' +
-            '<div class="project-title">' + escapeHtml(submission.title) + '</div>' +
-            '<button class="evaluate-btn" onclick="openEvaluateModal(' + submission.id + ')">📝 Evaluate</button>' +
-          '</div>' +
-          '<div class="project-meta">' +
-            '<span><i class="fas fa-user"></i> Student: ' + escapeHtml((student && student.profile) ? (student.profile.fullName || student.name) : (student ? student.name : '')) + '</span>' +
-            '<span><i class="fas fa-folder"></i> Project: ' + escapeHtml(project ? project.title : '') + '</span>' +
-          '</div>';
-        if (submission.link) {
-          subsHtml += '<p><a href="' + submission.link + '" target="_blank" class="submission-link"><i class="fas fa-external-link-alt"></i> View Submission</a></p>';
+
+        var student = window.db.getUserById(sub.studentId);
+        var studentProfile = null;
+        if (student)
+        {
+          studentProfile = student.profile || null;
         }
-        subsHtml += '<p class="project-description">' + escapeHtml(submission.description || 'No description provided.') + '</p>' +
-          '</div>';
+
+        subsHtml = subsHtml + '<div class="submission-card">';
+        subsHtml = subsHtml + '<div class="project-header">';
+        subsHtml = subsHtml + '<div class="project-title">' + escapeHtml(sub.title) + '</div>';
+        subsHtml = subsHtml + '<button class="evaluate-btn" onclick="openEvaluateModal(' + sub.id + ')">Evaluate</button>';
+        subsHtml = subsHtml + '</div>';
+        subsHtml = subsHtml + '<div class="project-meta">';
+
+        var studentName = '';
+        if (student)
+        {
+          if (studentProfile && studentProfile.fullName)
+          {
+            studentName = studentProfile.fullName;
+          }
+          else
+          {
+            studentName = student.name;
+          }
+        }
+
+        subsHtml = subsHtml + '<span>Student: ' + escapeHtml(studentName) + '</span>';
+
+        var projectTitle = '';
+        if (project)
+        {
+          projectTitle = project.title;
+        }
+
+        subsHtml = subsHtml + '<span>Project: ' + escapeHtml(projectTitle) + '</span>';
+        subsHtml = subsHtml + '</div>';
+
+        if (sub.link)
+        {
+          subsHtml = subsHtml + '<p><a href="' + sub.link + '" target="_blank" class="submission-link">View Submission</a></p>';
+        }
+
+        subsHtml = subsHtml + '<p class="project-description">' + escapeHtml(sub.description || '') + '</p>';
+        subsHtml = subsHtml + '</div>';
       }
+
       submissionsContainer.innerHTML = subsHtml;
     }
   }
 }
 
-// FIXED: Function to populate the multi-select dropdown with students
-function populateStudentMultiSelect() {
-  var studentSelect = document.getElementById('projectAssignedUsers');
-  if (!studentSelect) return;
-  
-  var students = window.db.getAllUsers();
-  var filteredStudents = [];
-  for (var s = 0; s < students.length; s++) {
-    if (students[s].role === 'user' && students[s].status === 'active') {
-      filteredStudents.push(students[s]);
-    }
-  }
-  
-  if (filteredStudents.length === 0) {
-    studentSelect.innerHTML = '<option value="">No students available</option>';
+function populateStudentMultiSelect()
+{
+  var select = document.getElementById('projectAssignedUsers');
+  if (!select)
+  {
     return;
   }
-  
-  var studentOptions = '';
-  for (var u = 0; u < filteredStudents.length; u++) {
-    var student = filteredStudents[u];
-    var displayName = student.profile ? (student.profile.fullName || student.name) : student.name;
-    var major = student.profile ? (student.profile.major || 'No major') : 'No major';
-    studentOptions += '<option value="' + student.id + '">' + escapeHtml(displayName) + ' (Year ' + student.year + ') - ' + escapeHtml(major) + '</option>';
+
+  var allUsers = window.db.getAllUsers();
+  var students = [];
+
+  for (var i = 0; i < allUsers.length; i++)
+  {
+    if (allUsers[i].role === 'user' && allUsers[i].status === 'active')
+    {
+      students.push(allUsers[i]);
+    }
   }
-  studentSelect.innerHTML = studentOptions;
+
+  if (students.length === 0)
+  {
+    select.innerHTML = '<option value="">No students available</option>';
+    return;
+  }
+
+  var optionsHtml = '';
+  for (var s = 0; s < students.length; s++)
+  {
+    var student = students[s];
+    var profile = student.profile || {};
+    var displayName = profile.fullName || student.name;
+    var major = profile.major || '';
+
+    optionsHtml = optionsHtml + '<option value="' + student.id + '">' + escapeHtml(displayName) + ' (Year ' + student.year + ') - ' + escapeHtml(major) + '</option>';
+  }
+
+  select.innerHTML = optionsHtml;
 }
 
-function updateProjectInternshipDetails() {
+function updateProjectInternshipDetails()
+{
   var select = document.getElementById('projectInternshipSelect');
   var selectedOption = select.options[select.selectedIndex];
-  var companyInput = document.getElementById('projectCompany');
-  var categoryInput = document.getElementById('projectCategory');
-  
-  if (selectedOption && selectedOption.value) {
-    if (companyInput) companyInput.value = selectedOption.getAttribute('data-company') || '';
-    if (categoryInput) categoryInput.value = selectedOption.getAttribute('data-category') || '';
-  } else {
-    if (companyInput) companyInput.value = '';
-    if (categoryInput) categoryInput.value = '';
+
+  if (selectedOption && selectedOption.value)
+  {
+    document.getElementById('projectCompany').value = selectedOption.getAttribute('data-company') || '';
+    document.getElementById('projectCategory').value = selectedOption.getAttribute('data-category') || '';
+  }
+  else
+  {
+    document.getElementById('projectCompany').value = '';
+    document.getElementById('projectCategory').value = '';
   }
 }
 
-function toggleMultiUserSelect() {
+function toggleMultiUserSelect()
+{
   var targetYear = document.getElementById('projectTargetYear').value;
   var multiSelectGroup = document.getElementById('multiUserSelectGroup');
-  if (multiSelectGroup) {
-    multiSelectGroup.style.display = targetYear === 'specific' ? 'block' : 'none';
+
+  if (targetYear === 'specific')
+  {
+    multiSelectGroup.style.display = 'block';
+  }
+  else
+  {
+    multiSelectGroup.style.display = 'none';
   }
 }
 
-// Assign project function with specific per-field validation
-function assignProject() {
-  if (!currentMentor) return;
+function assignProject()
+{
+  if (!currentMentor)
+  {
+    return;
+  }
 
-  // Clear previous errors
   var form = document.getElementById('assignProjectForm');
   clearAllErrors(form);
 
-  // Collect values
-  var internshipSelectEl = document.getElementById('projectInternshipSelect');
-  var titleEl            = document.getElementById('projectTitle');
-  var descriptionEl      = document.getElementById('projectDescription');
-  var deadlineEl         = document.getElementById('projectDeadline');
-  var targetYearEl       = document.getElementById('projectTargetYear');
-  var instructionsEl     = document.getElementById('projectInstructions');
+  var internshipSelect = document.getElementById('projectInternshipSelect');
+  var titleEl = document.getElementById('projectTitle');
+  var descriptionEl = document.getElementById('projectDescription');
+  var deadlineEl = document.getElementById('projectDeadline');
+  var targetYearEl = document.getElementById('projectTargetYear');
+  var instructionsEl = document.getElementById('projectInstructions');
 
-  var internshipId = internshipSelectEl.value;
-  var title        = titleEl.value.trim();
-  var description  = descriptionEl.value.trim();
-  var deadline     = deadlineEl.value;
-  var targetYear   = targetYearEl.value;
+  var internshipId = internshipSelect.value;
+  var title = titleEl.value.trim();
+  var description = descriptionEl.value.trim();
+  var deadline = deadlineEl.value;
+  var targetYear = targetYearEl.value;
   var instructions = instructionsEl.value.trim();
 
   var hasError = false;
 
-  if (!internshipId) {
-    showFieldError(internshipSelectEl, 'Please select an internship from your completed internships.');
+  if (!internshipId)
+  {
+    showFieldError(internshipSelect, 'Please select an internship.');
     hasError = true;
   }
 
-  if (!title) {
-    showFieldError(titleEl, 'Please fill in the Project Title field.');
+  if (!title)
+  {
+    showFieldError(titleEl, 'Please enter a project title.');
     hasError = true;
   }
 
-  if (!description) {
-    showFieldError(descriptionEl, 'Please fill in the Project Description field.');
+  if (!description)
+  {
+    showFieldError(descriptionEl, 'Please enter a project description.');
     hasError = true;
   }
 
-  if (!deadline) {
-    showFieldError(deadlineEl, 'Please select a deadline date.');
+  if (!deadline)
+  {
+    showFieldError(deadlineEl, 'Please select a deadline.');
     hasError = true;
-  } else if (!isDateNotInPast(deadline)) {
-    showFieldError(deadlineEl, 'The deadline cannot be a past date. Please choose today or a future date.');
+  }
+  else if (!isDateNotInPast(deadline))
+  {
+    showFieldError(deadlineEl, 'Deadline cannot be in the past.');
     hasError = true;
   }
 
-  if (!targetYear) {
-    showFieldError(targetYearEl, 'Please select a year level to assign this project to.');
+  if (!targetYear)
+  {
+    showFieldError(targetYearEl, 'Please select a year level.');
     hasError = true;
   }
 
-  if (hasError) return;
-  
-  // Find the selected internship
+  if (hasError)
+  {
+    return;
+  }
+
   var allInternships = window.db.getAllInternships();
   var internship = null;
-  for (var i = 0; i < allInternships.length; i++) {
-    if (allInternships[i].id === parseInt(internshipId)) {
+  for (var i = 0; i < allInternships.length; i++)
+  {
+    if (allInternships[i].id === parseInt(internshipId))
+    {
       internship = allInternships[i];
       break;
     }
   }
-  if (!internship) {
+
+  if (!internship)
+  {
     showToast('Selected internship not found', false);
     return;
   }
-  
+
   var assignedStudents = [];
-  
-  if (targetYear === 'specific') {
+
+  if (targetYear === 'specific')
+  {
     var specificSelect = document.getElementById('projectAssignedUsers');
-    if (specificSelect) {
-      for (var opt = 0; opt < specificSelect.options.length; opt++) {
-        if (specificSelect.options[opt].selected) {
-          assignedStudents.push(parseInt(specificSelect.options[opt].value));
-        }
+    for (var opt = 0; opt < specificSelect.options.length; opt++)
+    {
+      if (specificSelect.options[opt].selected)
+      {
+        assignedStudents.push(parseInt(specificSelect.options[opt].value));
       }
     }
-    if (assignedStudents.length === 0) {
-      showFieldError(specificSelect, 'Please select at least one student from the list.');
-      return;
-    }
-  } 
-  else if (targetYear === 'both') {
-    var allUsers = window.db.getAllUsers();
-    for (var u = 0; u < allUsers.length; u++) {
-      if (allUsers[u].role === 'user' && allUsers[u].status === 'active' && (allUsers[u].year === 1 || allUsers[u].year === 2)) {
-        assignedStudents.push(allUsers[u].id);
-      }
-    }
-    if (assignedStudents.length === 0) {
-      showToast('No Year 1 or Year 2 students are currently registered in the system.', false);
-      return;
-    }
-  } 
-  else {
-    var allUsers = window.db.getAllUsers();
-    for (var us = 0; us < allUsers.length; us++) {
-      if (allUsers[us].role === 'user' && allUsers[us].status === 'active' && allUsers[us].year === parseInt(targetYear)) {
-        assignedStudents.push(allUsers[us].id);
-      }
-    }
-    if (assignedStudents.length === 0) {
-      showToast('No Year ' + targetYear + ' students are currently registered in the system.', false);
+
+    if (assignedStudents.length === 0)
+    {
+      showFieldError(specificSelect, 'Please select at least one student.');
       return;
     }
   }
-  
-  // Create new project
+  else if (targetYear === 'both')
+  {
+    var allUsers = window.db.getAllUsers();
+    for (var u = 0; u < allUsers.length; u++)
+    {
+      if (allUsers[u].role === 'user' && allUsers[u].status === 'active')
+      {
+        if (allUsers[u].year === 1 || allUsers[u].year === 2)
+        {
+          assignedStudents.push(allUsers[u].id);
+        }
+      }
+    }
+
+    if (assignedStudents.length === 0)
+    {
+      showToast('No Year 1 or 2 students found.', false);
+      return;
+    }
+  }
+  else
+  {
+    var allUsers = window.db.getAllUsers();
+    for (var us = 0; us < allUsers.length; us++)
+    {
+      if (allUsers[us].role === 'user' && allUsers[us].status === 'active' && allUsers[us].year === parseInt(targetYear))
+      {
+        assignedStudents.push(allUsers[us].id);
+      }
+    }
+
+    if (assignedStudents.length === 0)
+    {
+      showToast('No Year ' + targetYear + ' students found.', false);
+      return;
+    }
+  }
+
   var newProject = {
     id: Date.now(),
     mentorId: currentMentor.id,
@@ -397,124 +577,127 @@ function assignProject() {
     assignedTo: assignedStudents,
     createdAt: new Date().toISOString()
   };
-  
+
   var projects = window.db.projects();
   projects.push(newProject);
   window.db.saveProjects();
-  
-  // Reset form
+
   document.getElementById('projectTitle').value = '';
   document.getElementById('projectDescription').value = '';
   document.getElementById('projectDeadline').value = '';
   document.getElementById('projectInstructions').value = '';
   document.getElementById('projectTargetYear').value = '';
   document.getElementById('multiUserSelectGroup').style.display = 'none';
-  clearAllErrors(document.getElementById('assignProjectForm'));
-  
-  showToast('Project assigned to ' + assignedStudents.length + ' student(s)!');
+  clearAllErrors(form);
+
+  showToast('Project assigned to ' + assignedStudents.length + ' student(s)!', true);
   renderMentorDashboard();
 }
 
-function openEvaluateModal(submissionId) {
+function openEvaluateModal(submissionId)
+{
   selectedSubmissionId = submissionId;
-  var submissions = window.db.submissions();
-  var submission = null;
-  for (var i = 0; i < submissions.length; i++) {
-    if (submissions[i].id === submissionId) {
-      submission = submissions[i];
+
+  var subs = window.db.submissions();
+  var sub = null;
+  for (var i = 0; i < subs.length; i++)
+  {
+    if (subs[i].id === submissionId)
+    {
+      sub = subs[i];
       break;
     }
   }
-  var student = window.db.getUserById(submission ? submission.studentId : null);
-  var projects = window.db.projects();
+
+  var student = window.db.getUserById(sub ? sub.studentId : null);
+  var allProjects = window.db.projects();
   var project = null;
-  for (var p = 0; p < projects.length; p++) {
-    if (projects[p].id === (submission ? submission.projectId : null)) {
-      project = projects[p];
+  for (var p = 0; p < allProjects.length; p++)
+  {
+    if (allProjects[p].id === (sub ? sub.projectId : null))
+    {
+      project = allProjects[p];
       break;
     }
   }
-  
-  var studentNameSpan = document.getElementById('evaluateStudentName');
-  var projectTitleSpan = document.getElementById('evaluateProjectTitle');
-  var gradeSelect = document.getElementById('evaluationGrade');
-  var feedbackTextarea = document.getElementById('evaluationFeedback');
-  
-  if (studentNameSpan) studentNameSpan.textContent = (student && student.profile) ? (student.profile.fullName || student.name) : (student ? student.name : '');
-  if (projectTitleSpan) projectTitleSpan.textContent = project ? project.title : '';
-  if (gradeSelect) gradeSelect.value = '';
-  if (feedbackTextarea) feedbackTextarea.value = '';
-  
-  var modal = document.getElementById('evaluateModal');
-  if (modal) modal.style.display = 'flex';
+
+  var studentName = '';
+  if (student)
+  {
+    var profile = student.profile || {};
+    studentName = profile.fullName || student.name;
+  }
+
+  var projectTitle = '';
+  if (project)
+  {
+    projectTitle = project.title;
+  }
+
+  document.getElementById('evaluateStudentName').textContent = studentName;
+  document.getElementById('evaluateProjectTitle').textContent = projectTitle;
+  document.getElementById('evaluationGrade').value = '';
+  document.getElementById('evaluationFeedback').value = '';
+
+  document.getElementById('evaluateModal').style.display = 'flex';
 }
 
-function closeEvaluateModal() {
-  var modal = document.getElementById('evaluateModal');
-  if (modal) modal.style.display = 'none';
-  clearAllErrors(modal);
-  selectedSubmissionId = null;
-}
+function submitEvaluation()
+{
+  if (!selectedSubmissionId)
+  {
+    return;
+  }
 
-function submitEvaluation() {
-  var submissionId = selectedSubmissionId;
-  if (!submissionId) return;
-
-  var gradeEl    = document.getElementById('evaluationGrade');
+  var gradeEl = document.getElementById('evaluationGrade');
   var feedbackEl = document.getElementById('evaluationFeedback');
-  var grade      = gradeEl.value;
-  var feedback   = feedbackEl.value.trim();
+  var grade = gradeEl.value;
+  var feedback = feedbackEl.value.trim();
 
-  // Clear previous modal errors
   clearAllErrors(document.getElementById('evaluateModal'));
 
-  var hasError = false;
-
-  if (!grade) {
-    showFieldError(gradeEl, 'Please select a grade before submitting the evaluation.');
-    hasError = true;
-  }
-  if (!feedback) {
-    showFieldError(feedbackEl, 'Please provide feedback for the student in the Feedback field.');
-    hasError = true;
+  if (!grade)
+  {
+    showFieldError(gradeEl, 'Please select a grade.');
+    return;
   }
 
-  if (hasError) return;
-  
-  var submissions = window.db.submissions();
-  var submissionIndex = -1;
-  for (var i = 0; i < submissions.length; i++) {
-    if (submissions[i].id === submissionId) {
-      submissionIndex = i;
+  if (!feedback)
+  {
+    showFieldError(feedbackEl, 'Please provide feedback.');
+    return;
+  }
+
+  var subs = window.db.submissions();
+  var idx = -1;
+  for (var i = 0; i < subs.length; i++)
+  {
+    if (subs[i].id === selectedSubmissionId)
+    {
+      idx = i;
       break;
     }
   }
-  
-  if (submissionIndex !== -1) {
-    submissions[submissionIndex].status = 'evaluated';
-    submissions[submissionIndex].evaluation = {
+
+  if (idx !== -1)
+  {
+    subs[idx].status = 'evaluated';
+    subs[idx].evaluation = {
       grade: grade,
-      feedback: feedback || 'No feedback provided.',
+      feedback: feedback,
       evaluatedAt: new Date().toISOString()
     };
     window.db.saveSubmissions();
-    
-    showToast('Evaluation submitted successfully!');
-    closeEvaluateModal();
-    renderMentorDashboard();
-    
-    // Also refresh student projects view if open
-    if (typeof renderStudentProjects === 'function') {
-      renderStudentProjects();
-    }
   }
+
+  document.getElementById('evaluateModal').style.display = 'none';
+  showToast('Evaluation submitted!', true);
+  renderMentorDashboard();
 }
 
-// Make functions global for onclick handlers
 window.renderMentorDashboard = renderMentorDashboard;
+window.openEvaluateModal = openEvaluateModal;
+window.assignProject = assignProject;
+window.submitEvaluation = submitEvaluation;
 window.updateProjectInternshipDetails = updateProjectInternshipDetails;
 window.toggleMultiUserSelect = toggleMultiUserSelect;
-window.assignProject = assignProject;
-window.openEvaluateModal = openEvaluateModal;
-window.closeEvaluateModal = closeEvaluateModal;
-window.submitEvaluation = submitEvaluation;
