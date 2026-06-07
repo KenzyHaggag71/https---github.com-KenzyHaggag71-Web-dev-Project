@@ -1,1 +1,23 @@
 <%- include('./partials/head') %>
+
+<body>
+
+<%- include('./partials/navbar') %>
+
+<div class="container container-spacing">
+  <div class="error-page">
+    <div class="error-icon">
+      <i class="fas fa-exclamation-triangle"></i>
+    </div>
+    <h1><%= t(title) %></h1>
+    <p><%= t(message) %></p>
+    <a href="/" class="btn-primary">
+      <i class="fas fa-home"></i>
+      <%= t("nav.backHome") %>
+    </a>
+  </div>
+</div>
+
+<%- include('./partials/footer') %>
+</body>
+</html>
