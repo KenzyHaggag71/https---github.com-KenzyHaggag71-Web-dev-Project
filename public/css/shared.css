@@ -253,3 +253,46 @@ h1, h2, h3, h4, h5, h6
   border-color: var(--text-dark);
   background: var(--bg-light);
 }
+.admin-page,
+.company-page,
+.mentor-page
+{
+  background: var(--bg-light);
+  min-height: 100vh;
+}
+
+.admin-layout,
+.company-layout,
+.mentor-layout
+{
+  display: flex;
+  gap: 2rem;
+  max-width: 1400px;
+  min-height: calc(100vh - 64px);
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+.admin-sidebar,
+.company-sidebar,
+.mentor-sidebar
+{
+  width: 240px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  position: sticky;
+  top: 80px;
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-xs);
+  padding: 1.5rem 1rem;
+}
+
+.admin-main,
+.company-main,
+.mentor-main
+{
+  flex: 1;
+  min-width: 0;
+}
