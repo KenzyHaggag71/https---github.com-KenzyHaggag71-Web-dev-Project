@@ -1,1 +1,19 @@
 <!DOCTYPE html>
+<html lang="<%= typeof lang !== 'undefined' ? lang : 'en' %>" dir="<%= typeof dir !== 'undefined' ? dir : 'ltr' %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>(function(){try{localStorage.removeItem('theme');}catch(e){}document.documentElement.removeAttribute('data-theme');})();</script>
+  <title><%= typeof title !== 'undefined' ? title : 'InternHub' %></title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/shared.css">
+  <% if (typeof extraCSS !== 'undefined' && extraCSS) { %>
+    <% extraCSS.forEach(function(href) { %>
+      <link rel="stylesheet" href="<%= href %>">
+    <% }) %>
+  <% } %>
+  <% if (typeof dir !== 'undefined' && dir === 'rtl') { %>
+    <link rel="stylesheet" href="/css/rtl.css">
+  <% } %>
+</head>
