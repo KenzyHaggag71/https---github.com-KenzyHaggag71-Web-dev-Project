@@ -16,7 +16,6 @@ function getFlash(req) {
   return null;
 }
 
-// Dashboard
 router.get('/dashboard', async (req, res) => {
   try {
     const [totalUsers, companies, mentors, students, internships, applications,
@@ -44,7 +43,7 @@ router.get('/dashboard', async (req, res) => {
       User.find({ status: 'pending', role: 'mentor' }).lean()
     ]);
 
-    // Aggregates for the analytics charts
+   
     const [catAgg, statusAgg] = await Promise.all([
       Internship.aggregate([{ $group: { _id: '$category', count: { $sum: 1 } } }, { $sort: { count: -1 } }]),
       Application.aggregate([{ $group: { _id: '$status', count: { $sum: 1 } } }])
@@ -69,7 +68,7 @@ router.get('/dashboard', async (req, res) => {
   }
 });
 
-// Users list
+
 router.get('/users', async (req, res) => {
   try {
     const search = req.query.search || '';
@@ -93,7 +92,7 @@ router.get('/users', async (req, res) => {
   }
 });
 
-// Approvals page
+
 router.get('/approvals', async (req, res) => {
   try {
     const pendingCompanyQuery = {
@@ -124,7 +123,7 @@ router.get('/approvals', async (req, res) => {
   }
 });
 
-// All internships
+
 router.get('/internships', async (req, res) => {
   try {
     const pagination = await paginate(Internship, {}, {
@@ -140,7 +139,7 @@ router.get('/internships', async (req, res) => {
   }
 });
 
-// Approve user
+
 router.post('/approve/:id', async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, {
@@ -165,7 +164,7 @@ router.post('/approve/:id', async (req, res) => {
   }
 });
 
-// Reject (delete) user
+
 router.post('/reject/:id', async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.id);
@@ -178,7 +177,6 @@ router.post('/reject/:id', async (req, res) => {
   }
 });
 
-// Toggle block/unblock
 router.post('/toggle-block/:id', async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -194,7 +192,7 @@ router.post('/toggle-block/:id', async (req, res) => {
   }
 });
 
-// Delete user
+
 router.post('/delete-user/:id', async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.id);
@@ -207,7 +205,6 @@ router.post('/delete-user/:id', async (req, res) => {
   }
 });
 
-// Delete internship
 router.post('/delete-internship/:id', async (req, res) => {
   try {
     await Internship.findByIdAndDelete(req.params.id);
