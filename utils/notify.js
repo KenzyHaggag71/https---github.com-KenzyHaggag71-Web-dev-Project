@@ -1,0 +1,1 @@
+const { transporter } = require('./mailer');
