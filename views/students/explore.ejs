@@ -1,1 +1,127 @@
 <%- include('../partials/head', { title: 'Explore Internships - InternHub', extraCSS: ['/css/student.css'] }) %>
+
+<body class="student-page">
+<%- include('../partials/navbar') %>
+
+<div class="page-header">
+  <h1><%= t('explore.title') %></h1>
+  <p><%= t('explore.subtitle') %></p>
+</div>
+
+<% if (typeof flash !== 'undefined' && flash) { %>
+  <div class="explore-flash alert alert-<%= flash.type %>">
+    <%= t(flash.message) %>
+  </div>
+<% } %>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<div class="explore-map-panel">
+  <h3 class="explore-map-title"><i class="fas fa-map-marked-alt"></i> <%= t('explore.mapTitle') %></h3>
+  <div id="exploreMap"></div>
+  <p id="exploreMapEmpty" class="explore-map-empty" style="display:none"><%= t('explore.mapEmpty') %></p>
+</div>
+<% var __mapData = internships.map(function (it) { return { title: t(it.title), company: it.company, location: it.location || '', lat: (it.lat != null ? it.lat : null), lng: (it.lng != null ? it.lng : null) }; }); %>
+<script>window.__INTERNSHIPS = <%- JSON.stringify(__mapData) %>;</script>
+
+<div class="explore-container">
+  <aside class="filters-sidebar">
+    <form method="GET" action="/student/explore" id="filterForm">
+      <div class="filter-section">
+        <h3><%= t('common.search') %></h3>
+        <input type="text" name="search" value="<%= search || '' %>" placeholder="<%= t('explore.searchPlaceholder') %>" class="filter-input" id="searchInput">
+      </div>
+
+      <div class="filter-section">
+        <h3><%= t('explore.workMode') %></h3>
+        <% var workModeLabels = { 'Remote': t('explore.remote'), 'Hybrid': t('explore.hybrid'), 'On-site': t('explore.onsite') }; %>
+        <% ['Remote','Hybrid','On-site'].forEach(function(wm) { %>
+          <label class="filter-check">
+            <input type="radio" name="workMode" value="<%= wm %>" <%= (workMode === wm) ? 'checked' : '' %>>
+            <%= workModeLabels[wm] %>
+          </label>
+        <% }) %>
+        <label class="filter-check">
+          <input type="radio" name="workMode" value="" <%= (!workMode) ? 'checked' : '' %>><%= t('common.all') %>
+        </label>
+      </div>
+
+      <div class="filter-section">
+        <h3><%= t('explore.category') %></h3>
+        <select name="category" class="filter-select">
+          <option value=""><%= t('explore.allCategories') %></option>
+          <% ['Computer Science','Engineering','Business','Law','Pharmacy','Architecture','Mass Communication','Arts & Design','Science'].forEach(function(cat) { %>
+            <option value="<%= cat %>" <%= (category === cat) ? 'selected' : '' %>><%= cat %></option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="filter-section">
+        <h3><%= t('explore.sortBy') %></h3>
+        <select name="sort" class="filter-select">
+          <option value="recent" <%= (sort === 'recent') ? 'selected' : '' %>><%= t('explore.mostRecent') %></option>
+          <option value="stipend-high" <%= (sort === 'stipend-high') ? 'selected' : '' %>><%= t('explore.stipendHigh') %></option>
+          <option value="stipend-low" <%= (sort === 'stipend-low') ? 'selected' : '' %>><%= t('explore.stipendLow') %></option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-primary filter-btn"><%= t('explore.applyFilters') %></button>
+      <a href="/student/explore" class="btn-outline filter-btn"><%= t('common.clear') %></a>
+    </form>
+  </aside>
+
+  <div class="internships-grid" id="internshipsGrid">
+    <%- include('../partials/internship-results', { internships: internships, savedIds: savedIds, pagination: pagination }) %>
+  </div>
+</div>
+
+<div id="pager">
+  <%- include('../partials/pagination', { pagination: pagination, baseUrl: baseUrl, baseQuery: baseQuery }) %>
+</div>
+
+<div id="applyModal" class="modal" style="display:none">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2><%= t('explore.applyModalTitle') %></h2>
+      <button class="modal-close" onclick="document.getElementById('applyModal').style.display='none'">&times;</button>
+    </div>
+
+    <form action="/student/apply" method="POST" enctype="multipart/form-data" id="applyForm">
+      <input type="hidden" name="internshipId" id="applyInternshipId">
+      <p id="applyInternshipName" class="modal-subtitle"></p>
+
+      <div class="form-group">
+        <label><%= t('explore.uploadCv') %></label>
+        <input type="file" name="cv" accept=".pdf,.doc,.docx" required>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" onclick="document.getElementById('applyModal').style.display='none'"><%= t('common.cancel') %></button>
+        <button type="submit" class="btn-primary"><%= t('explore.submitApplication') %></button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+window.__EXPLORE_I18N = {
+  saved: '<%= t('common.saved') %>',
+  applied: '<%= t('common.applied') %>',
+  savedMsg: 'Internship saved!',
+  appliedMsg: 'Application submitted!',
+  genericError: 'Something went wrong. Please try again.'
+};
+function openApplyModalFromButton(button) {
+  document.getElementById('applyInternshipId').value = button.dataset.id;
+  document.getElementById('applyInternshipName').textContent = '<%= t('explore.applyingFor', { title: '' }) %>' + button.dataset.title;
+  document.getElementById('applyModal').style.display = 'flex';
+}
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="/js/explore-map.js"></script>
+<script src="/js/explore-search.js"></script>
+<script src="/js/explore-actions.js"></script>
+
+<%- include('../partials/footer') %>
+</body>
+</html>
