@@ -98,3 +98,48 @@
           <h2><i class="fas fa-chalkboard-teacher"></i> <%= t('admin.mentors') %></h2>
           <span class="approval-count"><%= pendingMentors.length %></span>
         </div>
+
+        <% if (pendingMentors.length === 0) { %>
+          <p class="empty-msg"><%= t('No pending mentor applications.') %></p>
+        <% } else { %>
+          <div class="approval-list">
+            <% pendingMentors.forEach(function(m) { %>
+              <div class="approval-card" data-ajax-item>
+                <div class="approval-card-title">
+                  <span class="approval-avatar"><i class="fas fa-chalkboard-teacher"></i></span>
+                  <div>
+                    <strong><%= m.profile && m.profile.fullName ? m.profile.fullName : m.name %></strong>
+                    <small><%= t('admin.mentorAccount') %></small>
+                  </div>
+                </div>
+
+                <div class="approval-meta">
+                  <span><i class="fas fa-envelope"></i> <%= m.email %></span>
+                  <% if (m.profile && m.profile.university) { %>
+                    <span><i class="fas fa-university"></i> <%= m.profile.university %></span>
+                  <% } %>
+                  <% if (m.profile && m.profile.major) { %>
+                    <span><i class="fas fa-book"></i> <%= tEnum('category', m.profile.major) %> - <%= t('mentor.yearLabel') %> <%= m.year %></span>
+                  <% } %>
+                </div>
+
+                <div class="approval-actions">
+                  <form action="/admin/approve/<%= m._id %>" method="POST" data-ajax="remove">
+                    <button class="btn-approve"><i class="fas fa-check"></i> <%= t('admin.approve') %></button>
+                  </form>
+                  <form action="/admin/reject/<%= m._id %>" method="POST" data-ajax="remove" data-ajax-confirm="Reject and remove this application?">
+                    <button class="btn-reject"><i class="fas fa-times"></i> <%= t('admin.reject') %></button>
+                  </form>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } %>
+      </section>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>
+</body>
+</html>
