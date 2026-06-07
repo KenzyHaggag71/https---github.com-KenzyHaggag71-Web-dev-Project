@@ -1,1 +1,57 @@
+
+
 html[dir="rtl"] body,
+html[dir="rtl"] button,
+html[dir="rtl"] input,
+html[dir="rtl"] textarea,
+html[dir="rtl"] select {
+  font-family: 'Cairo', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+html[dir="rtl"] body {
+  text-align: right;
+}
+
+html[dir="rtl"] .logo i { margin-right: 0; margin-left: 8px; }
+
+html[dir="rtl"] .lang-menu { right: auto; left: 0; }
+
+
+html[dir="rtl"] .help-tooltip { right: auto; left: 0; text-align: right; transform-origin: top left; }
+html[dir="rtl"] .help-tooltip::before { right: auto; left: 16px; }
+html[dir="rtl"] .help-tooltip .tt-title { flex-direction: row-reverse; }
+html[dir="rtl"] .help-tooltip .tt-contact { flex-direction: row-reverse; }
+
+
+html[dir="rtl"] .input-group i { margin-right: 0; margin-left: 12px; }
+html[dir="rtl"] .password-toggle { right: auto; left: 5px; }
+html[dir="rtl"] .email-validation { margin-left: 0; margin-right: auto; }
+html[dir="rtl"] .form-hint,
+html[dir="rtl"] .auth-header,
+html[dir="rtl"] .auth-switch { text-align: center; }
+
+html[dir="rtl"] .admin-table th,
+html[dir="rtl"] .admin-table td { text-align: right; }
+html[dir="rtl"] .sidebar-nav .nav-item i { margin-right: 0; margin-left: 10px; }
+
+html[dir="rtl"] .filter-check input { margin-right: 0; margin-left: 8px; }
+html[dir="rtl"] .card-meta span i,
+html[dir="rtl"] .skill-tag,
+html[dir="rtl"] .card-actions { text-align: right; }
+
+html[dir="rtl"] .btn-primary i,
+html[dir="rtl"] .btn-secondary i,
+html[dir="rtl"] .btn-outline i,
+html[dir="rtl"] .btn-sm i { margin-right: 0; margin-left: 6px; }
+
+
+html[dir="rtl"] .pagination { direction: rtl; }
+
+
+html[dir="rtl"] .dropdown-column h4,
+html[dir="rtl"] .dropdown-featured-heading { text-align: right; }
+html[dir="rtl"] .industry-link i,
+html[dir="rtl"] .type-link i { margin-right: 0; margin-left: 10px; }
+
+html[dir="rtl"] .alert,
+html[dir="rtl"] .explore-flash { text-align: right; }
