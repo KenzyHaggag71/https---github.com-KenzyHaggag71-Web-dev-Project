@@ -1,2 +1,108 @@
+<%- include('../partials/head', { title: 'Company Hub — InternHub', extraCSS: ['/css/company.css'] }) %>
 
-<%- include('../partials/head', { title: 'Applications — InternHub', extraCSS: ['/css/company.css'] }) %>
+<body class="company-page">
+<%- include('../partials/navbar') %>
+
+<div class="company-layout">
+  <aside class="company-sidebar">
+    <div class="sidebar-header">
+      <i class="fas fa-building"></i>
+      <span><%= currentUser.companyName || currentUser.name %></span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/company/dashboard" class="nav-item active"><i class="fas fa-tachometer-alt"></i> <%= t('sidebar.dashboard') %></a>
+      <a href="/company/post-internship" class="nav-item"><i class="fas fa-plus-circle"></i> <%= t('company.postInternship') %></a>
+      <a href="/company/manage-listings" class="nav-item"><i class="fas fa-list"></i> <%= t('company.myListings') %></a>
+      <a href="/company/applications" class="nav-item"><i class="fas fa-file-alt"></i> <%= t('company.applications') %></a>
+      <a href="/company/my-students" class="nav-item"><i class="fas fa-user-graduate"></i> <%= t('company.myStudents') %></a>
+      <a href="/logout" class="nav-item nav-logout"><i class="fas fa-sign-out-alt"></i> <%= t('sidebar.logout') %></a>
+    </nav>
+  </aside>
+
+  <main class="company-main">
+    <div class="company-topbar">
+      <h1><%= t('nav.companyHub') %></h1>
+      <div class="company-info">
+        <span class="status-badge status-active"><%= t('common.approved') %></span>
+      </div>
+    </div>
+
+    <% if (typeof flash !== 'undefined' && flash) { %>
+      <div class="alert alert-<%= flash.type %>"><%= t(flash.message) %></div>
+    <% } %>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon purple"><i class="fas fa-briefcase"></i></div>
+        <div class="stat-info">
+          <h3><%= stats.listings %></h3>
+          <p><%= t('company.myListings') %></p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon blue"><i class="fas fa-file-alt"></i></div>
+        <div class="stat-info">
+          <h3><%= stats.applications %></h3>
+          <p><%= t('company.applications') %></p>
+          <% if (stats.pending > 0) { %>
+            <small class="pending-note"><%= t('company.pendingNote', { count: stats.pending }) %></small>
+          <% } %>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green"><i class="fas fa-user-graduate"></i></div>
+        <div class="stat-info">
+          <h3><%= stats.accepted %></h3>
+          <p><%= t('company.acceptedStudents') %></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-panels">
+      <div class="panel">
+        <div class="panel-header">
+          <h2><i class="fas fa-briefcase"></i> <%= t('company.recentListings') %></h2>
+          <a href="/company/manage-listings" class="panel-link"><%= t('admin.viewAll') %></a>
+        </div>
+        <% if (listings.length === 0) { %>
+          <p class="empty-msg"><%= t('company.noListings') %> <a href="/company/post-internship"><%= t('company.postOneNow') %></a></p>
+        <% } else { %>
+          <% listings.slice(0,3).forEach(function(l) { %>
+            <div class="listing-summary">
+              <div>
+                <strong><%= t(l.title) %></strong>
+                <p><%= tEnum('category', l.category) %> · <%= tEnum('workMode', l.workMode) %> · <%= tEnum('type', l.type) %></p>
+              </div>
+              <span class="type-badge"><%= tEnum('type', l.type) %></span>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2><i class="fas fa-file-alt"></i> <%= t('student.recentApplications') %></h2>
+          <a href="/company/applications" class="panel-link"><%= t('admin.viewAll') %></a>
+        </div>
+        <% if (recentApplications.length === 0) { %>
+          <p class="empty-msg"><%= t('company.noApplicationsYet') %></p>
+        <% } else { %>
+          <% recentApplications.slice(0,5).forEach(function(app) { %>
+            <div class="listing-summary">
+              <div>
+                <strong><%= app.studentName %></strong>
+                <p><%= app.studentEmail %> · <%= app.internshipId ? t(app.internshipId.title) : 'N/A' %></p>
+              </div>
+              <span class="status-badge status-<%= app.status %>"><%= tEnum('status', app.status) %></span>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>
+</body>
+</html>
+
