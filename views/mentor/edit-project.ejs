@@ -1,1 +1,99 @@
-<%- include('../partials/head', { title: 'Edit Project — InternHub', extraCSS: ['/css/mentor.css'] }) %>
+<%- include('../partials/head', { title: 'Edit Project — InternHub', extraCSS: ['/css/student.css', '/css/mentor.css'] }) %>
+
+<body class="student-page mentor-page">
+<%- include('../partials/navbar') %>
+
+<div class="student-layout">
+  <%- include('../partials/sidebar', { active: 'mentor-hub' }) %>
+
+  <main class="student-main">
+    <div class="student-topbar">
+      <h1>Edit Project</h1>
+    </div>
+
+    <% if (typeof flash !== 'undefined' && flash) { %>
+      <div class="alert alert-<%= flash.type %>"><%= t(flash.message) %></div>
+    <% } %>
+
+    <div class="panel">
+      <div class="panel-header">
+        <h2><i class="fas fa-edit"></i> Project Details</h2>
+      </div>
+
+      <form action="/mentor/update-project/<%= project._id %>" method="POST" class="mentor-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Based on Internship *</label>
+            <select name="internshipId" required>
+              <option value="">Select one of your internships</option>
+              <% takenInternships.forEach(function(i) { %>
+                <option value="<%= i._id %>" <%= String(project.internshipId || '') === String(i._id) ? 'selected' : '' %>>
+                  <%= i.title %> — <%= i.company %>
+                </option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Target Year</label>
+            <select name="targetYear">
+              <% ['any','1','2','3','4'].forEach(function(y) { %>
+                <option value="<%= y %>" <%= String(project.targetYear || 'any') === y ? 'selected' : '' %>>
+                  <%= y === 'any' ? 'Any Year' : 'Year ' + y %>
+                </option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Project Title *</label>
+            <input type="text" name="title" value="<%= project.title || '' %>" required>
+          </div>
+
+          <div class="form-group">
+            <label>Deadline</label>
+            <input
+              type="date"
+              name="deadline"
+              min="<%= new Date().toISOString().split('T')[0] %>"
+              value="<%= project.deadline ? new Date(project.deadline).toISOString().split('T')[0] : '' %>"
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Description *</label>
+          <textarea name="description" rows="3" required><%= project.description || '' %></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Instructions / Resources</label>
+          <textarea name="instructions" rows="2"><%= project.instructions || '' %></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Assign to Students</label>
+          <select name="assignedTo" multiple class="multi-select">
+            <% eligibleStudents.forEach(function(s) { %>
+              <option value="<%= s._id %>" <%= (project.assignedTo || []).map(String).includes(String(s._id)) ? 'selected' : '' %>>
+                <%= s.profile && s.profile.fullName ? s.profile.fullName : s.name %> (Year <%= s.year %>)
+              </option>
+            <% }) %>
+          </select>
+          <small class="hint">Hold Ctrl/Cmd to select multiple students</small>
+        </div>
+
+        <div class="form-actions">
+          <a href="/mentor/dashboard" class="btn-cancel">Cancel</a>
+          <button type="submit" class="btn-primary">Update Project</button>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>
+</body>
+</html>
