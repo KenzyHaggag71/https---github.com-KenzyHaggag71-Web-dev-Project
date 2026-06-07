@@ -1,1 +1,105 @@
 <%- include('../partials/head', { title: 'Projects — InternHub', extraCSS: ['/css/student.css'] }) %>
+
+<body class="student-page">
+<%- include('../partials/navbar') %>
+
+<div class="student-layout">
+  <%- include('../partials/sidebar', { active: 'projects' }) %>
+
+  <main class="student-main">
+    <div class="student-topbar">
+      <h1><%= t('student.myProjects') %></h1>
+    </div>
+
+    <% if (typeof flash !== 'undefined' && flash) { %>
+      <div class="alert alert-<%= flash.type %>"><%= t(flash.message) %></div>
+    <% } %>
+
+    <% if (projects.length === 0) { %>
+      <div class="panel">
+        <p class="empty-msg"><%= t('student.noProjects') %></p>
+      </div>
+    <% } else { %>
+      <% projects.forEach(function(p) { %>
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-title"><%= p.title %></div>
+            <span class="status-badge status-pending">Deadline: <%= p.deadline ? new Date(p.deadline).toLocaleDateString() : 'N/A' %></span>
+          </div>
+          <div class="project-meta">
+            <span><%= p.company %></span>
+            <span><%= p.category %></span>
+          </div>
+          <p><%= p.description %></p>
+          <% if (p.instructions) { %><p class="project-instructions"><i class="fas fa-info-circle"></i> <%= p.instructions %></p><% } %>
+
+          <% var mySub = submissionMap[p._id.toString()]; %>
+          <% if (mySub) { %>
+            <div class="submission-given">
+              <p><i class="fas fa-check-circle" style="color:#10b981"></i> <strong>Submitted:</strong> <%= mySub.title %></p>
+              <% if (mySub.status === 'evaluated') { %>
+                <p>Grade: <strong class="grade-badge"><%= mySub.grade %></strong></p>
+                <p>Feedback: <%= mySub.feedback %></p>
+              <% } else { %>
+                <p class="text-muted">Awaiting evaluation...</p>
+              <% } %>
+            </div>
+          <% } else { %>
+            <div class="submit-section">
+              <button class="btn-primary btn-sm" onclick='openSubmitModal("<%= p._id %>", "<%= p.title %>")'> 
+                <i class="fas fa-upload"></i> Submit Work
+              </button>
+            </div>
+          <% } %>
+        </div>
+      <% }) %>
+    <% } %>
+  </main>
+</div>
+
+<!-- Submit Modal -->
+<div id="submitModal" class="modal" style="display:none">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2><%= t('student.submitWork') %></h2>
+      <button class="modal-close" onclick="document.getElementById('submitModal').style.display='none'">&times;</button>
+    </div>
+    <form action="/student/submit-project" method="POST" data-ajax="reset" data-ajax-modal="#submitModal">
+      <input type="hidden" name="projectId" id="submitProjectId">
+      <p id="submitProjectName" class="modal-subtitle"></p>
+      <div class="form-group">
+        <label>Submission Title *</label>
+        <input type="text" name="title" placeholder="e.g. My REST API Project" required>
+      </div>
+      <div class="form-group">
+  <label>Link to Work *</label>
+  <input
+    type="url"
+    name="link"
+    placeholder="https://github.com/..."
+    required
+  >
+</div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="description" rows="3" placeholder="Describe what you built..."></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" onclick="document.getElementById('submitModal').style.display='none'"><%= t('common.cancel') %></button>
+        <button type="submit" class="btn-primary"><%= t('student.submit') %></button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openSubmitModal(id, title) {
+  document.getElementById('submitProjectId').value = id;
+  document.getElementById('submitProjectName').textContent = 'Project: ' + title;
+  document.getElementById('submitModal').style.display = 'flex';
+}
+</script>
+
+<%- include('../partials/footer') %>
+</body>
+</html>
