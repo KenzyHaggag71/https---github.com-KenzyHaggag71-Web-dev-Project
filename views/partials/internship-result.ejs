@@ -1,1 +1,68 @@
 <p class="results-count"><%= t('explore.resultsFound', { count: (typeof pagination !== 'undefined' ? pagination.totalItems : internships.length) }) %></p>
+
+<% if (internships.length === 0) { %>
+  <div class="panel"><p class="empty-msg"><%= t('explore.noMatch') %></p></div>
+<% } else { %>
+  <% internships.forEach(function(intern) { %>
+    <div class="internship-card">
+      <div class="card-icon"><i class="<%= intern.icon || 'fas fa-briefcase' %>"></i></div>
+
+      <div class="card-body">
+        <div class="card-header">
+          <h3><%= t(intern.title) %></h3>
+          <span class="type-badge type-<%= intern.type.toLowerCase() %>"><%= tEnum('type', intern.type) %></span>
+        </div>
+
+        <p class="card-company"><%= intern.company %></p>
+
+        <div class="card-meta">
+          <span><i class="fas fa-map-marker-alt"></i> <%= tEnum('workMode', intern.workMode) %></span>
+          <span><i class="fas fa-tag"></i> <%= tEnum('category', intern.category) %></span>
+          <% if (intern.stipend) { %><span><i class="fas fa-coins"></i> <%= tStipend(intern.stipend) %></span><% } %>
+          <% if (intern.duration) { %><span><i class="fas fa-clock"></i> <%= tDuration(intern.duration) %></span><% } %>
+        </div>
+
+        <p class="card-desc"><%= t(intern.description) %></p>
+
+        <% if (intern.skills && intern.skills.length > 0) { %>
+          <div class="skill-tags">
+            <% intern.skills.slice(0,4).forEach(function(sk) { %>
+              <span class="skill-tag"><%= sk %></span>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+
+      <div class="card-actions">
+        <% if (intern.link) { %>
+          <a href="<%= intern.link %>" target="_blank" rel="noopener noreferrer" class="btn-sm btn-outline">
+            <i class="fas fa-external-link-alt"></i> <%= t('explore.openLink') %>
+          </a>
+        <% } %>
+
+        <% if (currentUser) { %>
+          <% var isSaved = savedIds && savedIds.indexOf(intern._id.toString()) !== -1; %>
+
+          <% if (!isSaved) { %>
+            <form action="/student/save-internship/<%= intern._id %>" method="POST" style="display:inline">
+              <button class="btn-sm btn-outline"><i class="fas fa-bookmark"></i> <%= t('common.save') %></button>
+            </form>
+          <% } else { %>
+            <span class="btn-sm btn-saved"><i class="fas fa-bookmark"></i> <%= t('common.saved') %></span>
+          <% } %>
+
+          <button
+            type="button"
+            class="btn-primary btn-sm"
+            data-id="<%= intern._id %>"
+            data-title="<%= t(intern.title) %>"
+            onclick="openApplyModalFromButton(this)">
+            <i class="fas fa-paper-plane"></i> <%= t('common.apply') %>
+          </button>
+        <% } else { %>
+          <a href="/login" class="btn-primary btn-sm"><%= t('common.apply') %></a>
+        <% } %>
+      </div>
+    </div>
+  <% }) %>
+<% } %>
