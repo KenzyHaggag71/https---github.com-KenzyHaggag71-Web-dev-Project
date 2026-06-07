@@ -1,0 +1,12 @@
+.auth-container
+{
+  min-height: calc(100vh - 200px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  background:
+    radial-gradient(ellipse at top, rgba(52,87,220,0.06), transparent 60%),
+    var(--bg-light);
+}
+
