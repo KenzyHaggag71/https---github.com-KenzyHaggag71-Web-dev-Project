@@ -1,1 +1,97 @@
 <%- include('../partials/head', { title: 'Acceptance Letter — InternHub' }) %>
+<%- include('../partials/head', { title: 'Acceptance Letter — InternHub' }) %>
+
+<body class="letter-page">
+<style>
+  
+  .letter-page { background: var(--bg-light); min-height: 100vh; display: flex; flex-direction: column; }
+  .letter-wrap { flex: 1 0 auto; width: 100%; max-width: 720px; margin: 0 auto; padding: 40px 16px 80px; }
+
+  .letter-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 22px; }
+
+  .letter-sheet {
+    background: var(--bg-white); color: var(--text-dark);
+    border: 1px solid var(--border); border-radius: 18px; overflow: hidden;
+    box-shadow: 0 18px 50px rgba(15, 23, 42, .10);
+  }
+  .letter-accent { height: 6px; background: linear-gradient(90deg, var(--accent), var(--accent-hover)); }
+  .letter-inner { padding: 52px 56px 48px; line-height: 1.85; }
+  .letter-inner p { margin: 0 0 16px; }
+
+  .letter-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding-bottom: 22px; border-bottom: 1px solid var(--border); margin-bottom: 30px; flex-wrap: wrap;
+  }
+  .letter-brand { display: flex; align-items: center; gap: 10px; font-size: 1.35rem; font-weight: 800; color: var(--accent); }
+  .letter-ref { text-align: right; font-size: .82rem; color: var(--text-light); }
+
+  .letter-h1 { font-size: 1.9rem; font-weight: 800; letter-spacing: -.02em; margin: 0 0 22px; }
+
+  .letter-details { border: 1px solid var(--border); border-radius: 14px; padding: 8px 24px; margin: 24px 0; background: var(--bg-light); }
+  .letter-row { display: flex; gap: 14px; padding: 12px 0; }
+  .letter-row + .letter-row { border-top: 1px dashed var(--border); }
+  .letter-row .k { min-width: 120px; color: var(--text-light); font-weight: 600; }
+  .letter-row .v { font-weight: 700; color: var(--text-dark); }
+
+  .letter-sign { margin-top: 38px; }
+  .letter-sign .sig { font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: 1.5rem; color: var(--accent); margin: 2px 0; }
+  .letter-sign .sig-title { font-weight: 700; margin: 0; }
+
+  .letter-foot { margin-top: 34px; padding-top: 18px; border-top: 1px solid var(--border); font-size: .8rem; color: var(--text-light); text-align: center; }
+
+  @media (max-width: 600px) { .letter-inner { padding: 34px 24px 36px; } }
+
+  @media print {
+    @page { margin: 16mm; }
+    .navbar, .footer, .letter-actions, .theme-toggle { display: none !important; }
+    .letter-page { background: #fff; padding: 0; min-height: 0; }
+    .letter-wrap { max-width: 100%; }
+    .letter-sheet { box-shadow: none; border: none; border-radius: 0; }
+    .letter-accent { display: none; }
+    .letter-inner { padding: 0; }
+  }
+</style>
+
+<%- include('../partials/navbar') %>
+
+<div class="letter-wrap">
+  <div class="letter-actions">
+    <a href="/student/my-internships" class="btn-sm btn-outline"><i class="fas fa-arrow-left"></i> <%= t('student.myApplications') %></a>
+    <button type="button" class="btn-sm btn-primary" onclick="window.print()"><i class="fas fa-print"></i> <%= t('letter.print') %></button>
+  </div>
+
+  <div class="letter-sheet">
+    <div class="letter-accent"></div>
+    <div class="letter-inner">
+      <div class="letter-head">
+        <div class="letter-brand"><i class="fas fa-briefcase"></i> InternHub</div>
+        <div class="letter-ref"><%= t('letter.date') %>: <%= new Date().toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US') %></div>
+      </div>
+
+      <h1 class="letter-h1"><%= t('letter.title') %></h1>
+
+      <p><%= t('letter.dear') %> <strong><%= studentName %></strong>،</p>
+      <p><%= t('letter.body1') %></p>
+
+      <div class="letter-details">
+        <div class="letter-row"><span class="k"><%= t('letter.position') %></span><span class="v"><%= t(application.internshipId.title) %></span></div>
+        <div class="letter-row"><span class="k"><%= t('letter.company') %></span><span class="v"><%= application.internshipId.company %></span></div>
+      </div>
+
+      <p><%= t('letter.body2') %></p>
+
+      <div class="letter-sign">
+        <p style="margin:0"><%= t('letter.regards') %></p>
+        <div class="sig">InternHub</div>
+        <p class="sig-title"><%= t('letter.team') %></p>
+      </div>
+
+      <div class="letter-foot">InternHub · Connecting students with dream internships</div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
+</body>
+</html>
+
