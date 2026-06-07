@@ -1,1 +1,227 @@
 <%- include('./partials/head') %>
+
+<body class="home-page">
+
+<%- include('./partials/navbar') %>
+
+<section class="hero-section">
+  <div class="media-slideshow media-slideshow--4">
+    <div class="slide hero-slide-1"></div>
+    <div class="slide hero-slide-2"></div>
+    <div class="slide hero-slide-3"></div>
+    <div class="slide hero-slide-4"></div>
+  </div>
+
+  <div class="container">
+    <div class="hero-badge">
+      <i class="fas fa-graduation-cap"></i>
+      <%= t('home.heroBadge') %>
+    </div>
+    <h1 class="hero-title">
+      <%= t('home.heroTitlePre') %>
+      <span class="gradient-text"><%= t('home.heroTitleHighlight') %></span><br>
+      <%= t('home.heroTitlePost') %>
+    </h1>
+    <p class="hero-subtitle">
+      <%= t('home.heroSubtitle') %>
+    </p>
+    <div class="hero-buttons">
+      <% if (currentUser) { %>
+        <a href="/student/explore" class="btn-primary">
+          <i class="fas fa-rocket"></i>
+          <%= t('home.browseInternships') %>
+        </a>
+      <% } else { %>
+        <a href="/login" class="btn-primary">
+          <i class="fas fa-rocket"></i>
+          <%= t('home.getStarted') %>
+        </a>
+      <% } %>
+      <button class="btn-secondary" id="learnMoreBtn">
+        <i class="fas fa-info-circle"></i>
+        <%= t('home.learnMore') %>
+      </button>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <i class="fas fa-building"></i>
+        <h3><%= stats.companies %>+</h3>
+        <p><%= t('home.partnerCompanies') %></p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-briefcase"></i>
+        <h3><%= stats.internships %>+</h3>
+        <p><%= t('home.activeInternships') %></p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-user-graduate"></i>
+        <h3><%= stats.students %>+</h3>
+        <p><%= t('home.studentsPlaced') %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <i class="fas fa-chevron-down"></i>
+  </div>
+</section>
+
+<section id="aboutSection" class="about-section">
+  <div class="container">
+    <div class="section-header">
+      <h2><%= t('home.whyTitle') %></h2>
+      <p><%= t('home.whySubtitle') %></p>
+    </div>
+    <div class="about-grid">
+      <div class="about-card">
+        <i class="fas fa-shield-alt"></i>
+        <h3><%= t('home.verifiedTitle') %></h3>
+        <p><%= t('home.verifiedDesc') %></p>
+      </div>
+      <div class="about-card">
+        <i class="fas fa-globe"></i>
+        <h3><%= t('home.majorsTitle') %></h3>
+        <p><%= t('home.majorsDesc') %></p>
+      </div>
+      <div class="about-card">
+        <i class="fas fa-calendar-check"></i>
+        <h3><%= t('home.updatedTitle') %></h3>
+        <p><%= t('home.updatedDesc') %></p>
+      </div>
+      <div class="about-card">
+        <i class="fas fa-university"></i>
+        <h3><%= t('home.exclusiveTitle') %></h3>
+        <p><%= t('home.exclusiveDesc') %></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="countdown-section">
+  <div class="container">
+    <div class="countdown-banner">
+      <div class="cb-text">
+        <span class="cb-eyebrow"><i class="fas fa-bolt"></i> <%= t('home.limitedTime') %></span>
+        <h3><%= t('home.cohortTitle') %></h3>
+        <p><%= t('home.cohortDesc') %></p>
+      </div>
+      <div class="cb-timer" id="cbTimer">
+        <div class="cb-time-box"><span class="cb-time-num" id="cbDays">04</span><span class="cb-time-lbl"><%= t('home.days') %></span></div>
+        <div class="cb-time-box"><span class="cb-time-num" id="cbHrs">12</span><span class="cb-time-lbl"><%= t('home.hrs') %></span></div>
+        <div class="cb-time-box"><span class="cb-time-num" id="cbMins">37</span><span class="cb-time-lbl"><%= t('home.min') %></span></div>
+        <div class="cb-time-box"><span class="cb-time-num" id="cbSecs">22</span><span class="cb-time-lbl"><%= t('home.sec') %></span></div>
+      </div>
+      <a href="/student/explore" class="cb-cta">
+        <%= t('home.applyNow') %> <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="spotlight-section">
+  <div class="spotlight-grid">
+    <div class="spotlight-copy">
+      <span class="spotlight-eyebrow"><%= t('home.featuredCompany') %></span>
+      <h2><%= t('home.spotlightTitlePre') %> <span class="gradient-text">Microsoft</span> <%= t('home.spotlightTitlePost') %></h2>
+      <p>
+        <%= t('home.spotlightDesc') %>
+      </p>
+      <div class="spotlight-meta">
+        <div class="spotlight-meta-item">
+          <strong>4.9&#9733;</strong>
+          <span><%= t('home.internRating') %></span>
+        </div>
+        <div class="spotlight-meta-item">
+          <strong>120+</strong>
+          <span><%= t('home.openRoles') %></span>
+        </div>
+        <div class="spotlight-meta-item">
+          <strong>$8k</strong>
+          <span><%= t('home.avgMonthly') %></span>
+        </div>
+      </div>
+      <a href="/student/companies" class="btn-primary">
+        <i class="fas fa-building"></i>
+        <%= t('home.browseAllCompanies') %>
+      </a>
+    </div>
+
+    <div class="spotlight-video">
+      <video autoplay muted loop playsinline preload="auto" id="spotlightVideo" disablepictureinpicture disableremoteplayback controlslist="nodownload nofullscreen noremoteplayback noplaybackrate" tabindex="-1" aria-hidden="true">
+        <source src="/assets/spotlight-video.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</section>
+
+<section class="featured-strip-section">
+  <div class="container">
+    <div class="fs-header">
+      <div class="fs-header-text">
+        <span class="fs-eyebrow"><i class="fas fa-star"></i> <%= t('home.editorsPicks') %></span>
+        <h2><%= t('home.trendingTitle') %></h2>
+        <p><%= t('home.trendingDesc') %></p>
+      </div>
+      <a href="/student/explore" class="fs-see-all">
+        <%= t('home.seeAllFeatured') %> <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+    <div class="fs-grid">
+      <% var badges = ['hot','featured','new','trending','hot']; %>
+      <% trendingInternships.forEach(function(intern, idx) { %>
+        <a href="/student/explore?category=<%= encodeURIComponent(intern.category) %>"
+           class="fs-card <%= idx === 0 ? 'large' : '' %> fs-card-dynamic">
+          <div class="fs-card-overlay"></div>
+          <div class="fs-card-content">
+            <% if (badges[idx] === 'hot') { %>
+              <span class="fs-card-badge hot"><i class="fas fa-fire"></i> <%= t('badge.hot') %></span>
+            <% } else if (badges[idx] === 'new') { %>
+              <span class="fs-card-badge new"><%= t('badge.new') %></span>
+            <% } else if (badges[idx] === 'trending') { %>
+              <span class="fs-card-badge"><%= t('badge.trending') %></span>
+            <% } else { %>
+              <span class="fs-card-badge"><%= t('badge.featured') %></span>
+            <% } %>
+            <h3 class="fs-card-title"><%= t(intern.title) %> &middot; <%= intern.company %></h3>
+            <div class="fs-card-meta">
+              <span><i class="fas fa-map-marker-alt"></i> <%= tEnum('location', intern.location) %></span>
+              <% if (intern.duration) { %><span><i class="far fa-calendar-alt"></i> <%= tDuration(intern.duration) %></span><% } %>
+              <% if (intern.stipend) { %><span><i class="fas fa-money-bill-wave"></i> <%= tStipend(intern.stipend) %></span><% } %>
+            </div>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section class="featured-section">
+  <div class="container">
+    <h2><%= t('home.exploreByField') %></h2>
+  </div>
+  <div class="category-wheel-container">
+    <div class="category-wheel-track" id="categoryWheelTrack"></div>
+  </div>
+</section>
+
+<%- include('./partials/footer') %>
+
+<%
+  var __catLabels = {
+    "Computer Science":   { name: t('cat.computerScience'),   desc: t('cat.computerScienceDesc') },
+    "Engineering":        { name: t('cat.engineering'),        desc: t('cat.engineeringDesc') },
+    "Business":           { name: t('cat.business'),           desc: t('cat.businessDesc') },
+    "Law":                { name: t('cat.law'),                desc: t('cat.lawDesc') },
+    "Pharmacy":           { name: t('cat.pharmacy'),           desc: t('cat.pharmacyDesc') },
+    "Architecture":       { name: t('cat.architecture'),       desc: t('cat.architectureDesc') },
+    "Mass Communication": { name: t('cat.massCommunication'),  desc: t('cat.massCommunicationDesc') },
+    "Arts & Design":      { name: t('cat.artsDesign'),         desc: t('cat.artsDesignDesc') },
+    "Science":            { name: t('cat.science'),            desc: t('cat.scienceDesc') }
+  };
+%>
+<script>
+  window.CATEGORY_LABELS = <%- JSON.stringify(__catLabels) %>;
+</script>
+<script src="/js/home.js"></script>
+</body>
+</html>
