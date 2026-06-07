@@ -110,7 +110,6 @@ router.post('/assign-project', async (req, res) => {
       assignedTo
     });
 
-    // Notify each assigned student by email (fire-and-forget, never blocks the response)
     if (Array.isArray(assignedTo) && assignedTo.length) {
       const mentorName = req.currentUser.name || 'Your mentor';
       const deadlineText = deadline ? new Date(deadline).toLocaleDateString() : 'No deadline set';
@@ -168,7 +167,6 @@ router.post('/evaluate-submission/:id', async (req, res) => {
       { new: true }
     ).populate('studentId', 'email name').populate('projectId', 'title');
 
-    // Notify the student by email (fire-and-forget)
     if (submission && submission.studentId && submission.studentId.email) {
       const projectTitle = submission.projectId ? submission.projectId.title : (submission.title || 'your project');
       transporter.sendMail({
