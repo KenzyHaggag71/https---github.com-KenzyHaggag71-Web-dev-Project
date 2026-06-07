@@ -1,1 +1,26 @@
 <%- include('../partials/head', { title: 'Approvals - Admin', extraCSS: ['/css/admin.css'] }) %>
+
+<body class="admin-page">
+<%- include('../partials/navbar') %>
+
+
+
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <i class="fas fa-shield-alt"></i>
+      <span><%= t('nav.adminHub') %></span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="/admin/dashboard" class="nav-item"><i class="fas fa-tachometer-alt"></i> <%= t('admin.dashboard') %></a>
+      <a href="/admin/users" class="nav-item"><i class="fas fa-users"></i> <%= t('admin.manageUsers') %></a>
+      <a href="/admin/approvals" class="nav-item active"><i class="fas fa-check-circle"></i> <%= t('admin.approvals') %>
+        <% if (pendingCompanies.length + pendingMentors.length > 0) { %>
+          <span class="badge"><%= pendingCompanies.length + pendingMentors.length %></span>
+        <% } %>
+      </a>
+      <a href="/admin/internships" class="nav-item"><i class="fas fa-briefcase"></i> <%= t('admin.internships') %></a>
+      <a href="/logout" class="nav-item nav-logout"><i class="fas fa-sign-out-alt"></i> <%= t('nav.logout') %></a>
+    </nav>
+  </aside>
