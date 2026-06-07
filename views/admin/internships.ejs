@@ -1,1 +1,77 @@
-<%- include('../partials/head', { title: 'Admin Hub — InternHub', extraCSS: ['/css/admin.css'] }) %>
+<%- include('../partials/head', { title: 'Manage Internships — Admin', extraCSS: ['/css/admin.css'] }) %>
+
+<body class="admin-page">
+<%- include('../partials/navbar') %>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <i class="fas fa-shield-alt"></i>
+      <span><%= t('nav.adminHub') %></span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/admin/dashboard" class="nav-item"><i class="fas fa-tachometer-alt"></i> <%= t('admin.dashboard') %></a>
+      <a href="/admin/users" class="nav-item"><i class="fas fa-users"></i> <%= t('admin.manageUsers') %></a>
+      <a href="/admin/approvals" class="nav-item"><i class="fas fa-check-circle"></i> <%= t('admin.approvals') %></a>
+      <a href="/admin/internships" class="nav-item active"><i class="fas fa-briefcase"></i> <%= t('admin.internships') %></a>
+      <a href="/logout" class="nav-item nav-logout"><i class="fas fa-sign-out-alt"></i> <%= t('nav.logout') %></a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <h1><%= t('admin.internships') %> (<%= (typeof pagination !== 'undefined' ? pagination.totalItems : internships.length) %>)</h1>
+    </div>
+
+    <% if (typeof flash !== 'undefined' && flash) { %>
+      <div class="alert alert-<%= flash.type %>"><%= t(flash.message) %></div>
+    <% } %>
+
+    <div class="panel">
+      <div class="table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th><%= t('admin.title') %></th>
+              <th><%= t('admin.company') %></th>
+              <th><%= t('explore.category') %></th>
+              <th><%= t('admin.typeHeader') %></th>
+              <th><%= t('admin.postedBy') %></th>
+              <th><%= t('common.actions') %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (internships.length === 0) { %>
+              <tr><td colspan="6" class="text-center"><%= t('admin.noInternships') %></td></tr>
+            <% } %>
+            <% internships.forEach(function(internship) { %>
+              <tr>
+                <td><%= t(internship.title) %></td>
+                <td><%= internship.company %></td>
+                <td><%= tEnum('category', internship.category) %></td>
+                <td><span class="type-badge"><%= tEnum('type', internship.type) %></span></td>
+                <td><%= internship.postedByUserId ? t('admin.companyVal') : t('admin.seedVal') %></td>
+                <td>
+                  <% if (internship.postedByUserId) { %>
+                    <form action="/admin/delete-internship/<%= internship._id %>" method="POST" style="display:inline" data-ajax="remove" data-ajax-confirm="<%= t('admin.deleteInternshipConfirm') %>">
+                      <button class="btn-sm btn-delete"><%= t('common.delete') %></button>
+                    </form>
+                  <% } else { %>
+                    <span class="text-muted"><%= t('admin.seeded') %></span>
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <%- include('../partials/pagination', { pagination: pagination, baseUrl: baseUrl, baseQuery: baseQuery }) %>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>
+</body>
+</html>
+
