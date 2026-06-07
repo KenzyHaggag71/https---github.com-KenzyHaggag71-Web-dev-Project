@@ -1,1 +1,34 @@
 <%- include('../partials/head', { title: 'Admin Hub — InternHub', extraCSS: ['/css/admin.css'] }) %>
+
+<body class="admin-page">
+<%- include('../partials/navbar') %>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="sidebar-header">
+      <i class="fas fa-shield-alt"></i>
+      <span><%= t('nav.adminHub') %></span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/admin/dashboard" class="nav-item active"><i class="fas fa-tachometer-alt"></i> <%= t('admin.dashboard') %></a>
+      <a href="/admin/users" class="nav-item"><i class="fas fa-users"></i> <%= t('admin.manageUsers') %></a>
+      <a href="/admin/approvals" class="nav-item"><i class="fas fa-check-circle"></i> <%= t('admin.approvals') %>
+        <% if (pendingCount > 0) { %><span class="badge"><%= pendingCount %></span><% } %>
+      </a>
+      <a href="/admin/internships" class="nav-item"><i class="fas fa-briefcase"></i> <%= t('admin.internships') %></a>
+      <a href="/logout" class="nav-item nav-logout"><i class="fas fa-sign-out-alt"></i> <%= t('nav.logout') %></a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <h1><%= t('admin.dashboard') %></h1>
+      <div class="admin-user-info">
+        <i class="fas fa-user-shield"></i>
+        <span><%= currentUser.name %></span>
+      </div>
+    </div>
+
+    <% if (typeof flash !== 'undefined' && flash) { %>
+      <div class="alert alert-<%= flash.type %>"><%= t(flash.message) %></div>
+    <% } %>
