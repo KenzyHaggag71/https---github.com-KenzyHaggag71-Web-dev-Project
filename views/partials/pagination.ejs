@@ -4,3 +4,61 @@ var url  = (typeof baseUrl !== 'undefined' && baseUrl) ? baseUrl : '';
 var bq   = (typeof baseQuery !== 'undefined' && baseQuery) ? baseQuery : '';
 function pageHref(n) { return url + '?' + bq + 'page=' + n; }
 %>
+<% if (pg && pg.totalPages > 1) { %>
+  <nav class="pagination" aria-label="Pagination">
+    <div class="pagination-summary">
+      <%= t('pagination.showing', { from: pg.from, to: pg.to, total: pg.totalItems }) %>
+    </div>
+
+    <ul class="pagination-list">
+      <li>
+        <% if (pg.hasPrev) { %>
+          <a class="page-link page-arrow" href="<%= pageHref(pg.prevPage) %>" rel="prev">
+            <i class="fas <%= dir === 'rtl' ? 'fa-chevron-right' : 'fa-chevron-left' %>"></i>
+            <span><%= t('pagination.prev') %></span>
+          </a>
+        <% } else { %>
+          <span class="page-link page-arrow disabled">
+            <i class="fas <%= dir === 'rtl' ? 'fa-chevron-right' : 'fa-chevron-left' %>"></i>
+            <span><%= t('pagination.prev') %></span>
+          </span>
+        <% } %>
+      </li>
+
+      <%
+        var start = Math.max(1, pg.page - 2);
+        var end   = Math.min(pg.totalPages, pg.page + 2);
+        if (start > 1) { %>
+          <li><a class="page-link" href="<%= pageHref(1) %>">1</a></li>
+          <% if (start > 2) { %><li><span class="page-ellipsis">&hellip;</span></li><% }
+        }
+        for (var n = start; n <= end; n++) { %>
+          <li>
+            <% if (n === pg.page) { %>
+              <span class="page-link active" aria-current="page"><%= n %></span>
+            <% } else { %>
+              <a class="page-link" href="<%= pageHref(n) %>"><%= n %></a>
+            <% } %>
+          </li>
+        <% }
+        if (end < pg.totalPages) {
+          if (end < pg.totalPages - 1) { %><li><span class="page-ellipsis">&hellip;</span></li><% } %>
+          <li><a class="page-link" href="<%= pageHref(pg.totalPages) %>"><%= pg.totalPages %></a></li>
+        <% } %>
+
+      <li>
+        <% if (pg.hasNext) { %>
+          <a class="page-link page-arrow" href="<%= pageHref(pg.nextPage) %>" rel="next">
+            <span><%= t('pagination.next') %></span>
+            <i class="fas <%= dir === 'rtl' ? 'fa-chevron-left' : 'fa-chevron-right' %>"></i>
+          </a>
+        <% } else { %>
+          <span class="page-link page-arrow disabled">
+            <span><%= t('pagination.next') %></span>
+            <i class="fas <%= dir === 'rtl' ? 'fa-chevron-left' : 'fa-chevron-right' %>"></i>
+          </span>
+        <% } %>
+      </li>
+    </ul>
+  </nav>
+<% } %>
