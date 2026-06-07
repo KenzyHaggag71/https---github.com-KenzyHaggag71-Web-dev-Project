@@ -1,1 +1,20 @@
 <footer class="footer">
+  <p><%= t('footer.copyright') %></p>
+</footer>
+<%
+  var __i18n = {
+    lang: lang,
+    dir: dir,
+    required: t('validation.required'),
+    email:    t('validation.email'),
+    url:      t('validation.url'),
+    tooShort: t('validation.tooShort'),
+    tooLong:  t('validation.tooLong'),
+    pattern:  t('validation.pattern'),
+    number:   t('validation.number'),
+    generic:  t('validation.generic')
+  };
+%>
+<script>window.APP_I18N = <%- JSON.stringify(__i18n) %>;</script>
+<script src="/js/shared.js"></script>
+<script src="/js/ajax-actions.js"></script>
