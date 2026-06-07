@@ -1,5 +1,27 @@
 <%
+  // "appear and disappear" between pages. Pass { active: '<key>' }.
   var active = (typeof active !== 'undefined') ? active : '';
   var isMentor = currentUser && currentUser.role === 'mentor';
   var dashHref = isMentor ? '/mentor/dashboard' : '/student/dashboard';
 %>
+<aside class="student-sidebar">
+  <div class="sidebar-header">
+    <i class="fas <%= isMentor ? 'fa-chalkboard-teacher' : 'fa-user-graduate' %>"></i>
+    <span><%= currentUser.profile && currentUser.profile.fullName ? currentUser.profile.fullName : currentUser.name %></span>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="<%= dashHref %>" class="nav-item <%= active === 'dashboard' ? 'active' : '' %>"><i class="fas fa-home"></i> <%= t('sidebar.dashboard') %></a>
+    <a href="/student/explore" class="nav-item <%= active === 'explore' ? 'active' : '' %>"><i class="fas fa-search"></i> <%= t('sidebar.explore') %></a>
+    <a href="/student/my-internships" class="nav-item <%= active === 'my-internships' ? 'active' : '' %>"><i class="fas fa-briefcase"></i> <%= t('sidebar.myInternships') %></a>
+    <% if (isMentor) { %>
+      <a href="/mentor/dashboard#mentor-hub" class="nav-item <%= active === 'mentor-hub' ? 'active' : '' %>"><i class="fas fa-chalkboard-teacher"></i> <%= t('nav.mentorHub') %></a>
+    <% } else { %>
+      <a href="/student/projects" class="nav-item <%= active === 'projects' ? 'active' : '' %>"><i class="fas fa-project-diagram"></i> <%= t('sidebar.projects') %></a>
+    <% } %>
+    <a href="/student/resources" class="nav-item <%= active === 'resources' ? 'active' : '' %>"><i class="fas fa-book"></i> <%= t('sidebar.resources') %></a>
+    <a href="/student/companies" class="nav-item <%= active === 'companies' ? 'active' : '' %>"><i class="fas fa-building"></i> <%= t('sidebar.companies') %></a>
+    <a href="/student/profile" class="nav-item <%= active === 'profile' ? 'active' : '' %>"><i class="fas fa-user"></i> <%= t('sidebar.profile') %></a>
+    <a href="/student/my-feedback" class="nav-item <%= active === 'my-feedback' ? 'active' : '' %>"><i class="fas fa-star"></i> <%= t('sidebar.myFeedback') %></a>
+    <a href="/logout" class="nav-item nav-logout"><i class="fas fa-sign-out-alt"></i> <%= t('sidebar.logout') %></a>
+  </nav>
+</aside>
