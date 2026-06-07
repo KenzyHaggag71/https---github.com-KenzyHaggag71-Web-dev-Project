@@ -24,3 +24,58 @@
       <a href="/logout" class="nav-item nav-logout"><i class="fas fa-sign-out-alt"></i> <%= t('nav.logout') %></a>
     </nav>
   </aside>
+ <main class="admin-main">
+    <div class="admin-topbar">
+      <h1><%= t('admin.approvals') %></h1>
+    </div>
+
+    <% if (typeof flash !== 'undefined' && flash) { %>
+      <div class="alert alert-<%= flash.type %>"><%= t(flash.message) %></div>
+    <% } %>
+
+    <div class="approval-summary">
+      <div class="approval-stat">
+        <span><%= t('admin.totalPending') %></span>
+        <strong><%= pendingCompanies.length + pendingMentors.length %></strong>
+      </div>
+      <div class="approval-stat">
+        <span><%= t('nav.companies') %></span>
+        <strong><%= pendingCompanies.length %></strong>
+      </div>
+      <div class="approval-stat">
+        <span><%= t('admin.mentors') %></span>
+        <strong><%= pendingMentors.length %></strong>
+      </div>
+    </div>
+
+    <div class="approval-grid">
+      <section class="approval-panel">
+        <div class="approval-panel-header">
+          <h2><i class="fas fa-building"></i> <%= t('nav.companies') %></h2>
+          <span class="approval-count"><%= pendingCompanies.length %></span>
+        </div>
+
+        <% if (pendingCompanies.length === 0) { %>
+          <p class="empty-msg"><%= t('No pending company approvals.') %></p>
+        <% } else { %>
+          <div class="approval-list">
+            <% pendingCompanies.forEach(function(c) { %>
+              <div class="approval-card" data-ajax-item>
+                <div class="approval-card-title">
+                  <span class="approval-avatar"><i class="fas fa-building"></i></span>
+                  <div>
+                    <strong><%= c.companyName || c.name %></strong>
+                    <small><%= t('admin.companyAccount') %></small>
+                  </div>
+                </div>
+
+                <div class="approval-meta">
+                  <span><i class="fas fa-envelope"></i> <%= c.email %></span>
+                  <span><i class="fas fa-industry"></i> <%= c.industry ? tIndustry(c.industry) : 'N/A' %></span>
+                  <% if (c.website) { %>
+                    <span><i class="fas fa-globe"></i> <a href="<%= c.website %>" target="_blank"><%= c.website %></a></span>
+                  <% } %>
+                  <% if (c.description) { %>
+                    <div class="desc-text"><%= c.description %></div>
+                  <% } %>
+                </div>
