@@ -1,1 +1,91 @@
 <%- include('../partials/head', { title: 'Resources - InternHub', extraCSS: ['/css/student.css'] }) %>
+
+<body class="student-page">
+<%- include('../partials/navbar') %>
+
+
+<div class="student-layout">
+  <%- include('../partials/sidebar', { active: 'resources' }) %>
+
+  <main class="student-main">
+    <div class="student-topbar">
+      <h1><%= t('student.careerResources') %></h1>
+    </div>
+
+    <div class="resources-grid">
+      <div class="resource-card">
+        <div class="resource-icon"><i class="fas fa-file-alt"></i></div>
+        <h3><%= t('res.resumeTitle') %></h3>
+        <ul>
+          <li><%= t('res.resume1') %></li>
+          <li><%= t('res.resume2') %></li>
+          <li><%= t('res.resume3') %></li>
+          <li><%= t('res.resume4') %></li>
+          <li><%= t('res.resume5') %></li>
+        </ul>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-icon"><i class="fas fa-comments"></i></div>
+        <h3><%= t('res.interviewTitle') %></h3>
+        <ul>
+          <li><%= t('res.interview1') %></li>
+          <li><%= t('res.interview2') %></li>
+          <li><%= t('res.interview3') %></li>
+          <li><%= t('res.interview4') %></li>
+          <li><%= t('res.interview5') %></li>
+        </ul>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-icon"><i class="fab fa-linkedin"></i></div>
+        <h3><%= t('res.linkedinTitle') %></h3>
+        <ul>
+          <li><%= t('res.linkedin1') %></li>
+          <li><%= t('res.linkedin2') %></li>
+          <li><%= t('res.linkedin3') %></li>
+          <li><%= t('res.linkedin4') %></li>
+          <li><%= t('res.linkedin5') %></li>
+        </ul>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-icon"><i class="fas fa-handshake"></i></div>
+        <h3><%= t('res.networkingTitle') %></h3>
+        <ul>
+          <li><%= t('res.networking1') %></li>
+          <li><%= t('res.networking2') %></li>
+          <li><%= t('res.networking3') %></li>
+          <li><%= t('res.networking4') %></li>
+          <li><%= t('res.networking5') %></li>
+        </ul>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-icon"><i class="fas fa-envelope-open-text"></i></div>
+        <h3><%= t('res.coverTitle') %></h3>
+        <ul>
+          <li><%= t('res.cover1') %></li>
+          <li><%= t('res.cover2') %></li>
+          <li><%= t('res.cover3') %></li>
+          <li><%= t('res.cover4') %></li>
+        </ul>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-icon"><i class="fas fa-laptop-code"></i></div>
+        <h3><%= t('res.techTitle') %></h3>
+        <ul>
+          <li><%= t('res.tech1') %></li>
+          <li><%= t('res.tech2') %></li>
+          <li><%= t('res.tech3') %></li>
+          <li><%= t('res.tech4') %></li>
+        </ul>
+      </div>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>
+</body>
+</html>
