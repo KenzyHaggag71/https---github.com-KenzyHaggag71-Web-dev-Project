@@ -1,1 +1,94 @@
-<%- include('../partials/head', { title: 'Applications — InternHub', extraCSS: ['/css/company.css'] }) %>
+<%- include('../partials/head', { title: 'My Students — InternHub', extraCSS: ['/css/company.css'] }) %>
+
+<body class="company-page">
+<%- include('../partials/navbar') %>
+
+<div class="company-layout">
+  <aside class="company-sidebar">
+    <div class="sidebar-header">
+      <i class="fas fa-building"></i>
+      <span><%= currentUser.companyName || currentUser.name %></span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/company/dashboard" class="nav-item"><i class="fas fa-tachometer-alt"></i> <%= t('sidebar.dashboard') %></a>
+      <a href="/company/post-internship" class="nav-item"><i class="fas fa-plus-circle"></i> <%= t('company.postInternship') %></a>
+      <a href="/company/manage-listings" class="nav-item"><i class="fas fa-list"></i> <%= t('company.myListings') %></a>
+      <a href="/company/applications" class="nav-item"><i class="fas fa-file-alt"></i> <%= t('company.applications') %></a>
+      <a href="/company/my-students" class="nav-item active"><i class="fas fa-user-graduate"></i> <%= t('company.myStudents') %></a>
+      <a href="/logout" class="nav-item nav-logout"><i class="fas fa-sign-out-alt"></i> <%= t('sidebar.logout') %></a>
+    </nav>
+  </aside>
+
+  <main class="company-main">
+    <div class="company-topbar">
+      <h1><%= t('company.myStudents') %> (<%= students.length %>)</h1>
+    </div>
+
+    <% if (typeof flash !== 'undefined' && flash) { %>
+      <div class="alert alert-<%= flash.type %>"><%= t(flash.message) %></div>
+    <% } %>
+
+    <% if (students.length === 0) { %>
+      <div class="panel">
+        <p class="empty-msg"><%= t('company.noStudents') %></p>
+      </div>
+    <% } else { %>
+      <% students.forEach(function(s) { %>
+        <div class="student-card">
+          <div class="student-header">
+            <div class="avatar-circle"><%= s.studentName.charAt(0).toUpperCase() %></div>
+            <div>
+              <strong><%= s.studentName %></strong>
+              <p><%= s.studentEmail %></p>
+              <p><%= s.studentUniversity %> · <%= s.studentMajor %></p>
+            </div>
+            <div>
+              <span class="type-badge"><%= s.internshipId ? t(s.internshipId.title) : 'N/A' %></span>
+            </div>
+          </div>
+
+          <% var existingFeedback = feedbackMap[s._id.toString()]; %>
+          <% if (existingFeedback) { %>
+            <div class="feedback-given">
+              <p><i class="fas fa-star" style="color:#f59e0b"></i> <strong><%= t('company.feedbackGiven') %></strong></p>
+              <div class="star-display">
+                <% for (var i = 1; i <= 5; i++) { %><i class="fas fa-star <%= i <= existingFeedback.rating ? 'filled' : '' %>"></i><% } %>
+              </div>
+              <p><%= existingFeedback.text %></p>
+            </div>
+          <% } else { %>
+            <form action="/company/give-feedback" method="POST" class="feedback-form" data-ajax="status" data-ajax-done="<%= t('company.feedbackGiven') %>">
+              <input type="hidden" name="applicationId" value="<%= s._id %>">
+              <input type="hidden" name="studentId" value="<%= s.studentId %>">
+              <input type="hidden" name="internshipId" value="<%= s.internshipId ? s.internshipId._id : '' %>">
+              <div class="form-row">
+                <div class="form-group">
+                  <label><%= t('company.rating') %></label>
+                  <select name="rating" required>
+                    <option value=""><%= t('company.select') %></option>
+                    <option value="5"><%= t('company.rating5') %></option>
+                    <option value="4"><%= t('company.rating4') %></option>
+                    <option value="3"><%= t('company.rating3') %></option>
+                    <option value="2"><%= t('company.rating2') %></option>
+                    <option value="1"><%= t('company.rating1') %></option>
+                  </select>
+                </div>
+                <div class="form-group" style="flex:2">
+                  <label><%= t('mentor.feedback') %></label>
+                  <input type="text" name="text" placeholder="<%= t('company.feedbackPh') %>" required>
+                </div>
+                <div class="form-group" style="display:flex;align-items:flex-end">
+                  <button type="submit" class="btn-primary"><%= t('company.sendFeedback') %></button>
+                </div>
+              </div>
+            </form>
+          <% } %>
+        </div>
+      <% }) %>
+    <% } %>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>
+</body>
+</html>
