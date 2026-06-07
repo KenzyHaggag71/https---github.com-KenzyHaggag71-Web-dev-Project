@@ -1,1 +1,91 @@
 <%- include('../partials/head', { title: 'My Profile — InternHub', extraCSS: ['/css/student.css'] }) %>
+
+<body class="student-page">
+<%- include('../partials/navbar') %>
+
+<div class="student-layout">
+  <%- include('../partials/sidebar', { active: 'profile' }) %>
+
+  <main class="student-main">
+    <div class="student-topbar">
+      <h1><%= t('student.myProfile') %></h1>
+    </div>
+
+    <% if (typeof flash !== 'undefined' && flash) { %>
+      <div class="alert alert-<%= flash.type %>"><%= t(flash.message) %></div>
+    <% } %>
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="alert alert-error"><%= t(error) %></div>
+    <% } %>
+
+    <div class="panel">
+      <form action="/student/update-profile" method="POST" class="profile-form" enctype="multipart/form-data">
+      <div class="profile-avatar-section">
+  <% if (currentUser.profile && currentUser.profile.avatar) { %>
+    <img class="avatar-large avatar-image" src="/uploads/<%= currentUser.profile.avatar %>" alt="Profile picture">
+  <% } else { %>
+    <div class="avatar-large">
+      <%= (currentUser.profile && currentUser.profile.fullName ? currentUser.profile.fullName : currentUser.name).charAt(0).toUpperCase() %>
+    </div>
+  <% } %>
+
+  <div class="avatar-upload">
+    <label for="avatar"><%= t("profile.picture") %></label>
+    <input id="avatar" type="file" name="avatar" accept="image/*">
+    <small><%= t("profile.picHint") %></small>
+  </div>
+</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label><%= t("auth.fullName") %></label>
+            <input type="text" name="fullName" value="<%= currentUser.profile && currentUser.profile.fullName ? currentUser.profile.fullName : currentUser.name %>">
+          </div>
+          <div class="form-group">
+            <label><%= t("common.email") %></label>
+            <input type="email" value="<%= currentUser.email %>" disabled class="disabled-input">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label><%= t("profile.university") %></label>
+            <input type="text" name="university" value="<%= currentUser.profile && currentUser.profile.university ? currentUser.profile.university : '' %>">
+          </div>
+          <div class="form-group">
+            <label><%= t("profile.major") %></label>
+            <input type="text" name="major" value="<%= currentUser.profile && currentUser.profile.major ? currentUser.profile.major : '' %>">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label><%= t("profile.year") %></label>
+            <select name="year">
+              <% for (var y = 1; y <= 5; y++) { %>
+                <option value="<%= y %>" <%= (currentUser.year === y) ? 'selected' : '' %>><%= y %></option>
+              <% } %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label><%= t("profile.skills") %></label>
+            <input type="text" name="skills" value="<%= currentUser.profile && currentUser.profile.skills ? currentUser.profile.skills.join(', ') : '' %>" placeholder="Python, React, SQL">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><%= t("profile.bio") %></label>
+          <textarea name="bio" rows="3" placeholder="<%= t('profile.bioPlaceholder') %>"><%= currentUser.profile && currentUser.profile.bio ? currentUser.profile.bio : '' %></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary"><%= t('student.saveChanges') %></button>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>
+</body>
+</html>
