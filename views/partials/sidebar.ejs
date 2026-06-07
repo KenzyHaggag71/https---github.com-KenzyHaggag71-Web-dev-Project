@@ -1,0 +1,5 @@
+<%
+  var active = (typeof active !== 'undefined') ? active : '';
+  var isMentor = currentUser && currentUser.role === 'mentor';
+  var dashHref = isMentor ? '/mentor/dashboard' : '/student/dashboard';
+%>
