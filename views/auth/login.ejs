@@ -23,3 +23,44 @@
         <%= t(error) %>
       </div>
     <% } %>
+
+    <form class="auth-form" method="POST" action="/login" novalidate>
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input
+          type="text"
+          name="email"
+          placeholder="<%= t('auth.emailPlaceholder') %>"
+          value="<%= formData.email || '' %>"
+          required>
+      </div>
+
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <div class="password-wrapper">
+          <input type="password" id="loginPassword" name="password" placeholder="<%= t('auth.passwordPlaceholder') %>" required>
+          <button type="button" class="password-toggle" id="passwordToggle" tabindex="-1">
+            <i class="far fa-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary btn-full"><%= t('auth.signIn') %></button>
+
+      <p class="auth-switch" style="margin-top:10px;">
+        <a href="/forgot-password"><%= t('auth.forgotPassword') %></a>
+      </p>
+
+      <p class="auth-switch">
+        <%= t('auth.noAccount') %>
+        <a href="/signup"><%= t('auth.createAccount') %></a>
+      </p>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
+
+<script src="/js/auth.js"></script>
+</body>
+</html>
