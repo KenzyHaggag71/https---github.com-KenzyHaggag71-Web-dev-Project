@@ -1,1 +1,44 @@
 <%- include('../partials/head', { title: 'Companies — InternHub', extraCSS: ['/css/student.css'] }) %>
+
+<body class="student-page">
+<%- include('../partials/navbar') %>
+
+<div class="student-layout">
+  <%- include('../partials/sidebar', { active: 'companies' }) %>
+
+  <main class="student-main">
+    <div class="student-topbar">
+      <h1><%= t('companies.partnerCompanies') %></h1>
+    </div>
+
+    <div class="companies-grid">
+      <% if (companies.length === 0) { %>
+        <div class="panel"><p class="empty-msg"><%= t('companies.none') %></p></div>
+      <% } %>
+      <% companies.forEach(function(c) { %>
+        <div class="company-card">
+          <div class="company-logo"><i class="fas fa-building"></i></div>
+          <div class="company-body">
+            <h3><%= c.companyName || c.name %></h3>
+            <p class="company-industry"><%= tIndustry(c.industry) %></p>
+            <% if (typeof c.internshipsCount !== 'undefined') { %>
+              <p class="company-openings"><%= c.internshipsCount === 1 ? t('companies.activeInternships', { count: c.internshipsCount }) : t('companies.activeInternshipsPlural', { count: c.internshipsCount }) %></p>
+            <% } %>
+            <p class="company-desc"><%= c.description || '' %></p>
+            <% if (c.website) { %>
+              <a href="<%= c.website %>" target="_blank" class="btn-sm btn-outline"><i class="fas fa-external-link-alt"></i> <%= t('companies.website') %></a>
+            <% } %>
+            <a href="/student/explore?company=<%= encodeURIComponent(c.companyName || c.name) %>" class="btn-sm btn-primary"><%= t('companies.viewInternships') %></a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+
+    <%- include('../partials/pagination', { pagination: pagination, baseUrl: baseUrl, baseQuery: baseQuery }) %>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>
+</body>
+</html>
+
