@@ -1,1 +1,25 @@
 <%- include('../partials/head', { title: title, extraCSS: ['/css/auth.css'] }) %>
+
+<body>
+<%- include('../partials/navbar') %>
+
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h2><%= t('auth.welcomeBack') %></h2>
+      <p><%= t('auth.signinSubtitle') %></p>
+    </div>
+
+    <% if (typeof success !== 'undefined' && success) { %>
+      <div class="auth-success">
+        <i class="fas fa-check-circle"></i>
+        <%= t(success) %>
+      </div>
+    <% } %>
+
+    <% if (error) { %>
+      <div class="auth-error">
+        <i class="fas fa-exclamation-circle"></i>
+        <%= t(error) %>
+      </div>
+    <% } %>
