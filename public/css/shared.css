@@ -629,9 +629,6 @@ h1, h2, h3, h4, h5, h6
   }
 }
 
-/* ============================================================
-   NAVBAR — Tesla-style: SOLID white, 3-column centered
-   ============================================================ */
 
 .navbar
 {
@@ -805,7 +802,7 @@ h1, h2, h3, h4, h5, h6
   background: transparent;
 }
 
-/* ----- Mega menu: featured row (4 photo cards) ----- */
+
 
 .dropdown-featured-row
 {
@@ -945,7 +942,7 @@ h1, h2, h3, h4, h5, h6
   margin: 24px 0 20px;
 }
 
-/* ----- Text columns (used in mega menu AND simple dropdowns) ----- */
+
 
 .dropdown-columns
 {
@@ -1053,9 +1050,6 @@ h1, h2, h3, h4, h5, h6
   background: rgba(220,38,38,0.08);
 }
 
-/* ============================================================
-   HERO — Tesla-style cinematic with video background
-   ============================================================ */
 
 .hero-section
 {
@@ -1070,8 +1064,6 @@ h1, h2, h3, h4, h5, h6
   padding: 0;
 }
 
-/* Animated fallback image — always visible, shows behind/around the video.
-   If the video fails or never loads, this gives the hero a cinematic feel. */
 .hero-bg-fallback
 {
   position: absolute;
@@ -1123,9 +1115,7 @@ h1, h2, h3, h4, h5, h6
   padding-bottom: 2rem;
 }
 
-/* ============================================================
-   FEATURED COMPANY VIDEO SPOTLIGHT — Tesla-style alternating section
-   ============================================================ */
+
 
 .spotlight-section
 {
