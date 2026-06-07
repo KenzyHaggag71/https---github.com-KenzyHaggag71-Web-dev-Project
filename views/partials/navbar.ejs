@@ -1,1 +1,195 @@
 <div class="navbar">
+  <div class="nav-container">
+    <a href="/" class="logo" id="logoLink">
+      <i class="fas fa-briefcase"></i>
+      InternHub
+    </a>
+
+    <div class="nav-links nav-links-center">
+      <a href="/"><%= t('nav.home') %></a>
+
+      <% if (!currentUser || currentUser.role === 'user' || currentUser.role === 'mentor') { %>
+        <div class="nav-item">
+          <a href="/student/explore"><%= t('nav.findInternships') %></a>
+          <div class="nav-dropdown nav-dropdown-mega">
+            <div class="dropdown-featured-row">
+              <div class="dropdown-featured-heading">
+                <h4><%= t('nav.featuredPositions') %></h4>
+                <span class="dropdown-featured-subtitle"><%= t('nav.featuredSubtitle') %></span>
+              </div>
+              <div class="dropdown-featured-grid">
+                <div class="dropdown-photo-card ddc-bg-software">
+                  <span class="dropdown-photo-badge"><%= t('badge.hot') %></span>
+                  <div class="dropdown-photo-overlay">
+                    <h5><%= t('nav.fcSoftware') %></h5>
+                    <p>Vodafone Egypt &middot; Smart Village</p>
+                  </div>
+                </div>
+                <div class="dropdown-photo-card ddc-bg-banking">
+                  <span class="dropdown-photo-badge"><%= t('badge.featured') %></span>
+                  <div class="dropdown-photo-overlay">
+                    <h5><%= t('nav.fcFinance') %></h5>
+                    <p>CIB &middot; Downtown Cairo</p>
+                  </div>
+                </div>
+                <div class="dropdown-photo-card ddc-bg-marketing">
+                  <span class="dropdown-photo-badge"><%= t('badge.new') %></span>
+                  <div class="dropdown-photo-overlay">
+                    <h5><%= t('nav.fcMarketing') %></h5>
+                    <p>Jumia Egypt &middot; Remote</p>
+                  </div>
+                </div>
+                <div class="dropdown-photo-card ddc-bg-ai">
+                  <span class="dropdown-photo-badge"><%= t('badge.trending') %></span>
+                  <div class="dropdown-photo-overlay">
+                    <h5><%= t('nav.fcAi') %></h5>
+                    <p>Huawei Egypt R&amp;D &middot; Smart Village</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="dropdown-divider"></div>
+
+            <div class="dropdown-columns">
+              <div class="dropdown-column">
+                <h4><%= t('nav.byIndustry') %></h4>
+                <a href="/student/explore?category=Computer%20Science" class="industry-link"><i class="fas fa-laptop-code"></i><%= t('nav.technology') %></a>
+                <a href="/student/explore?category=Engineering" class="industry-link"><i class="fas fa-cogs"></i><%= t('nav.engineering') %></a>
+                <a href="/student/explore?category=Business" class="industry-link"><i class="fas fa-chart-pie"></i><%= t('nav.businessFinance') %></a>
+                <a href="/student/explore?category=Law" class="industry-link"><i class="fas fa-gavel"></i><%= t('nav.law') %></a>
+                <a href="/student/explore?category=Pharmacy" class="industry-link"><i class="fas fa-prescription-bottle"></i><%= t('nav.pharmacy') %></a>
+                <a href="/student/explore?category=Architecture" class="industry-link"><i class="fas fa-drafting-compass"></i><%= t('nav.architecture') %></a>
+              </div>
+              <div class="dropdown-column">
+                <h4><%= t('nav.byType') %></h4>
+                <a href="/student/explore" class="type-link"><i class="fas fa-sun"></i><%= t('type.summer2026') %></a>
+                <a href="/student/explore" class="type-link"><i class="fas fa-laptop-house"></i><%= t('explore.remote') %></a>
+                <a href="/student/explore" class="type-link"><i class="fas fa-dollar-sign"></i><%= t('type.paid') %></a>
+                <a href="/student/explore" class="type-link"><i class="fas fa-clock"></i><%= t('type.partTime') %></a>
+                <a href="/student/explore" class="type-link"><i class="fas fa-briefcase"></i><%= t('type.fullTime') %></a>
+                <a href="/student/explore" class="type-link"><i class="fas fa-graduation-cap"></i><%= t('type.forCredit') %></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <a href="/student/companies"><%= t('nav.companies') %></a>
+      <% } %>
+
+      <% if (currentUser && currentUser.role === 'user') { %>
+        <div class="nav-item">
+          <a href="/student/dashboard"><%= t('nav.dashboard') %></a>
+          <div class="nav-dropdown">
+            <div class="dropdown-columns">
+              <div class="dropdown-column">
+                <h4><%= t('nav.myAccount') %></h4>
+                <a href="/student/my-internships"><i class="fas fa-briefcase"></i><%= t('nav.myInternships') %></a>
+                <a href="/student/my-feedback"><i class="fas fa-comments"></i><%= t('nav.myFeedback') %></a>
+                <a href="/student/profile"><i class="fas fa-user-edit"></i><%= t('nav.editProfile') %></a>
+              </div>
+              <div class="dropdown-column">
+                <h4><%= t('nav.resources') %></h4>
+                <a href="/student/resources"><i class="fas fa-lightbulb"></i><%= t('nav.careerAdvice') %></a>
+                <a href="/student/resources"><i class="fas fa-handshake"></i><%= t('nav.interviewPrep') %></a>
+                <a href="/student/resources"><i class="fas fa-chart-line"></i><%= t('nav.salaryGuide') %></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href="/student/projects"><%= t('nav.projects') %></a>
+      <% } %>
+
+      <% if (currentUser && currentUser.role === 'mentor') { %>
+        <div class="nav-item">
+          <a href="/mentor/dashboard"><%= t('nav.dashboard') %></a>
+          <div class="nav-dropdown">
+            <div class="dropdown-columns">
+              <div class="dropdown-column">
+                <h4><%= t('nav.myAccount') %></h4>
+                <a href="/student/my-internships"><i class="fas fa-briefcase"></i><%= t('nav.myInternships') %></a>
+                <a href="/student/my-feedback"><i class="fas fa-comments"></i><%= t('nav.myFeedback') %></a>
+                <a href="/student/profile"><i class="fas fa-user-edit"></i><%= t('nav.editProfile') %></a>
+              </div>
+              <div class="dropdown-column">
+                <h4><%= t('nav.resources') %></h4>
+                <a href="/student/resources"><i class="fas fa-lightbulb"></i><%= t('nav.careerAdvice') %></a>
+                <a href="/student/resources"><i class="fas fa-handshake"></i><%= t('nav.interviewPrep') %></a>
+                <a href="/student/resources"><i class="fas fa-chart-line"></i><%= t('nav.salaryGuide') %></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-item">
+        <a href="/mentor/dashboard"><%= t('nav.mentorHub') %></a>
+        <div class="nav-dropdown nav-dropdown-compact">
+            <div class="dropdown-columns">
+              <div class="dropdown-column">
+                <h4><%= t('nav.mentorTools') %></h4>
+                <a href="/mentor/dashboard#assign-project"><i class="fas fa-plus-circle"></i><%= t('nav.assignProject') %></a>
+                <a href="/mentor/dashboard#my-projects"><i class="fas fa-tasks"></i><%= t('nav.myProjects') %></a>
+                <a href="/mentor/dashboard#pending-submissions"><i class="fas fa-inbox"></i><%= t('nav.pendingSubmissions') %></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% } %>
+
+      <% if (currentUser && currentUser.role === 'admin') { %>
+        <a href="/admin/dashboard"><%= t('nav.adminHub') %></a>
+      <% } %>
+
+      <% if (currentUser && currentUser.role === 'company') { %>
+        <a href="/company/dashboard"><%= t('nav.companyHub') %></a>
+      <% } %>
+    </div>
+
+    <div class="nav-actions">
+      <div class="lang-switcher" id="langSwitcher">
+        <button type="button" class="lang-trigger" aria-label="<%= t('nav.language') %>">
+          <i class="fas fa-globe"></i>
+          <span><%= lang.toUpperCase() %></span>
+          <i class="fas fa-chevron-down lang-caret"></i>
+        </button>
+        <div class="lang-menu" role="menu">
+          <% availableLocales.forEach(function(loc) { %>
+            <a href="/lang/<%= loc.code %>" class="lang-option <%= loc.code === lang ? 'active' : '' %>" role="menuitem">
+              <span><%= loc.name %></span>
+              <% if (loc.code === lang) { %><i class="fas fa-check"></i><% } %>
+            </a>
+          <% }) %>
+        </div>
+      </div>
+
+      <div class="help-trigger" id="navHelpTrigger" aria-label="<%= t('nav.needHelp') %>">
+        <i class="fas fa-question"></i>
+        <div class="help-tooltip" role="tooltip">
+          <div class="tt-title"><%= t('nav.needHelp') %></div>
+          <div class="tt-text"><%= t('nav.helpText') %></div>
+          <a class="tt-contact" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=support.internhub@gmail.com&amp;su=InternHub%20Support%20Request&amp;body=Hi%20InternHub%20team%2C%0A%0A" target="_blank" rel="noopener noreferrer">
+            <i class="fas fa-envelope"></i>
+            support.internhub@gmail.com
+          </a>
+          <div class="tt-hours"><%= t('nav.helpHours') %></div>
+        </div>
+      </div>
+
+      <% if (currentUser) { %>
+        <span class="nav-user-badge">
+          <i class="fas fa-user-circle"></i>
+          <%= currentUser.name %>
+        </span>
+        <a href="/logout" class="btn-outline nav-logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          <%= t('nav.logout') %>
+        </a>
+      <% } else { %>
+        <a href="/login" class="btn-outline">
+          <i class="far fa-user"></i>
+          <%= t('nav.signIn') %>
+        </a>
+      <% } %>
+    </div>
+  </div>
+</div>
