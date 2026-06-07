@@ -1,1 +1,99 @@
 <%- include('../partials/head', { title: 'My Dashboard — InternHub', extraCSS: ['/css/student.css'] }) %>
+
+<body class="student-page">
+<%- include('../partials/navbar') %>
+
+<div class="student-layout">
+  <%- include('../partials/sidebar', { active: 'dashboard' }) %>
+
+  <main class="student-main">
+    <div class="student-topbar">
+      <h1><%= t('student.welcomeBack', { name: (currentUser.profile && currentUser.profile.fullName ? currentUser.profile.fullName : currentUser.name).split(' ')[0] }) %></h1>
+    </div>
+
+    <% if (typeof flash !== 'undefined' && flash) { %>
+      <div class="alert alert-<%= flash.type %>"><%= t(flash.message) %></div>
+    <% } %>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon purple"><i class="fas fa-briefcase"></i></div>
+        <div class="stat-info">
+          <h3><%= stats.savedInternships %></h3>
+          <p><%= t('student.savedInternships') %></p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon blue"><i class="fas fa-file-alt"></i></div>
+        <div class="stat-info">
+          <h3><%= stats.applications %></h3>
+          <p><%= t('mentor.applications') %></p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green"><i class="fas fa-project-diagram"></i></div>
+        <div class="stat-info">
+          <h3><%= stats.projects %></h3>
+          <p><%= t('student.assignedProjects') %></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Saved Internships -->
+    <div class="panel">
+      <div class="panel-header">
+        <h2><i class="fas fa-bookmark"></i> <%= t('student.savedInternships') %></h2>
+        <a href="/student/explore" class="panel-link"><%= t('mentor.exploreMore') %> →</a>
+      </div>
+      <% if (savedInternships.length === 0) { %>
+        <p class="empty-msg"><%= t('student.noSaved') %> <a href="/student/explore"><%= t('student.browseInternships') %></a></p>
+      <% } else { %>
+        <div class="internship-list">
+          <% savedInternships.forEach(function(intern) { %>
+            <div class="internship-item" data-ajax-item>
+              <div class="intern-icon"><i class="<%= intern.icon || 'fas fa-briefcase' %>"></i></div>
+              <div class="intern-info">
+                <strong><%= t(intern.title) %></strong>
+                <p><%= intern.company %> · <%= intern.location %></p>
+                <p><%= intern.category %> · <%= intern.workMode %> · <%= intern.stipend || intern.type %></p>
+              </div>
+              <div class="intern-actions">
+                <a href="/student/internship/<%= intern._id %>" class="btn-sm btn-outline"><%= t('student.view') %></a>
+                <form action="/student/unsave-internship/<%= intern._id %>" method="POST" style="display:inline" data-ajax="remove">
+                  <button class="btn-sm btn-delete" title="Remove"><i class="fas fa-times"></i></button>
+                </form>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Recent Applications -->
+    <div class="panel">
+      <div class="panel-header">
+        <h2><i class="fas fa-file-alt"></i> <%= t('student.recentApplications') %></h2>
+        <a href="/student/my-internships" class="panel-link">View All →</a>
+      </div>
+      <% if (recentApplications.length === 0) { %>
+        <p class="empty-msg"><%= t('student.noApplications') %></p>
+      <% } else { %>
+        <% recentApplications.forEach(function(app) { %>
+          <div class="listing-summary">
+            <div>
+              <strong><%= app.internshipId ? app.internshipId.title : 'N/A' %></strong>
+              <p><%= app.internshipId ? app.internshipId.company : '' %> · <%= new Date(app.createdAt).toLocaleDateString() %></p>
+            </div>
+            <span class="status-badge status-<%= app.status %>"><%= app.status %></span>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>
+</body>
+</html>
+
+
