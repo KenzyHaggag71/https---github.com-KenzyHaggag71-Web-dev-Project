@@ -1,1 +1,263 @@
 <%- include('../partials/head', { title: title, extraCSS: ['/css/auth.css'] }) %>
+
+<body>
+
+<%- include('../partials/navbar') %>
+
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h2><%= t('auth.createAccount') %></h2>
+      <p><%= t('auth.joinToday') %></p>
+    </div>
+
+    <% if (error) { %>
+      <div class="auth-error">
+        <i class="fas fa-exclamation-circle"></i>
+        <%= t(error) %>
+      </div>
+    <% } %>
+
+    <% if (typeof success !== 'undefined' && success) { %>
+      <div class="auth-success">
+        <i class="fas fa-check-circle"></i>
+        <%= t(success) %>
+      </div>
+    <% } %>
+
+    <div class="signup-role-tabs">
+      <div class="signup-role-tab <%= activeRole === 'student' ? 'active' : '' %>" data-role="student">
+        <i class="fas fa-user-graduate"></i>
+        <%= t('auth.student') %>
+      </div>
+      <div class="signup-role-tab <%= activeRole === 'mentor' ? 'active' : '' %>" data-role="mentor">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <%= t('auth.mentor') %>
+      </div>
+      <div class="signup-role-tab <%= activeRole === 'company' ? 'active' : '' %>" data-role="company">
+        <i class="fas fa-building"></i>
+        <%= t('auth.company') %>
+      </div>
+    </div>
+
+    <!-- Student Form -->
+    <form id="studentForm" novalidate
+          class="role-form <%= activeRole !== 'student' ? 'hidden' : '' %>"
+          method="POST"
+          action="/signup">
+      <input type="hidden" name="signupRole" value="student">
+
+      <p class="form-hint">
+        <i class="fas fa-info-circle"></i>
+        <%= t('auth.eduHint') %>
+      </p>
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" name="name" placeholder="<%= t('auth.fullName') %>"
+               value="<%= activeRole === 'student' ? (formData.name || '') : '' %>" required>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="text" id="studentEmail" name="email" placeholder="<%= t('auth.universityEmail') %>"
+               value="<%= activeRole === 'student' ? (formData.email || '') : '' %>" required>
+        <span class="email-validation"></span>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-university"></i>
+        <input type="text" name="university" placeholder="<%= t('auth.universityName') %>"
+               value="<%= activeRole === 'student' ? (formData.university || '') : '' %>" required>
+      </div>
+      <div class="input-row">
+        <div class="input-group half">
+          <i class="fas fa-graduation-cap"></i>
+          <select name="major" class="form-select">
+            <option value=""><%= t('auth.selectMajor') %></option>
+            <% var majors = ['Computer Science','Engineering','Business','Law','Pharmacy','Architecture','Mass Communication','Arts & Design','Science']; %>
+            <% majors.forEach(function(m) { %>
+              <option value="<%= m %>" <%= (activeRole === 'student' && formData.major === m) ? 'selected' : '' %>><%= tEnum('category', m) %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="input-group half">
+          <i class="fas fa-calendar"></i>
+          <select name="year" class="form-select">
+            <option value=""><%= t('auth.yearOfStudy') %></option>
+            <% for (var y = 1; y <= 7; y++) { %>
+              <option value="<%= y %>" <%= (activeRole === 'student' && String(formData.year) === String(y)) ? 'selected' : '' %>><%= t('auth.year') %> <%= y %></option>
+            <% } %>
+          </select>
+        </div>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <div class="password-wrapper">
+          <input type="password" id="studentPassword" name="password" placeholder="<%= t('auth.passwordMin') %>" minlength="6" pattern="(?=.*[A-Z]).{6,}" title="At least 6 characters and one capital letter" required>
+          <button type="button" class="password-toggle" data-target="studentPassword" tabindex="-1">
+            <i class="far fa-eye"></i>
+          </button>
+        </div>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <div class="password-wrapper">
+          <input type="password" id="studentConfirmPassword" name="confirmPassword" placeholder="<%= t('auth.confirmPassword') %>" required>
+          <button type="button" class="password-toggle" data-target="studentConfirmPassword" tabindex="-1">
+            <i class="far fa-eye"></i>
+          </button>
+        </div>
+      </div>
+      <div class="terms-checkbox">
+        <input type="checkbox" id="studentTerms" name="terms">
+        <label for="studentTerms"><%= t('auth.studentTerms') %></label>
+      </div>
+      <button type="submit" class="btn-primary"><%= t('auth.createStudent') %></button>
+    </form>
+
+    <!-- Mentor Form -->
+    <form id="mentorForm" novalidate
+          class="role-form <%= activeRole !== 'mentor' ? 'hidden' : '' %>"
+          method="POST"
+          action="/signup">
+      <input type="hidden" name="signupRole" value="mentor">
+
+      <p class="form-hint">
+        <i class="fas fa-info-circle"></i>
+        <%= t('auth.mentorHint') %>
+      </p>
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" name="name" placeholder="<%= t('auth.fullName') %>"
+               value="<%= activeRole === 'mentor' ? (formData.name || '') : '' %>" required>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="text" id="mentorEmail" name="email" placeholder="<%= t('auth.universityEmail') %>"
+               value="<%= activeRole === 'mentor' ? (formData.email || '') : '' %>" required>
+        <span class="email-validation"></span>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-university"></i>
+        <input type="text" name="university" placeholder="<%= t('auth.universityName') %>"
+               value="<%= activeRole === 'mentor' ? (formData.university || '') : '' %>" required>
+      </div>
+      <div class="input-row">
+        <div class="input-group half">
+          <i class="fas fa-graduation-cap"></i>
+          <select name="major" class="form-select">
+            <option value=""><%= t('auth.selectMajor') %></option>
+            <% ['Computer Science','Engineering','Business','Law','Pharmacy','Architecture','Mass Communication','Arts & Design','Science'].forEach(function(m) { %>
+              <option value="<%= m %>" <%= (activeRole === 'mentor' && formData.major === m) ? 'selected' : '' %>><%= tEnum('category', m) %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="input-group half">
+          <i class="fas fa-calendar"></i>
+          <select name="year" class="form-select">
+            <option value=""><%= t('auth.yearOfStudy') %></option>
+            <% for (var y = 2; y <= 7; y++) { %>
+              <option value="<%= y %>" <%= (activeRole === 'mentor' && String(formData.year) === String(y)) ? 'selected' : '' %>><%= t('auth.year') %> <%= y %></option>
+            <% } %>
+          </select>
+        </div>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <div class="password-wrapper">
+          <input type="password" id="mentorPassword" name="password" placeholder="<%= t('auth.passwordMin') %>" minlength="6" pattern="(?=.*[A-Z]).{6,}" title="At least 6 characters and one capital letter" required>
+          <button type="button" class="password-toggle" data-target="mentorPassword" tabindex="-1">
+            <i class="far fa-eye"></i>
+          </button>
+        </div>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <div class="password-wrapper">
+          <input type="password" id="mentorConfirmPassword" name="confirmPassword" placeholder="<%= t('auth.confirmPassword') %>" required>
+          <button type="button" class="password-toggle" data-target="mentorConfirmPassword" tabindex="-1">
+            <i class="far fa-eye"></i>
+          </button>
+        </div>
+      </div>
+      <div class="terms-checkbox">
+        <input type="checkbox" id="mentorTerms" name="terms">
+        <label for="mentorTerms"><%= t('auth.mentorTerms') %></label>
+      </div>
+      <button type="submit" class="btn-primary"><%= t('auth.applyMentor') %></button>
+    </form>
+
+    <!-- Company Form -->
+    <form id="companyForm" novalidate
+          class="role-form <%= activeRole !== 'company' ? 'hidden' : '' %>"
+          method="POST"
+          action="/signup">
+      <input type="hidden" name="signupRole" value="company">
+
+      <p class="form-hint">
+        <i class="fas fa-info-circle"></i>
+        <%= t('auth.companyHint') %>
+      </p>
+      <div class="input-group">
+        <i class="fas fa-building"></i>
+        <input type="text" name="companyName" placeholder="<%= t('auth.companyName') %>"
+               value="<%= activeRole === 'company' ? (formData.companyName || '') : '' %>" required>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="text" name="email" placeholder="<%= t('auth.businessEmail') %>"
+               value="<%= activeRole === 'company' ? (formData.email || '') : '' %>" required>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-industry"></i>
+        <select name="industry" class="form-select">
+          <option value=""><%= t('auth.selectIndustry') %></option>
+          <% ['Technology','Finance','Healthcare','Engineering','Law','Media','Retail','Education'].forEach(function(ind) { %>
+            <option value="<%= ind %>" <%= (activeRole === 'company' && formData.industry === ind) ? 'selected' : '' %>><%= tEnum('industry', ind) %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-globe"></i>
+        <input type="text" name="website" placeholder="<%= t('auth.companyWebsite') %>"
+               value="<%= activeRole === 'company' ? (formData.website || '') : '' %>">
+      </div>
+      <div class="input-group">
+        <i class="fas fa-align-left"></i>
+        <textarea name="description" placeholder="<%= t('auth.companyDescription') %>" rows="3"><%= activeRole === 'company' ? (formData.description || '') : '' %></textarea>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <div class="password-wrapper">
+          <input type="password" id="companyPassword" name="password" placeholder="<%= t('auth.passwordMin') %>" minlength="6" pattern="(?=.*[A-Z]).{6,}" title="At least 6 characters and one capital letter" required>
+          <button type="button" class="password-toggle" data-target="companyPassword" tabindex="-1">
+            <i class="far fa-eye"></i>
+          </button>
+        </div>
+      </div>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <div class="password-wrapper">
+          <input type="password" id="companyConfirmPassword" name="confirmPassword" placeholder="<%= t('auth.confirmPassword') %>" required>
+          <button type="button" class="password-toggle" data-target="companyConfirmPassword" tabindex="-1">
+            <i class="far fa-eye"></i>
+          </button>
+        </div>
+      </div>
+      <div class="terms-checkbox">
+        <input type="checkbox" id="companyTerms" name="terms">
+        <label for="companyTerms"><%= t('auth.companyTerms') %></label>
+      </div>
+      <button type="submit" class="btn-primary"><%= t('auth.registerCompany') %></button>
+    </form>
+
+    <p class="auth-switch">
+      <%= t('auth.haveAccount') %>
+      <a href="/login"><%= t('auth.signIn') %></a>
+    </p>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
+
+<script src="/js/auth.js"></script>
+</body>
+</html>
