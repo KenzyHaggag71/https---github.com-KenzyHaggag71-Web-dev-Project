@@ -1,1 +1,194 @@
-<%- include('../partials/head', { title: 'Applications — InternHub', extraCSS: ['/css/company.css'] }) %>
+<%- include('../partials/head', { title: (editing ? 'Edit' : 'Post') + ' Internship — InternHub', extraCSS: ['/css/company.css'] }) %>
+
+<body class="company-page">
+<%- include('../partials/navbar') %>
+
+<div class="company-layout">
+  <aside class="company-sidebar">
+    <div class="sidebar-header">
+      <i class="fas fa-building"></i>
+      <span><%= currentUser.companyName || currentUser.name %></span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/company/dashboard" class="nav-item"><i class="fas fa-tachometer-alt"></i> <%= t('sidebar.dashboard') %></a>
+      <a href="/company/post-internship" class="nav-item active"><i class="fas fa-plus-circle"></i> <%= t('company.postInternship') %></a>
+      <a href="/company/manage-listings" class="nav-item"><i class="fas fa-list"></i> <%= t('company.myListings') %></a>
+      <a href="/company/applications" class="nav-item"><i class="fas fa-file-alt"></i> <%= t('company.applications') %></a>
+      <a href="/company/my-students" class="nav-item"><i class="fas fa-user-graduate"></i> <%= t('company.myStudents') %></a>
+      <a href="/logout" class="nav-item nav-logout"><i class="fas fa-sign-out-alt"></i> <%= t('sidebar.logout') %></a>
+    </nav>
+  </aside>
+
+  <main class="company-main">
+    <div class="company-topbar">
+      <h1><%= editing ? t('company.editTitle') : t('company.postTitle') %></h1>
+    </div>
+
+    <% if (typeof flash !== 'undefined' && flash) { %>
+      <div class="alert alert-<%= flash.type %>"><%= t(flash.message) %></div>
+    <% } %>
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="alert alert-error"><%= t(error) %></div>
+    <% } %>
+
+    <div class="panel">
+      <form action="<%= editing ? '/company/update-internship/' + listing._id : '/company/post-internship' %>" method="POST" class="company-form" novalidate>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label><%= t('company.internshipTitle') %></label>
+            <input type="text" name="title" value="<%= formData.title || '' %>" placeholder="<%= t('company.phTitle') %>" minlength="3" maxlength="120" required>
+          </div>
+          <div class="form-group">
+            <label><%= t('company.category') %></label>
+            <select name="category" required>
+              <option value=""><%= t('company.selectCategory') %></option>
+              <% ['Computer Science','Engineering','Business','Law','Pharmacy','Architecture','Mass Communication','Arts & Design','Science'].forEach(function(cat) { %>
+                <option value="<%= cat %>" <%= (formData.category === cat) ? 'selected' : '' %>><%= tEnum('category', cat) %></option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label><%= t('company.location') %></label>
+            <input type="text" name="location" value="<%= formData.location || '' %>" placeholder="<%= t('company.phLocation') %>">
+          </div>
+          <div class="form-group">
+            <label><%= t('company.durationWeeks') %></label>
+            <input type="number" name="duration" value="<%= formData.duration ? (parseInt(formData.duration, 10) || '') : '' %>" min="1" max="104" step="1" placeholder="<%= t('company.phWeeks') %>" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group map-picker-group">
+            <label><%= t('company.mapLabel') %></label>
+            <p class="form-hint"><%= t('company.mapHint') %></p>
+            <div id="pickMap" class="map-picker"></div>
+            <input type="hidden" name="lat" id="latInput" value="<%= (formData.lat !== undefined && formData.lat !== null) ? formData.lat : '' %>">
+            <input type="hidden" name="lng" id="lngInput" value="<%= (formData.lng !== undefined && formData.lng !== null) ? formData.lng : '' %>">
+            <div class="map-picker-bar">
+              <span id="pickCoords" class="map-coords"><%= (formData.lat !== undefined && formData.lat !== null && formData.lng !== undefined && formData.lng !== null) ? (formData.lat + ', ' + formData.lng) : t('company.mapNone') %></span>
+              <button type="button" id="clearPin" class="btn-sm btn-outline" data-none="<%= t('company.mapNone') %>"><%= t('company.mapClear') %></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label><%= t('company.workMode') %></label>
+            <select name="workMode" required>
+              <% ['Remote','Hybrid','On-site'].forEach(function(wm) { %>
+                <option value="<%= wm %>" <%= (formData.workMode === wm) ? 'selected' : '' %>><%= tEnum('workMode', wm) %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label><%= t('company.type') %></label>
+            <select name="type" id="typeSelect" required>
+              <% ['Paid','Unpaid','Volunteer'].forEach(function(t) { %>
+                <option value="<%= t %>" <%= (formData.type === t) ? 'selected' : '' %>><%= tEnum('type', t) %></option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row" id="stipendRow">
+          <div class="form-group">
+            <label><%= t('company.currency') %></label>
+            <select name="currency" id="currencySelect">
+              <option value="EGP" <%= (formData.currency === 'USD') ? '' : 'selected' %>>EGP — Egyptian Pound</option>
+              <option value="USD" <%= (formData.currency === 'USD') ? 'selected' : '' %>>USD — US Dollar</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label><%= t('company.stipendAmount') %></label>
+            <input type="number" name="price" id="priceInput" value="<%= formData.price || '' %>" min="1" max="1000000" step="1" placeholder="<%= t('company.phAmount') %>">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><%= t('company.description') %></label>
+          <textarea name="description" rows="4" minlength="20" maxlength="5000" placeholder="<%= t('company.phDescription') %>" required><%= formData.description || '' %></textarea>
+        </div>
+
+        <div class="form-group">
+          <label><%= t('company.requiredSkills') %></label>
+          <input type="text" name="skills" value="<%= formData.skills || '' %>" placeholder="<%= t('company.phSkills') %>" required>
+        </div>
+
+        <div class="form-group">
+          <label><%= t('company.appLink') %></label>
+          <input type="url" name="link" value="<%= formData.link || '' %>" placeholder="https://...">
+        </div>
+
+        <div class="form-actions">
+          <% if (editing) { %>
+            <a href="/company/manage-listings" class="btn-cancel"><%= t('common.cancel') %></a>
+            <button type="submit" class="btn-primary"><%= t('company.updateInternship') %></button>
+          <% } else { %>
+            <button type="reset" class="btn-cancel"><%= t('company.reset') %></button>
+            <button type="submit" class="btn-primary"><%= t('company.postInternshipBtn') %></button>
+          <% } %>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+(function () {
+  var el = document.getElementById('pickMap');
+  if (!el || typeof L === 'undefined') return;
+  var latIn = document.getElementById('latInput');
+  var lngIn = document.getElementById('lngInput');
+  var coordsEl = document.getElementById('pickCoords');
+  var clearBtn = document.getElementById('clearPin');
+  var start = [30.0444, 31.2357], zoom = 6, marker = null;
+  var hasPin = latIn.value && lngIn.value;
+  if (hasPin) { start = [parseFloat(latIn.value), parseFloat(lngIn.value)]; zoom = 13; }
+  var map = L.map('pickMap', { scrollWheelZoom: false }).setView(start, zoom);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '&copy; OpenStreetMap' }).addTo(map);
+  function setPin(lat, lng) {
+    if (marker) { marker.setLatLng([lat, lng]); } else { marker = L.marker([lat, lng]).addTo(map); }
+    latIn.value = lat.toFixed(6); lngIn.value = lng.toFixed(6);
+    coordsEl.textContent = lat.toFixed(5) + ', ' + lng.toFixed(5);
+  }
+  if (hasPin) setPin(start[0], start[1]);
+  map.on('click', function (e) { setPin(e.latlng.lat, e.latlng.lng); });
+  clearBtn.addEventListener('click', function () {
+    if (marker) { map.removeLayer(marker); marker = null; }
+    latIn.value = ''; lngIn.value = '';
+    coordsEl.textContent = clearBtn.getAttribute('data-none') || '';
+  });
+  setTimeout(function () { map.invalidateSize(); }, 200);
+})();
+</script>
+<script>
+(function () {
+  var typeSel = document.getElementById('typeSelect');
+  var curSel  = document.getElementById('currencySelect');
+  var price   = document.getElementById('priceInput');
+  if (!typeSel || !curSel || !price) return;
+  function symbol() { return curSel.value === 'USD' ? '$' : 'EGP'; }
+  function refresh() {
+    var paid = typeSel.value === 'Paid';
+    price.disabled = !paid;
+    curSel.disabled = !paid;
+    price.required = paid;
+    if (!paid) { price.value = ''; }
+    price.placeholder = paid ? (symbol() + ' amount per month, e.g. 4500') : 'Not applicable for unpaid roles';
+  }
+  typeSel.addEventListener('change', refresh);
+  curSel.addEventListener('change', refresh);
+  refresh();
+})();
+</script>
+</body>
+</html>
+
