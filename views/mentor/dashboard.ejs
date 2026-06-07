@@ -1,1 +1,311 @@
 <%- include('../partials/head', { title: 'Mentor Dashboard - InternHub', extraCSS: ['/css/student.css', '/css/mentor.css'] }) %>
+
+<body class="student-page mentor-page">
+<%- include('../partials/navbar') %>
+
+<div class="student-layout">
+  <%- include('../partials/sidebar', { active: 'dashboard' }) %>
+
+  <main class="student-main">
+    <div class="student-topbar">
+      <h1><%= t('student.welcomeBack', { name: (currentUser.profile && currentUser.profile.fullName ? currentUser.profile.fullName : currentUser.name).split(' ')[0] }) %></h1>
+    </div>
+
+    <% if (typeof flash !== 'undefined' && flash) { %>
+      <div class="alert alert-<%= flash.type %>"><%= t(flash.message) %></div>
+    <% } %>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="alert alert-error"><%= t(error) %></div>
+    <% } %>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon purple"><i class="fas fa-briefcase"></i></div>
+        <div class="stat-info">
+          <h3><%= stats.savedInternships %></h3>
+          <p><%= t('student.savedInternships') %></p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon blue"><i class="fas fa-file-alt"></i></div>
+        <div class="stat-info">
+          <h3><%= stats.applications %></h3>
+          <p><%= t('mentor.applications') %></p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon green"><i class="fas fa-chalkboard-teacher"></i></div>
+        <div class="stat-info">
+          <h3><%= stats.mentorProjects %></h3>
+          <p><%= t('mentor.mentorProjects') %></p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon blue"><i class="fas fa-inbox"></i></div>
+        <div class="stat-info">
+          <h3><%= stats.pendingSubmissions %></h3>
+          <p><%= t('mentor.pendingReviews') %></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <h2><i class="fas fa-bookmark"></i> <%= t('student.savedInternships') %></h2>
+        <a href="/student/explore" class="panel-link"><%= t('mentor.exploreMore') %></a>
+      </div>
+
+      <% if (savedInternships.length === 0) { %>
+        <p class="empty-msg"><%= t('student.noSaved') %> <a href="/student/explore"><%= t('mentor.browse') %></a></p>
+      <% } else { %>
+        <div class="internship-list">
+          <% savedInternships.forEach(function(intern) { %>
+            <div class="internship-item" data-ajax-item>
+              <div class="intern-icon"><i class="<%= intern.icon || 'fas fa-briefcase' %>"></i></div>
+              <div class="intern-info">
+                <strong><%= t(intern.title) %></strong>
+                <p><%= intern.company %> - <%= intern.location || intern.workMode %></p>
+                <p><%= intern.category %> - <%= intern.workMode %> - <%= intern.stipend || intern.type %></p>
+              </div>
+              <div class="intern-actions">
+                <% if (intern.link) { %>
+                  <a href="<%= intern.link %>" target="_blank" rel="noopener noreferrer" class="btn-sm btn-outline"><%= t('explore.openLink') %></a>
+                <% } %>
+                <a href="/student/internship/<%= intern._id %>" class="btn-sm btn-outline"><%= t('student.view') %></a>
+                <form action="/student/unsave-internship/<%= intern._id %>" method="POST" style="display:inline" data-ajax="remove">
+                  <button class="btn-sm btn-delete" title="Remove"><i class="fas fa-times"></i></button>
+                </form>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <h2><i class="fas fa-file-alt"></i> <%= t('student.recentApplications') %></h2>
+        <a href="/student/my-internships" class="panel-link"><%= t('mentor.viewAll') %></a>
+      </div>
+
+      <% if (recentApplications.length === 0) { %>
+        <p class="empty-msg"><%= t('student.noApplications') %></p>
+      <% } else { %>
+        <% recentApplications.forEach(function(app) { %>
+          <div class="listing-summary">
+            <div>
+              <strong><%= app.internshipId ? t(app.internshipId.title) : 'N/A' %></strong>
+              <p><%= app.internshipId ? app.internshipId.company : '' %> - <%= new Date(app.createdAt).toLocaleDateString() %></p>
+            </div>
+            <span class="status-badge status-<%= app.status %>"><%= tEnum('status', app.status) %></span>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+
+    <div class="panel" id="mentor-hub">
+      <div class="panel-header">
+        <h2><i class="fas fa-chalkboard-teacher"></i> <%= t('nav.mentorHub') %></h2>
+      </div>
+
+      <div style="padding: 1.5rem;">
+        <div class="student-hub-grid" style="margin-bottom: 0;">
+          <a href="#assign-project" class="hub-card">
+            <i class="fas fa-plus-circle"></i>
+            <h3><%= t('nav.assignProject') %></h3>
+            <p><%= t('mentor.hubAssignDesc') %></p>
+          </a>
+
+          <a href="#my-projects" class="hub-card">
+            <i class="fas fa-tasks"></i>
+            <h3><%= t('nav.myProjects') %></h3>
+            <p><%= t('mentor.hubProjectsDesc') %></p>
+          </a>
+
+          <a href="#pending-submissions" class="hub-card">
+            <i class="fas fa-inbox"></i>
+            <h3><%= t('nav.pendingSubmissions') %></h3>
+            <p><%= t('mentor.hubPendingDesc') %></p>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="assign-project">
+      <div class="panel-header">
+        <h2><i class="fas fa-plus-circle"></i> <%= t('mentor.assignNew') %></h2>
+      </div>
+
+      <form action="/mentor/assign-project" method="POST" class="mentor-form" style="padding: 1.5rem;" data-ajax="reset">
+        <div class="form-row">
+          <div class="form-group">
+            <label><%= t('mentor.basedOnInternship') %></label>
+            <select name="internshipId" id="internshipSelect" required>
+              <option value=""><%= t('mentor.selectInternship') %></option>
+              <% takenInternships.forEach(function(i) { %>
+                <option value="<%= i._id %>"><%= t(i.title) %> - <%= i.company %></option>
+              <% }) %>
+            </select>
+
+            <% if (takenInternships.length === 0) { %>
+              <small class="hint"><%= t('mentor.noSavedHint') %> <a href="/student/explore"><%= t('mentor.exploreLink') %></a></small>
+            <% } %>
+          </div>
+
+          <div class="form-group">
+            <label><%= t('mentor.targetYear') %></label>
+            <select name="targetYear">
+              <option value="any"><%= t('mentor.anyYear') %></option>
+              <option value="1"><%= t('mentor.yearLabel') %> 1</option>
+              <option value="2"><%= t('mentor.yearLabel') %> 2</option>
+              <option value="3"><%= t('mentor.yearLabel') %> 3</option>
+              <option value="4"><%= t('mentor.yearLabel') %> 4</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label><%= t('mentor.projectTitle') %></label>
+            <input type="text" name="title" placeholder="<%= t('mentor.projectTitlePh') %>" required>
+          </div>
+
+          <div class="form-group">
+            <label><%= t('mentor.deadline') %></label>
+            <input type="date" name="deadline" min="<%= new Date().toISOString().split('T')[0] %>">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><%= t('mentor.descriptionReq') %></label>
+          <textarea name="description" rows="3" placeholder="<%= t('mentor.descriptionPh') %>" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label><%= t('mentor.instructions') %></label>
+          <textarea name="instructions" rows="2" placeholder="<%= t('mentor.instructionsPh') %>"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label><%= t('mentor.assignTo') %></label>
+          <select name="assignedTo" multiple class="multi-select">
+            <% eligibleStudents.forEach(function(s) { %>
+              <option value="<%= s._id %>"><%= s.profile && s.profile.fullName ? s.profile.fullName : s.name %> (<%= t('mentor.yearLabel') %> <%= s.year %>)</option>
+            <% }) %>
+          </select>
+          <small class="hint"><%= t('mentor.multiHint') %></small>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary"><%= t('mentor.assignBtn') %></button>
+        </div>
+      </form>
+    </div>
+
+    <div class="panel" id="my-projects">
+      <div class="panel-header">
+        <h2><i class="fas fa-project-diagram"></i> My Projects (<%= projects.length %>)</h2>
+      </div>
+
+      <% if (projects.length === 0) { %>
+        <p class="empty-msg"><%= t('mentor.noProjectsCreated') %></p>
+      <% } else { %>
+        <% projects.forEach(function(p) { %>
+          <div class="project-card" data-ajax-item>
+            <div class="project-header">
+              <div class="project-title"><%= t(p.title) %></div>
+              <span class="status-badge status-pending"><%= t('mentor.deadlineLabel') %> <%= p.deadline ? new Date(p.deadline).toLocaleDateString() : 'N/A' %></span>
+            </div>
+
+            <div class="project-meta">
+              <span><%= p.company || t('mentor.noCompany') %></span>
+              <span><%= p.category ? tEnum('category', p.category) : t('mentor.general') %></span>
+              <span><%= t('mentor.assignedToCount', { count: p.assignedTo.length }) %></span>
+            </div>
+
+            <p><%= p.description %></p>
+
+            <% if (p.instructions) { %>
+              <p class="project-instructions"><%= p.instructions %></p>
+            <% } %>
+
+            <div class="listing-actions">
+              <a href="/mentor/edit-project/<%= p._id %>" class="btn-sm btn-edit">
+                <i class="fas fa-edit"></i> <%= t('common.edit') %>
+              </a>
+
+              <form action="/mentor/delete-project/<%= p._id %>" method="POST" style="display:inline" data-ajax="remove" data-ajax-confirm="<%= t('mentor.deleteProjectConfirm') %>">
+                <button class="btn-sm btn-delete">
+                  <i class="fas fa-trash"></i> <%= t('common.delete') %>
+                </button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+
+    <div class="panel" id="pending-submissions">
+      <div class="panel-header">
+        <h2><i class="fas fa-inbox"></i> Pending Submissions (<%= pendingSubmissions.length %>)</h2>
+      </div>
+
+      <% if (pendingSubmissions.length === 0) { %>
+        <p class="empty-msg"><%= t('mentor.noPending') %></p>
+      <% } else { %>
+        <% pendingSubmissions.forEach(function(sub) { %>
+          <div class="submission-card" data-ajax-item>
+            <div class="sub-header">
+              <strong><%= sub.title %></strong>
+              <span class="status-badge status-pending"><%= t('mentor.submitted') %></span>
+            </div>
+
+            <p><%= t('mentor.by') %> <strong><%= sub.studentId && sub.studentId.name ? sub.studentId.name : 'Unknown' %></strong></p>
+            <p><%= t('mentor.projectLabel') %> <%= sub.projectId && sub.projectId.title ? t(sub.projectId.title) : 'N/A' %></p>
+
+            <% if (sub.description) { %>
+              <p><%= sub.description %></p>
+            <% } %>
+
+            <% if (sub.link) { %>
+              <p><a href="<%= sub.link %>" target="_blank"><i class="fas fa-link"></i> <%= t('mentor.viewWork') %></a></p>
+            <% } %>
+
+            <form action="/mentor/evaluate-submission/<%= sub._id %>" method="POST" class="evaluate-form" data-ajax="remove">
+              <div class="form-row">
+                <div class="form-group">
+                  <label><%= t('mentor.grade') %></label>
+                  <select name="grade" required>
+                    <option value=""><%= t('mentor.selectGrade') %></option>
+                    <option value="A"><%= t('mentor.gradeA') %></option>
+                    <option value="B"><%= t('mentor.gradeB') %></option>
+                    <option value="C"><%= t('mentor.gradeC') %></option>
+                    <option value="D"><%= t('mentor.gradeD') %></option>
+                    <option value="F"><%= t('mentor.gradeF') %></option>
+                  </select>
+                </div>
+
+                <div class="form-group" style="flex:2">
+                  <label><%= t('mentor.feedback') %></label>
+                  <input type="text" name="feedback" placeholder="<%= t('mentor.feedbackPh') %>" required>
+                </div>
+
+                <div class="form-group" style="display:flex;align-items:flex-end">
+                  <button type="submit" class="btn-primary"><%= t('mentor.evaluate') %></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>
+</body>
+</html>
