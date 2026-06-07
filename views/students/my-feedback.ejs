@@ -1,1 +1,73 @@
 <%- include('../partials/head', { title: 'My Feedback — InternHub', extraCSS: ['/css/student.css'] }) %>
+<body class="student-page">
+<%- include('../partials/navbar') %>
+
+<div class="student-layout">
+  <%- include('../partials/sidebar', { active: 'my-feedback' }) %>
+
+  <main class="student-main">
+    <div class="student-topbar">
+      <h1><%= t('student.myFeedback') %></h1>
+    </div>
+
+    <div class="admin-panels">
+      <!-- Company feedback received -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2><i class="fas fa-building"></i> <%= t('student.companyFeedback') %></h2>
+        </div>
+        <% if (companyFeedbacks.length === 0) { %>
+          <p class="empty-msg"><%= t('student.noCompanyFeedback') %></p>
+        <% } else { %>
+          <% companyFeedbacks.forEach(function(fb) { %>
+            <div class="feedback-card">
+              <div class="feedback-company">
+                <strong><%= fb.companyId ? (fb.companyId.companyName || fb.companyId.name) : 'Company' %></strong>
+                <% if (fb.internshipId) { %>
+                  <span class="type-badge"><%= t(fb.internshipId.title) %></span>
+                <% } %>
+              </div>
+              <div class="star-display">
+                <% for (var i = 1; i <= 5; i++) { %>
+                  <i class="fas fa-star <%= i <= fb.rating ? 'filled' : '' %>"></i>
+                <% } %>
+                <span>(<%= fb.rating %>/5)</span>
+              </div>
+              <p><%= fb.text %></p>
+              <small class="date-text"><%= new Date(fb.createdAt).toLocaleDateString() %></small>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
+
+      <!-- Mentor evaluations -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2><i class="fas fa-chalkboard-teacher"></i> <%= t('student.projectEvaluations') %></h2>
+        </div>
+        <% if (evaluations.length === 0) { %>
+          <p class="empty-msg"><%= t('student.noEvaluations') %></p>
+        <% } else { %>
+          <% evaluations.forEach(function(sub) { %>
+            <div class="feedback-card">
+              <div class="feedback-company">
+                <strong><%= sub.title %></strong>
+                <span class="grade-badge grade-<%= sub.grade %>"><%= sub.grade %></span>
+              </div>
+              <p><%= sub.feedback %></p>
+              <% if (sub.projectId) { %>
+                <small>Project: <%= sub.projectId.title %></small>
+              <% } %>
+              <small class="date-text"><%= new Date(sub.createdAt).toLocaleDateString() %></small>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>
+</body>
+</html>
+
