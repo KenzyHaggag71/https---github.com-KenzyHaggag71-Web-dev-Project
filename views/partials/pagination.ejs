@@ -1,0 +1,14 @@
+<%
+/*
+ * Pagination controls.
+ * Expects:
+ *   pagination -> object from utils/paginate.js
+ *   baseUrl    -> path without query (e.g. "/student/explore")
+ *   baseQuery  -> preserved filters string ending in "&" or "" (from paginate.baseQuery)
+ * `t`, `lang`, `dir` come from the i18n middleware (res.locals).
+ */
+var pg   = (typeof pagination !== 'undefined' && pagination) ? pagination : null;
+var url  = (typeof baseUrl !== 'undefined' && baseUrl) ? baseUrl : '';
+var bq   = (typeof baseQuery !== 'undefined' && baseQuery) ? baseQuery : '';
+function pageHref(n) { return url + '?' + bq + 'page=' + n; }
+%>
