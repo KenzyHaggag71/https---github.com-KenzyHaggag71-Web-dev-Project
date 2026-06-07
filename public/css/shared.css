@@ -296,3 +296,82 @@ h1, h2, h3, h4, h5, h6
   flex: 1;
   min-width: 0;
 }
+
+.admin-topbar,
+.company-topbar,
+.mentor-topbar
+{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+}
+
+.admin-topbar h1,
+.company-topbar h1,
+.mentor-topbar h1
+{
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.admin-user-info,
+.company-info
+{
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-mid);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.admin-main .stats-grid,
+.company-main .stats-grid,
+.mentor-main .stats-grid
+{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.admin-main .stat-card,
+.company-main .stat-card,
+.mentor-main .stat-card
+{
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-xs);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.admin-main .stat-icon,
+.company-main .stat-icon,
+.mentor-main .stat-icon
+{
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.1rem;
+}
+
+.stat-icon.purple { background: #F3E8FF; color: #9333EA; }
+.stat-icon.blue   { background: var(--accent-soft); color: var(--accent); }
+.stat-icon.green  { background: #DCFCE7; color: #16A34A; }
+.stat-icon.orange { background: #FFEDD5; color: #EA580C; }
+.stat-icon.pink   { background: #FCE7F3; color: #DB2777; }
+.stat-icon.teal   { background: #CCFBF1; color: #0F766E; }
+
