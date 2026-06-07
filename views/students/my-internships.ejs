@@ -1,1 +1,54 @@
 <%- include('../partials/head', { title: 'My Internships — InternHub', extraCSS: ['/css/student.css'] }) %>
+
+<body class="student-page">
+<%- include('../partials/navbar') %>
+
+<div class="student-layout">
+  <%- include('../partials/sidebar', { active: 'my-internships' }) %>
+
+  <main class="student-main">
+    <div class="student-topbar">
+      <h1><%= t('student.myApplications') %></h1>
+    </div>
+
+    <% if (typeof flash !== 'undefined' && flash) { %>
+      <div class="alert alert-<%= flash.type %>"><%= t(flash.message) %></div>
+    <% } %>
+
+    <% if (applications.length === 0) { %>
+      <div class="panel">
+        <p class="empty-msg"><%= t('student.noAppliedYet') %> <a href="/student/explore"><%= t('student.browseInternships') %></a></p>
+      </div>
+    <% } else { %>
+      <% applications.forEach(function(app) { %>
+        <div class="application-card">
+          <div class="app-header">
+            <div>
+              <strong><%= app.internshipId ? t(app.internshipId.title) : 'N/A' %></strong>
+              <p><%= app.internshipId ? app.internshipId.company : '' %> · <%= app.internshipId ? tEnum('location', app.internshipId.location) : '' %></p>
+              <p class="app-date"><%= t('student.appliedOn') %> <%= new Date(app.createdAt).toLocaleDateString() %></p>
+            </div>
+            <span class="status-badge status-<%= app.status %>"><%= tEnum('status', app.status) %></span>
+          </div>
+          <% if (app.internshipId && app.internshipId.skills && app.internshipId.skills.length > 0) { %>
+            <div class="skill-tags">
+              <% app.internshipId.skills.forEach(function(sk) { %><span class="skill-tag"><%= sk %></span><% }) %>
+            </div>
+          <% } %>
+          <% if (app.status === 'accepted') { %>
+            <div class="listing-actions" style="margin-top:12px;">
+              <a href="/student/acceptance-letter/<%= app._id %>" class="btn-sm btn-primary"><i class="fas fa-file-download"></i> <%= t('student.acceptanceLetter') %></a>
+              <a href="/student/calendar/<%= app._id %>" class="btn-sm btn-outline"><i class="fas fa-calendar-plus"></i> <%= t('student.addToCalendar') %></a>
+            </div>
+          <% } %>
+        </div>
+      <% }) %>
+    <% } %>
+
+    <%- include('../partials/pagination', { pagination: pagination, baseUrl: baseUrl, baseQuery: baseQuery }) %>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>
+</body>
+</html>
