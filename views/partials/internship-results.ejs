@@ -44,7 +44,7 @@
           <% var isSaved = savedIds && savedIds.indexOf(intern._id.toString()) !== -1; %>
 
           <% if (!isSaved) { %>
-            <form action="/student/save-internship/<%= intern._id %>" method="POST" style="display:inline">
+            <form action="/student/save-internship/<%= intern._id %>" method="POST" class="u-inline">
               <button class="btn-sm btn-outline"><i class="fas fa-bookmark"></i> <%= t('common.save') %></button>
             </form>
           <% } else { %>
@@ -56,7 +56,7 @@
             class="btn-primary btn-sm"
             data-id="<%= intern._id %>"
             data-title="<%= t(intern.title) %>"
-            onclick="openApplyModalFromButton(this)">
+            data-apply-open>
             <i class="fas fa-paper-plane"></i> <%= t('common.apply') %>
           </button>
         <% } else { %>
