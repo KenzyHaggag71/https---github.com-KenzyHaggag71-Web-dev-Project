@@ -1,3 +1,4 @@
+
 const MAX_DETAILED = 3;
 const GENERIC_MSG  = 'Please fill in all the required fields correctly.';
 
@@ -8,6 +9,7 @@ function humanList(items) {
   if (a.length === 2) return a[0] + ' and ' + a[1];
   return a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
 }
+
 
 function composeAuth(enter, select, other) {
   enter = enter || []; select = select || []; other = other || [];
@@ -20,6 +22,7 @@ function composeAuth(enter, select, other) {
   other.forEach(m => parts.push(m));
   return parts.join(' ');
 }
+
 
 function composeNeed(need) {
   need = need || [];

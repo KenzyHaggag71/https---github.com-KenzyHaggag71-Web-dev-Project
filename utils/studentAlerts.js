@@ -15,7 +15,7 @@ function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
 async function notifyStudentsOfNewInternship(internship) {
   try {
-    if (!process.env.EMAIL_USER) return; 
+    if (!process.env.EMAIL_USER) return;
 
     const appUrl = process.env.APP_URL || 'http://localhost:8080';
     const students = await User.find({
@@ -37,7 +37,6 @@ async function notifyStudentsOfNewInternship(internship) {
     let sent = 0;
     for (const student of students) {
       try {
-        // Ensure the student has a stable unsubscribe token.
         if (!student.unsubscribeToken) {
           student.unsubscribeToken = crypto.randomBytes(24).toString('hex');
           await student.save();
