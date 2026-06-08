@@ -27,7 +27,7 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ---------- Search ---------- */
+
 
 .search-box
 {
@@ -76,7 +76,7 @@
   color: var(--text-dark);
 }
 
-/* ---------- Filter row ---------- */
+
 
 .filters-section
 {
@@ -159,7 +159,7 @@
   box-shadow: 0 0 0 3px rgba(23,26,32,0.08);
 }
 
-/* ---------- Companies directory ---------- */
+
 
 .companies-directory-grid
 {
@@ -279,7 +279,7 @@
   gap: 0.7rem;
 }
 
-/* ---------- Student project cards ---------- */
+
 
 .student-project-card
 {
@@ -364,7 +364,7 @@
   color: #78350F;
 }
 
-/* ---------- Apply modal ---------- */
+
 
 .apply-warning
 {
@@ -404,7 +404,7 @@
   font-weight: 700;
 }
 
-/* ---------- Resources ---------- */
+
 
 .resource-card
 {
@@ -429,7 +429,7 @@
   letter-spacing: -0.01em;
 }
 
-/* ---------- Profile ---------- */
+
 
 .profile-container
 {
@@ -619,7 +619,7 @@
   letter-spacing: -0.02em;
 }
 
-/* ---------- Tabs ---------- */
+
 
 .my-internships-tabs
 {
@@ -671,7 +671,7 @@
   animation: fadeIn 0.4s var(--ease-out-quint);
 }
 
-/* ---------- Rating + Feedback ---------- */
+
 
 .rating-stars
 {
@@ -735,7 +735,7 @@
   margin-top: 0.5rem;
 }
 
-/* ---------- Student hub layout ---------- */
+
 
 .student-hub-grid
 {
@@ -857,7 +857,7 @@
   z-index: 1;
 }
 
-/* ---- Utility overrides (moved from inline HTML) ---- */
+
 .container-spacing {
   padding-top: 2rem;
   padding-bottom: 3rem;
@@ -925,7 +925,7 @@
   gap: 0.4rem;
 }
 
-/* ---- Explore banner ---- */
+
 .explore-banner {
   background: var(--bg-dark);
   border-radius: var(--radius-xl);
@@ -1007,7 +1007,7 @@
   letter-spacing: 0.08em;
 }
 
-/* ---- Trending chips ---- */
+
 .explore-trending {
   display: flex;
   align-items: center;
@@ -1056,7 +1056,7 @@
   color: white;
 }
 
-/* ---- Hub cards (dashboard grid) ---- */
+
 .student-hub-grid,
 .company-hub-grid {
   display: grid;
@@ -1147,10 +1147,7 @@
   }
 }
 
-/* ===========================================================
-   BLENDED INTERNSHIP CARD — clean design (replaces old layout)
-   Applied to .intern-card on explore, dashboard, my-internships
-   =========================================================== */
+
 
 .intern-card {
   background: var(--bg-white);
@@ -1186,7 +1183,7 @@
   transform: scaleX(1);
 }
 
-/* ----- Top row: logo + company + title + bookmark ----- */
+
 .blend-top {
   display: flex;
   gap: 1rem;
@@ -1210,7 +1207,7 @@
   transform: scale(1.05) rotate(-3deg);
 }
 
-/* Brand colors for each company */
+
 .blend-logo.brand-microsoft      { background: #00A4EF; }
 .blend-logo.brand-meta           { background: #1877F2; }
 .blend-logo.brand-google         { background: linear-gradient(135deg, #4285F4, #34A853 35%, #FBBC05 65%, #EA4335); }
@@ -1285,7 +1282,7 @@
   color: var(--accent);
 }
 
-/* ----- Stats block ----- */
+
 .blend-stats {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -1317,7 +1314,7 @@
   display: block;
 }
 
-/* ----- Location row ----- */
+
 .blend-loc {
   display: flex;
   align-items: center;
@@ -1331,7 +1328,7 @@
   color: var(--accent);
 }
 
-/* ----- Skill tag chips ----- */
+
 .blend-tags {
   display: flex;
   gap: 0.35rem;
@@ -1348,7 +1345,7 @@
   font-weight: 700;
 }
 
-/* ----- Authentic company link ----- */
+
 .blend-authentic-link {
   display: inline-flex;
   align-items: center;
@@ -1374,7 +1371,7 @@
   font-size: 0.72rem;
 }
 
-/* ----- CTA / status badge ----- */
+
 .blend-cta {
   width: 100%;
   background: var(--solid);
@@ -1424,9 +1421,7 @@
 .blend-status.status-rejected { background: rgba(220,38,38,0.10); color: #7F1D1D; }
 
 
-/* ===========================================================
-   Student Layout — Sidebar + Main
-   =========================================================== */
+
 
 .student-page {
   background: var(--bg-soft, #F7F8FA);
@@ -1442,7 +1437,7 @@
   gap: 2rem;
 }
 
-/* ── Sidebar ── */
+
 .student-sidebar {
   width: 240px;
   flex-shrink: 0;
@@ -1539,7 +1534,7 @@
   color: #DC2626;
 }
 
-/* ── Main Content ── */
+
 .student-main {
   flex: 1;
   min-width: 0;
@@ -1561,7 +1556,7 @@
   letter-spacing: -0.02em;
 }
 
-/* ── Companies Grid ── */
+
 .companies-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -1678,7 +1673,7 @@
   box-shadow: var(--shadow-accent);
 }
 
-/* ── Responsive ── */
+
 @media (max-width: 900px) {
   .student-layout {
     flex-direction: column;
@@ -1715,11 +1710,9 @@
   }
 }
 
-/* ===========================================================
-   Dashboard — Stats, Panels, Lists
-   =========================================================== */
 
-/* Stats grid (dashboard) */
+
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -1771,7 +1764,7 @@
   margin-top: 0.2rem;
 }
 
-/* Panels */
+
 .panel {
   background: var(--bg-white);
   border-radius: 16px;
@@ -1826,7 +1819,7 @@
   text-decoration: none;
 }
 
-/* Internship list */
+
 .internship-list {
   padding: 0.5rem 0;
 }
@@ -1887,7 +1880,7 @@
   flex-shrink: 0;
 }
 
-/* Application listing summary */
+
 .listing-summary {
   display: flex;
   flex-direction: column;
@@ -1911,7 +1904,7 @@
   color: var(--text-mid, #6B7280);
 }
 
-/* Status badges */
+
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -1928,7 +1921,7 @@
 .status-rejected { background: #FEE2E2; color: #991B1B; }
 .status-active   { background: #DBEAFE; color: #1D4ED8; }
 
-/* Alert banners */
+
 .alert {
   padding: 0.85rem 1.25rem;
   border-radius: 10px;
@@ -1941,9 +1934,7 @@
 .alert-error   { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
 .alert-info    { background: #DBEAFE; color: #1D4ED8; border: 1px solid #93C5FD; }
 
-/* ===========================================================
-   Explore Page — Layout, Filters, Cards
-   =========================================================== */
+
 
 .explore-container {
   display: flex;
@@ -1953,7 +1944,7 @@
   padding: 0 1.5rem 3rem;
 }
 
-/* ── Filters sidebar ── */
+
 .filters-sidebar {
   width: 240px;
   flex-shrink: 0;
@@ -2062,7 +2053,7 @@ a.filter-btn.btn-outline:hover {
   color: var(--text-dark);
 }
 
-/* ── Internship grid ── */
+
 .internships-grid {
   flex: 1;
   min-width: 0;
@@ -2078,7 +2069,7 @@ a.filter-btn.btn-outline:hover {
   margin-bottom: 0.25rem;
 }
 
-/* ── Internship card ── */
+
 .internship-card {
   background: var(--bg-white);
   border-radius: 16px;
@@ -2187,7 +2178,7 @@ a.filter-btn.btn-outline:hover {
   border-radius: 6px;
 }
 
-/* Type badge */
+
 .type-badge {
   display: inline-flex;
   align-items: center;
@@ -2204,7 +2195,7 @@ a.filter-btn.btn-outline:hover {
 .type-unpaid   { background: #FEF3C7; color: #92400E; }
 .type-stipend  { background: #DBEAFE; color: #1D4ED8; }
 
-/* Card actions */
+
 .card-actions {
   display: flex;
   flex-direction: column;
@@ -2227,7 +2218,7 @@ a.filter-btn.btn-outline:hover {
   cursor: default;
 }
 
-/* ── Apply Modal ── */
+
 .modal {
   position: fixed;
   inset: 0;
@@ -2238,6 +2229,8 @@ a.filter-btn.btn-outline:hover {
   z-index: 1000;
   backdrop-filter: blur(4px);
 }
+
+.modal.u-hidden { display: none; }
 
 .modal-box {
   background: var(--bg-white);
@@ -2287,7 +2280,7 @@ a.filter-btn.btn-outline:hover {
   padding: 1rem 1.5rem 1.5rem;
 }
 
-/* ── Forms (profile, etc.) ── */
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -2354,7 +2347,7 @@ a.filter-btn.btn-outline:hover {
   color: var(--text-dark);
 }
 
-/* ── Misc ── */
+
 .text-muted {
   color: var(--text-mid, #6B7280);
   font-size: 0.85rem;
@@ -2388,7 +2381,7 @@ a.filter-btn.btn-outline:hover {
   margin-bottom: 0.85rem;
 }
 
-/* Profile */
+
 .profile-avatar-section {
   display: flex;
   align-items: center;
@@ -2436,7 +2429,7 @@ a.filter-btn.btn-outline:hover {
   font-size: 0.78rem;
 }
 
-/* Feedback */
+
 .feedback-card {
   background: var(--bg-white);
   border-radius: 14px;
@@ -2461,7 +2454,7 @@ a.filter-btn.btn-outline:hover {
   margin-bottom: 0.4rem;
 }
 
-/* Grade badge */
+
 .grade-badge {
   display: inline-flex;
   align-items: center;
@@ -2476,18 +2469,18 @@ a.filter-btn.btn-outline:hover {
 .grade-C { background: #FEF9C3; color: #854D0E; }
 .grade-D, .grade-F { background: #FEE2E2; color: #991B1B; }
 
-/* Submission */
+
 .submission-given { color: #16A34A; font-weight: 600; font-size: 0.85rem; }
 .submit-section { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-soft); }
 
-/* Admin panels in student view */
+
 .admin-panels {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.25rem;
 }
 
-/* Explore responsive */
+
 @media (max-width: 860px) {
   .explore-container {
     flex-direction: column;
@@ -2513,7 +2506,7 @@ a.filter-btn.btn-outline:hover {
   .form-row { grid-template-columns: 1fr; }
 }
 
-/* ── page-header spacing fix (outside student-layout) ── */
+
 .page-header {
   max-width: 1300px;
   margin: 2rem auto 1.25rem;
@@ -2556,7 +2549,7 @@ a.filter-btn.btn-outline:hover {
   margin: 0 auto 1rem;
 }
 
-/* Resources spacing */
+
 .resources-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
@@ -2577,10 +2570,10 @@ a.filter-btn.btn-outline:hover {
   margin-bottom: 0.75rem;
   line-height: 1.55;
 }
-/* Live-search (AJAX) loading state for the explore results */
+
 .internships-grid.is-loading { opacity: 0.5; pointer-events: none; transition: opacity 0.15s ease; }
 
-/* Recent Applications rows: title/company on the left, status badge on the right */
+
 .listing-summary {
   flex-direction: row;
   align-items: center;
@@ -2590,10 +2583,13 @@ a.filter-btn.btn-outline:hover {
 .listing-summary > div { min-width: 0; }
 .listing-summary strong { display: block; font-weight: 700; color: var(--text-dark); }
 
-/* Explore map: caption shown when the current filter has no map-able locations */
+
 .explore-map-empty {
   margin: 0.6rem 0 0;
   text-align: center;
   font-size: 0.85rem;
   color: var(--text-light);
 }
+
+
+.student-main-public { max-width: 1100px; margin: 0 auto; width: 100%; }
