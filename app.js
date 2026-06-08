@@ -27,7 +27,6 @@ const { i18n, SUPPORTED } = require('./middleware/i18n');
 const app  = express();
 const PORT = process.env.PORT || 8080;
 
-/* ── Database ──────────────────────────────────────────────────────────────── */
 const dbURI = process.env.MONGODB_URI;
 if (!dbURI || dbURI.includes('<db_password>')) {
   console.error('\n[ERROR] MONGODB_URI is not configured in .env\n');
@@ -39,7 +38,7 @@ mongoose.connect(dbURI)
     await seedDatabase();
     app.listen(PORT, () => {
       console.log('[OK] Server → http://localhost:' + PORT);
-      console.log('[OK] Build: explore-map-live-v7  (verify at /__buildcheck)');
+      console.log('[OK] Build: no-comments-v10  (verify at /__buildcheck)');
     });
   })
   .catch(err => {
@@ -47,25 +46,20 @@ mongoose.connect(dbURI)
     process.exit(1);
   });
 
-/* ── View engine ───────────────────────────────────────────────────────────── */
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-/* ── Security ──────────────────────────────────────────────────────────────── */
-// Trust the hosting proxy (Render/Heroku) so secure cookies + HTTPS detection work.
+
 app.set('trust proxy', 1);
-// Helmet sets safe HTTP headers. CSP is disabled because the app loads external
-// CDNs (Google Fonts, Font Awesome, Chart.js) and inline scripts; leaving it on
-// would block them. Other protections (X-Frame-Options, etc.) stay enabled.
+
+
+
 app.use(helmet({ contentSecurityPolicy: false }));
 
-/* ── Middleware ────────────────────────────────────────────────────────────── */
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-/* Quick check that the up-to-date (no-reload) build is the one running.
-   Visit http://localhost:8080/__buildcheck — you should see {"build":"explore-map-live-v7"}. */
-app.get('/__buildcheck', (req, res) => res.json({ build: 'explore-map-live-v7', ok: true }));
+app.get('/__buildcheck', (req, res) => res.json({ build: 'no-comments-v10', ok: true }));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -77,12 +71,12 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true,
     sameSite: 'lax',
-    // Only require HTTPS for the cookie in production (so local http still works).
+    
     secure: process.env.NODE_ENV === 'production'
   }
 }));
 
-// Limit repeated login attempts (anti brute-force). Lenient so a live demo isn't blocked.
+
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 30,
@@ -91,10 +85,8 @@ const loginLimiter = rateLimit({
   message: 'Too many login attempts. Please try again in a few minutes.'
 });
 
-/* ── Localization (i18n) — sets res.locals.t / lang / dir ─────────────────── */
 app.use(i18n);
 
-/* ── Inject currentUser into every request & view ─────────────────────────── */
 app.use(async (req, res, next) => {
   res.locals.currentUser = null;
   req.currentUser = null;
@@ -115,7 +107,6 @@ app.use(async (req, res, next) => {
   next();
 });
 
-/* ── Helpers ───────────────────────────────────────────────────────────────── */
 function requireLogin(req, res, next) {
   if (!req.currentUser) return res.redirect('/login');
   next();
@@ -136,15 +127,12 @@ function isValidEmail(email) {
 function isValidUniversityEmail(email) {
   return /\.edu(\.[a-z]{2})?$/i.test(String(email).toLowerCase());
 }
-/* Strict password rule: at least 6 characters AND at least one capital letter. */
 function isStrongPassword(pw) {
   pw = String(pw || '');
   return pw.length >= 6 && /[A-Z]/.test(pw);
 }
 const PASSWORD_RULE_MSG = 'Password must be at least 6 characters and include at least one capital letter.';
 
-/* ── Public routes ─────────────────────────────────────────────────────────── */
-/* Switch UI language, then return to the page the user came from. */
 app.get('/lang/:locale', (req, res) => {
   const locale = req.params.locale;
   if (SUPPORTED.indexOf(locale) !== -1) req.session.lang = locale;
@@ -169,7 +157,6 @@ app.get('/', async (req, res) => {
   }
 });
 
-/* ── Auth routes ───────────────────────────────────────────────────────────── */
 app.get('/login', (req, res) => {
   if (req.currentUser) return res.redirect('/');
   res.render('auth/login', { title: 'Sign In - InternHub', error: null, formData: {} });
@@ -223,11 +210,11 @@ app.post('/signup', async (req, res) => {
     const renderSignup = (error, success) =>
       res.render('auth/signup', { title: 'Sign Up - InternHub', error, success: success || null, activeRole: signupRole, formData: data });
 
-    const enter = [];   // empty required text fields  -> "Please enter your ..."
-    const select = [];  // empty required dropdowns     -> "Please select your ..."
-    const other = [];   // specific rule messages
+    const enter = [];   
+    const select = [];  
+    const other = [];   
 
-    // Role-specific field checks (collect every problem, grouped naturally).
+    
     const pending = { role: signupRole, email };
     if (signupRole === 'student' || signupRole === 'mentor') {
       const name       = (data.name || '').trim();
@@ -272,7 +259,6 @@ app.post('/signup', async (req, res) => {
 
     if (!terms) other.push('You must agree to the confirmation checkbox.');
 
-    // Email uniqueness (only meaningful once the email itself is valid).
     if (isValidEmail(email) && await User.findOne({ email }))
       other.push('Email already registered. Try signing in.');
 
@@ -281,9 +267,6 @@ app.post('/signup', async (req, res) => {
 
     pending.hashedPassword = await bcrypt.hash(password, 10);
 
-    // Email-verification step: generate a 6-digit code, stash the pending signup
-    // in the session, and email the code. The account is created only after the
-    // person proves they own the email by entering the correct code.
     const code = String(Math.floor(100000 + Math.random() * 900000));
     req.session.pendingSignup = Object.assign(pending, { code, expires: Date.now() + 10 * 60 * 1000, attempts: 0 });
     transporter.sendMail({
@@ -309,7 +292,6 @@ app.get('/logout', (req, res) => {
   res.redirect('/');
 });
 
-/* ── Email verification (OTP) for signup ───────────────────────────────────── */
 app.get('/verify-email', (req, res) => {
   const p = req.session.pendingSignup;
   if (!p) return res.redirect('/signup');
@@ -330,7 +312,7 @@ app.post('/verify-email', async (req, res) => {
       return res.render('auth/verify-email', { title: 'Verify Email - InternHub', email: p.email, error: 'Incorrect verification code.', resent: false });
     }
 
-    // Code correct → create the account now.
+    
     if (p.role === 'student') {
       const newUser = await User.create({
         name: p.name, email: p.email, password: p.hashedPassword, role: 'user', status: 'active', year: p.year,
@@ -386,7 +368,6 @@ app.post('/resend-code', (req, res) => {
   res.render('auth/verify-email', { title: 'Verify Email - InternHub', email: p.email, error: null, resent: true });
 });
 
-/* ── Forgot / reset password ───────────────────────────────────────────────── */
 app.get('/forgot-password', (req, res) => {
   res.render('auth/forgot-password', { title: 'Forgot Password - InternHub', error: null, success: null });
 });
@@ -400,7 +381,7 @@ app.post('/forgot-password', async (req, res) => {
     if (user) {
       const token = crypto.randomBytes(32).toString('hex');
       user.resetToken = token;
-      user.resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+      user.resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000); 
       await user.save();
       const base = process.env.APP_URL || (req.protocol + '://' + req.get('host'));
       const link = base + '/reset-password/' + token;
@@ -413,7 +394,7 @@ app.post('/forgot-password', async (req, res) => {
                <p>This link expires in 1 hour. If you didn't request this, you can ignore this email.</p>`
       }).catch(err => console.error('Reset email error:', err.message));
     }
-    // Always show the same message so we never reveal which emails exist.
+    
     return render(null, 'If an account exists for that email, a reset link has been sent.');
   } catch (err) {
     console.error('Forgot-password error:', err.message);
@@ -455,7 +436,6 @@ app.post('/reset-password/:token', async (req, res) => {
   }
 });
 
-/* ── Unsubscribe from new-internship student alerts (public, no login) ─────── */
 app.get('/unsubscribe/:token', async (req, res) => {
   try {
     const user = await User.findOne({ unsubscribeToken: req.params.token });
@@ -488,13 +468,11 @@ app.get('/unsubscribe/:token', async (req, res) => {
   }
 });
 
-/* ── Role-guarded router mounts ────────────────────────────────────────────── */
 app.use('/admin',   requireRole('admin'),   adminRoutes);
 app.use('/company', requireRole('company'), companyRoutes);
 app.use('/mentor',  requireRole('mentor'),  mentorRoutes);
-app.use('/student', studentRoutes);          // per-route auth inside studentRoutes
+app.use('/student', studentRoutes);          
 
-/* ── 404 ───────────────────────────────────────────────────────────────────── */
 app.use((req, res) => {
   res.status(404).render('error', { title: 'Page Not Found', message: 'The page you are looking for does not exist.' });
 });
