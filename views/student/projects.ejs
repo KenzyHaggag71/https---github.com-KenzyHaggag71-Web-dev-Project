@@ -36,7 +36,7 @@
           <% var mySub = submissionMap[p._id.toString()]; %>
           <% if (mySub) { %>
             <div class="submission-given">
-              <p><i class="fas fa-check-circle" style="color:#10b981"></i> <strong>Submitted:</strong> <%= mySub.title %></p>
+              <p><i class="fas fa-check-circle u-green"></i> <strong>Submitted:</strong> <%= mySub.title %></p>
               <% if (mySub.status === 'evaluated') { %>
                 <p>Grade: <strong class="grade-badge"><%= mySub.grade %></strong></p>
                 <p>Feedback: <%= mySub.feedback %></p>
@@ -57,12 +57,12 @@
   </main>
 </div>
 
-<!-- Submit Modal -->
-<div id="submitModal" class="modal" style="display:none">
+
+<div id="submitModal" class="modal u-hidden">
   <div class="modal-box">
     <div class="modal-header">
       <h2><%= t('student.submitWork') %></h2>
-      <button class="modal-close" onclick="document.getElementById('submitModal').style.display='none'">&times;</button>
+      <button class="modal-close" data-close-modal>&times;</button>
     </div>
     <form action="/student/submit-project" method="POST" data-ajax="reset" data-ajax-modal="#submitModal">
       <input type="hidden" name="projectId" id="submitProjectId">
@@ -85,20 +85,14 @@
         <textarea name="description" rows="3" placeholder="Describe what you built..."></textarea>
       </div>
       <div class="form-actions">
-        <button type="button" class="btn-cancel" onclick="document.getElementById('submitModal').style.display='none'"><%= t('common.cancel') %></button>
+        <button type="button" class="btn-cancel" data-close-modal><%= t('common.cancel') %></button>
         <button type="submit" class="btn-primary"><%= t('student.submit') %></button>
       </div>
     </form>
   </div>
 </div>
 
-<script>
-function openSubmitModal(id, title) {
-  document.getElementById('submitProjectId').value = id;
-  document.getElementById('submitProjectName').textContent = 'Project: ' + title;
-  document.getElementById('submitModal').style.display = 'flex';
-}
-</script>
+<script src="/js/student-projects.js"></script>
 
 <%- include('../partials/footer') %>
 </body>
