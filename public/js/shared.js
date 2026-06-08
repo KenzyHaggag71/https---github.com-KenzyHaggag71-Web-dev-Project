@@ -1,8 +1,9 @@
+(function(){try{var el=document.getElementById("app-i18n-data");if(el&&!window.APP_I18N){window.APP_I18N=JSON.parse(el.textContent||"{}");}}catch(e){}})();
+
 (function () {
   'use strict';
 
-  /* Toast popup (used for client-side feedback like "Copied!", form previews) */
-  window.showToast = function (message, isSuccess) {
+    window.showToast = function (message, isSuccess) {
     var existing = document.querySelector('.toast');
     if (existing) { existing.remove(); }
 
@@ -20,8 +21,7 @@
     }, 3000);
   };
 
-  /* "Learn More" smooth scroll on homepage */
-  document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
     var learnMoreBtn = document.getElementById('learnMoreBtn');
     if (learnMoreBtn) {
       learnMoreBtn.addEventListener('click', function () {
@@ -30,8 +30,7 @@
       });
     }
 
-    /* Language switcher dropdown (click to toggle, click outside to close) */
-    var langSwitcher = document.getElementById('langSwitcher');
+        var langSwitcher = document.getElementById('langSwitcher');
     if (langSwitcher) {
       var trigger = langSwitcher.querySelector('.lang-trigger');
       if (trigger) {
@@ -45,12 +44,10 @@
       }
     }
 
-    /* Need-Help popup: click the button to pin it open (so you can click the
-       email), click outside or press Esc to close. Hover still works too. */
-    var helpTrigger = document.getElementById('navHelpTrigger');
+        var helpTrigger = document.getElementById('navHelpTrigger');
     if (helpTrigger) {
       helpTrigger.addEventListener('click', function (e) {
-        if (e.target.closest('a')) { helpTrigger.classList.remove('open'); return; } // let the email link open
+        if (e.target.closest('a')) { helpTrigger.classList.remove('open'); return; } 
         e.stopPropagation();
         helpTrigger.classList.toggle('open');
       });
@@ -62,11 +59,7 @@
       });
     }
 
-    /* Localize the browser's native form-validation popups (e.g. "Please fill
-       out this field."). The browser shows these in its own UI language, so we
-       override them with the page language when Arabic is active. Strings come
-       from window.APP_I18N (injected by the footer partial from the locale files). */
-    var i18n = window.APP_I18N;
+        var i18n = window.APP_I18N;
     if (i18n && i18n.lang && i18n.lang !== 'en') {
       function localizedValidationMessage(input) {
         var v = input.validity;
@@ -93,5 +86,34 @@
         })(fields[fi]);
       }
     }
+  });
+})();
+(function () {
+  function initNav() {
+    var toggle = document.getElementById('navToggle');
+    var navbar = document.querySelector('.navbar');
+    var menu = document.getElementById('navLinksCenter');
+    if (!toggle || !navbar || !menu) return;
+    function close() { navbar.classList.remove('nav-open'); toggle.setAttribute('aria-expanded', 'false'); }
+    toggle.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = navbar.classList.toggle('nav-open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    menu.addEventListener('click', function (e) { if (e.target.closest('a')) close(); });
+    document.addEventListener('click', function (e) {
+      if (navbar.classList.contains('nav-open') && !navbar.contains(e.target)) close();
+    });
+    window.addEventListener('resize', function () { if (window.innerWidth > 768) close(); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initNav);
+  else initNav();
+})();
+
+(function () {
+  document.addEventListener('click', function (e) {
+    var closer = e.target.closest('[data-close-modal]');
+    if (closer) { var m = closer.closest('.modal'); if (m) m.style.display = 'none'; return; }
+    if (e.target.closest('[data-print]')) { window.print(); }
   });
 })();
