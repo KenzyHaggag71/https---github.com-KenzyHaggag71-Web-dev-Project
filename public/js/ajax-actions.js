@@ -18,12 +18,13 @@
     var behavior = form.getAttribute('data-ajax') || 'toast';
 
     var confirmMsg = form.getAttribute('data-ajax-confirm');
-    if (confirmMsg && !window.confirm(confirmMsg)) return; // cancelled
+    if (confirmMsg && !window.confirm(confirmMsg)) return; 
 
     var submitBtn = form.querySelector('button[type="submit"], input[type="submit"]') || form.querySelector('button');
 
+    
     function nativeSubmit() {
-      form.removeAttribute('data-ajax');          
+      form.removeAttribute('data-ajax');           
       if (submitBtn) submitBtn.disabled = false;
       HTMLFormElement.prototype.submit.call(form); 
     }
@@ -34,6 +35,8 @@
     var opts = { method: method, headers: { 'X-Requested-With': 'fetch' }, credentials: 'same-origin' };
     if (method !== 'GET') {
       var hasFile = !!form.querySelector('input[type="file"]');
+      
+      
       
       opts.body = hasFile ? new FormData(form) : new URLSearchParams(new FormData(form));
     }
@@ -47,7 +50,7 @@
         });
       })
       .then(function (res) {
-
+        
         if (res.body === null) {
           console.warn('[InternHub] No-reload unavailable: the server returned a page instead of JSON. ' +
                        'You are likely running an old server — stop it and run "node app.js" again. Check /__buildcheck.');
@@ -91,7 +94,7 @@
           if (submitBtn) submitBtn.disabled = false;
         }
       })
-      .catch(function () { nativeSubmit(); }); // network/other failure -> normal submit
+      .catch(function () { nativeSubmit(); }); 
   }
 
   document.addEventListener('submit', function (e) {
@@ -108,4 +111,3 @@
 
   console.log('[InternHub] AJAX actions ready (fail-safe: falls back to normal submit).');
 })();
-
