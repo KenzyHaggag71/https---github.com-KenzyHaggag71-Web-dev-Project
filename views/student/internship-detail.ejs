@@ -1,52 +1,13 @@
-<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/head', { title: title, extraCSS: ['/css/internship-detail.css'] }) %>
 
 <body class="detail-page">
-<style>
-  
-  .detail-page { background: var(--bg-light); min-height: 100vh; display: flex; flex-direction: column; }
-  .detail-wrap { flex: 1 0 auto; width: 100%; max-width: 900px; margin: 0 auto; padding: 36px 16px 80px; }
-  .detail-back { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px; color: var(--text-mid, var(--text-light)); text-decoration: none; font-weight: 600; font-size: .9rem; }
-  .detail-back:hover { color: var(--accent); }
-
-  .detail-card { background: var(--bg-white); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; box-shadow: 0 16px 44px rgba(15,23,42,.10); }
-  .detail-accent { height: 6px; background: linear-gradient(90deg, var(--accent), var(--accent-hover)); }
-  .detail-inner { padding: 34px 38px 38px; }
-
-  .detail-head { display: flex; gap: 18px; align-items: flex-start; }
-  .detail-icon { flex-shrink: 0; width: 64px; height: 64px; border-radius: 16px; background: var(--bg-light); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: var(--accent); border: 1px solid var(--border); }
-  .detail-titles { flex: 1; min-width: 0; }
-  .detail-titles h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -.02em; margin: 0 0 4px; }
-  .detail-company { color: var(--text-light); font-weight: 600; margin: 0; }
-  .detail-type { display: inline-block; margin-top: 8px; padding: 4px 12px; border-radius: 999px; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; background: var(--accent); color: #fff; }
-
-  .detail-meta { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0; }
-  .detail-meta span { display: inline-flex; align-items: center; gap: 8px; color: var(--text-dark); font-size: .85rem; font-weight: 600; background: var(--bg-light); border: 1px solid var(--border); border-radius: 999px; padding: 8px 14px; }
-  .detail-meta i { color: var(--accent); }
-
-  .detail-section h3 { font-size: 1rem; font-weight: 700; margin: 22px 0 8px; }
-  .detail-desc { color: var(--text-mid, var(--text-light)); line-height: 1.75; white-space: pre-line; }
-  .detail-skills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-  .detail-skills .tag { background: var(--bg-light); border: 1px solid var(--border); border-radius: 999px; padding: 5px 12px; font-size: .8rem; font-weight: 600; color: var(--text-dark); }
-
-  .detail-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--border); align-items: center; }
-
-  .apply-box { margin-top: 22px; background: var(--bg-light); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; }
-  .apply-box h3 { margin: 0 0 4px; font-size: 1rem; font-weight: 700; }
-  .apply-box p { margin: 0 0 12px; color: var(--text-light); font-size: .85rem; }
-  .apply-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-  .apply-row input[type="file"] { flex: 1 1 240px; font-size: .85rem; }
-  .applied-pill { display: inline-flex; align-items: center; gap: 8px; background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; border-radius: 999px; padding: 8px 16px; font-weight: 700; font-size: .85rem; }
-
-  @media (max-width: 600px) { .detail-inner { padding: 26px 22px 30px; } .detail-head { flex-direction: column; } }
-</style>
-
 <%- include('../partials/navbar') %>
 
 <div class="detail-wrap">
   <a href="javascript:history.back()" class="detail-back"><i class="fas fa-arrow-left"></i> <%= t('common.back') %></a>
 
   <% if (typeof flash !== 'undefined' && flash) { %>
-    <div class="alert alert-<%= flash.type %>" style="margin-bottom:16px"><%= t(flash.message) %></div>
+    <div class="alert alert-<%= flash.type %>"<%= t(flash.message) %></div>
   <% } %>
 
   <div class="detail-card">
@@ -91,11 +52,11 @@
 
         <% if (currentUser) { %>
           <% if (isSaved) { %>
-            <form action="/student/unsave-internship/<%= internship._id %>" method="POST" style="display:inline">
+            <form action="/student/unsave-internship/<%= internship._id %>" method="POST" class="detail-inline-form">
               <button class="btn-sm btn-outline"><i class="fas fa-bookmark"></i> <%= t('common.saved') %></button>
             </form>
           <% } else { %>
-            <form action="/student/save-internship/<%= internship._id %>" method="POST" style="display:inline">
+            <form action="/student/save-internship/<%= internship._id %>" method="POST" class="detail-inline-form">
               <button class="btn-sm btn-outline"><i class="far fa-bookmark"></i> <%= t('common.save') %></button>
             </form>
           <% } %>
@@ -124,4 +85,3 @@
 <%- include('../partials/footer') %>
 </body>
 </html>
-

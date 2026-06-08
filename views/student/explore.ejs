@@ -18,10 +18,10 @@
 <div class="explore-map-panel">
   <h3 class="explore-map-title"><i class="fas fa-map-marked-alt"></i> <%= t('explore.mapTitle') %></h3>
   <div id="exploreMap"></div>
-  <p id="exploreMapEmpty" class="explore-map-empty" style="display:none"><%= t('explore.mapEmpty') %></p>
+  <p id="exploreMapEmpty" class="explore-map-empty u-hidden"><%= t('explore.mapEmpty') %></p>
 </div>
 <% var __mapData = internships.map(function (it) { return { title: t(it.title), company: it.company, location: it.location || '', lat: (it.lat != null ? it.lat : null), lng: (it.lng != null ? it.lng : null) }; }); %>
-<script>window.__INTERNSHIPS = <%- JSON.stringify(__mapData) %>;</script>
+<script id="internships-data" type="application/json"><%- JSON.stringify(__mapData) %></script>
 
 <div class="explore-container">
   <aside class="filters-sidebar">
@@ -78,11 +78,11 @@
   <%- include('../partials/pagination', { pagination: pagination, baseUrl: baseUrl, baseQuery: baseQuery }) %>
 </div>
 
-<div id="applyModal" class="modal" style="display:none">
+<div id="applyModal" class="modal u-hidden">
   <div class="modal-box">
     <div class="modal-header">
       <h2><%= t('explore.applyModalTitle') %></h2>
-      <button class="modal-close" onclick="document.getElementById('applyModal').style.display='none'">&times;</button>
+      <button class="modal-close" data-close-modal>&times;</button>
     </div>
 
     <form action="/student/apply" method="POST" enctype="multipart/form-data" id="applyForm">
@@ -95,27 +95,15 @@
       </div>
 
       <div class="form-actions">
-        <button type="button" class="btn-cancel" onclick="document.getElementById('applyModal').style.display='none'"><%= t('common.cancel') %></button>
+        <button type="button" class="btn-cancel" data-close-modal><%= t('common.cancel') %></button>
         <button type="submit" class="btn-primary"><%= t('explore.submitApplication') %></button>
       </div>
     </form>
   </div>
 </div>
 
-<script>
-window.__EXPLORE_I18N = {
-  saved: '<%= t('common.saved') %>',
-  applied: '<%= t('common.applied') %>',
-  savedMsg: 'Internship saved!',
-  appliedMsg: 'Application submitted!',
-  genericError: 'Something went wrong. Please try again.'
-};
-function openApplyModalFromButton(button) {
-  document.getElementById('applyInternshipId').value = button.dataset.id;
-  document.getElementById('applyInternshipName').textContent = '<%= t('explore.applyingFor', { title: '' }) %>' + button.dataset.title;
-  document.getElementById('applyModal').style.display = 'flex';
-}
-</script>
+<% var __exi18n = { saved: t('common.saved'), applied: t('common.applied'), savedMsg: 'Internship saved!', appliedMsg: 'Application submitted!', genericError: 'Something went wrong. Please try again.', applyingFor: t('explore.applyingFor', { title: '' }) }; %>
+<script id="explore-i18n-data" type="application/json"><%- JSON.stringify(__exi18n) %></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="/js/explore-map.js"></script>
