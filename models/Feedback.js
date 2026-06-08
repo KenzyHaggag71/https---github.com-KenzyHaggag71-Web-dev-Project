@@ -10,7 +10,6 @@ const feedbackSchema = new mongoose.Schema(
 
     companyId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
-       For student-review: the student writing the review. */
     studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
     internshipId: {
