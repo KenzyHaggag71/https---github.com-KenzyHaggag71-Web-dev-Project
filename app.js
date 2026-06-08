@@ -4,6 +4,7 @@ require('dotenv').config();
 const crypto     = require('crypto');
 const express    = require('express');
 const path       = require('path');
+const fs         = require('fs');
 const mongoose   = require('mongoose');
 const session    = require('express-session');
 const helmet     = require('helmet');
@@ -12,6 +13,10 @@ const bcrypt     = require('bcryptjs');
 
 const User        = require('./models/User');
 const Internship  = require('./models/Internship');
+const Application = require('./models/Application');
+const Project     = require('./models/Project');
+const Submission  = require('./models/Submission');
+const Feedback    = require('./models/Feedback');
 const seedDatabase = require('./models/seed');
 const { sendWelcomeEmail, transporter } = require('./utils/mailer');
 const { notify } = require('./utils/notify');
@@ -38,7 +43,7 @@ mongoose.connect(dbURI)
     await seedDatabase();
     app.listen(PORT, () => {
       console.log('[OK] Server → http://localhost:' + PORT);
-      console.log('[OK] Build: no-comments-v10  (verify at /__buildcheck)');
+      console.log('[OK] Build: account-mgmt-v11  (verify at /__buildcheck)');
     });
   })
   .catch(err => {
@@ -59,7 +64,7 @@ app.use(helmet({ contentSecurityPolicy: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.get('/__buildcheck', (req, res) => res.json({ build: 'no-comments-v10', ok: true }));
+app.get('/__buildcheck', (req, res) => res.json({ build: 'account-mgmt-v11', ok: true }));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -290,6 +295,62 @@ app.post('/signup', async (req, res) => {
 app.get('/logout', (req, res) => {
   req.session.destroy(err => { if (err) console.error('Logout error:', err.message); });
   res.redirect('/');
+});
+
+app.post('/delete-avatar', requireLogin, async (req, res) => {
+  try {
+    const current = req.currentUser.profile && req.currentUser.profile.avatar;
+    if (current) {
+      const filePath = path.join(__dirname, 'uploads', current);
+      fs.unlink(filePath, () => {});
+    }
+    await User.findByIdAndUpdate(req.currentUser._id, { $set: { 'profile.avatar': '' } });
+    req.session.flash = { type: 'success', message: 'Profile picture removed.' };
+  } catch (err) {
+    console.error('delete-avatar error:', err.message);
+    req.session.flash = { type: 'error', message: 'Could not remove the picture.' };
+  }
+  res.redirect(req.get('referer') || '/student/profile');
+});
+
+app.post('/delete-account', requireLogin, async (req, res) => {
+  try {
+    const uid = req.currentUser._id;
+    const role = req.currentUser.role;
+
+    if (role === 'company') {
+      const internships = await Internship.find({ postedByUserId: uid }).select('_id').lean();
+      const iids = internships.map(i => i._id);
+      await Application.deleteMany({ internshipId: { $in: iids } });
+      await Feedback.deleteMany({ internshipId: { $in: iids } });
+      await Feedback.deleteMany({ companyId: uid });
+      await Internship.deleteMany({ postedByUserId: uid });
+    } else if (role === 'mentor') {
+      const projects = await Project.find({ mentorId: uid }).select('_id').lean();
+      const pids = projects.map(p => p._id);
+      await Submission.deleteMany({ projectId: { $in: pids } });
+      await Project.deleteMany({ mentorId: uid });
+      await Application.deleteMany({ studentId: uid });
+      await Submission.deleteMany({ studentId: uid });
+      await Project.updateMany({}, { $pull: { assignedTo: uid } });
+    } else {
+      await Application.deleteMany({ studentId: uid });
+      await Submission.deleteMany({ studentId: uid });
+      await Feedback.deleteMany({ studentId: uid });
+      await Project.updateMany({}, { $pull: { assignedTo: uid } });
+    }
+
+    if (req.currentUser.profile && req.currentUser.profile.avatar) {
+      fs.unlink(path.join(__dirname, 'uploads', req.currentUser.profile.avatar), () => {});
+    }
+    await User.findByIdAndDelete(uid);
+    req.session.destroy(() => {});
+    res.redirect('/?accountDeleted=1');
+  } catch (err) {
+    console.error('delete-account error:', err.message);
+    req.session.flash = { type: 'error', message: 'Could not delete the account.' };
+    res.redirect(req.get('referer') || '/');
+  }
 });
 
 app.get('/verify-email', (req, res) => {
