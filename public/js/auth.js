@@ -3,7 +3,7 @@
 
   document.addEventListener('DOMContentLoaded', function () {
 
-    var toggles = document.querySelectorAll('.password-toggle');
+        var toggles = document.querySelectorAll('.password-toggle');
     for (var i = 0; i < toggles.length; i++) {
       toggles[i].addEventListener('click', function (e) {
         e.preventDefault();
@@ -26,7 +26,7 @@
       });
     }
 
-    var roleTabs = document.querySelectorAll('.signup-role-tab');
+        var roleTabs = document.querySelectorAll('.signup-role-tab');
     for (var t = 0; t < roleTabs.length; t++) {
       roleTabs[t].addEventListener('click', function () {
         var allTabs = document.querySelectorAll('.signup-role-tab');
@@ -50,7 +50,7 @@
       });
     }
 
-    function validateUniversityEmail(email) {
+        function validateUniversityEmail(email) {
       return /\.edu(\.[a-z]{2})?$/i.test(String(email || '').toLowerCase());
     }
 
