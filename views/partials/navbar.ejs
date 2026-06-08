@@ -5,7 +5,7 @@
       InternHub
     </a>
 
-    <div class="nav-links nav-links-center">
+    <div class="nav-links nav-links-center" id="navLinksCenter">
       <a href="/"><%= t('nav.home') %></a>
 
       <% if (!currentUser || currentUser.role === 'user' || currentUser.role === 'mentor') { %>
@@ -190,6 +190,10 @@
           <%= t('nav.signIn') %>
         </a>
       <% } %>
+
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="<%= t('nav.menu') %>" aria-expanded="false" aria-controls="navLinksCenter">
+        <i class="fas fa-bars"></i>
+      </button>
     </div>
   </div>
 </div>
