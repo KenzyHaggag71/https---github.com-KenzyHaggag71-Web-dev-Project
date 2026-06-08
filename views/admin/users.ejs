@@ -21,6 +21,7 @@
   </aside>
 
   <main class="admin-main">
+    <div id="pageContent">
     <div class="admin-topbar">
       <h1><%= t('admin.manageUsers') %></h1>
     </div>
@@ -39,7 +40,7 @@
       </div>
 
       <div class="table-wrap">
-        <table class="admin-table">
+        <div class="table-scroll"><table class="admin-table">
           <thead>
             <tr>
               <th>#</th>
@@ -100,11 +101,12 @@
               </tr>
             <% }) %>
           </tbody>
-        </table>
+        </table></div>
       </div>
 
       <%- include('../partials/pagination', { pagination: pagination, baseUrl: baseUrl, baseQuery: baseQuery }) %>
     </div>
+  </div>
   </main>
 </div>
 
