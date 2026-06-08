@@ -19,6 +19,7 @@
   </aside>
 
   <main class="admin-main">
+    <div id="pageContent">
     <div class="admin-topbar">
       <h1><%= t('admin.internships') %> (<%= (typeof pagination !== 'undefined' ? pagination.totalItems : internships.length) %>)</h1>
     </div>
@@ -29,7 +30,7 @@
 
     <div class="panel">
       <div class="table-wrap">
-        <table class="admin-table">
+        <div class="table-scroll"><table class="admin-table">
           <thead>
             <tr>
               <th><%= t('admin.title') %></th>
@@ -53,7 +54,7 @@
                 <td><%= internship.postedByUserId ? t('admin.companyVal') : t('admin.seedVal') %></td>
                 <td>
                   <% if (internship.postedByUserId) { %>
-                    <form action="/admin/delete-internship/<%= internship._id %>" method="POST" style="display:inline" data-ajax="remove" data-ajax-confirm="<%= t('admin.deleteInternshipConfirm') %>">
+                    <form action="/admin/delete-internship/<%= internship._id %>" method="POST" class="u-inline" data-ajax="remove" data-ajax-confirm="<%= t('admin.deleteInternshipConfirm') %>">
                       <button class="btn-sm btn-delete"><%= t('common.delete') %></button>
                     </form>
                   <% } else { %>
@@ -63,15 +64,15 @@
               </tr>
             <% }) %>
           </tbody>
-        </table>
+        </table></div>
       </div>
 
       <%- include('../partials/pagination', { pagination: pagination, baseUrl: baseUrl, baseQuery: baseQuery }) %>
     </div>
+  </div>
   </main>
 </div>
 
 <%- include('../partials/footer') %>
 </body>
 </html>
-
