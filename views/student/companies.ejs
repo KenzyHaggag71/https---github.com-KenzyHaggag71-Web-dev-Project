@@ -4,9 +4,12 @@
 <%- include('../partials/navbar') %>
 
 <div class="student-layout">
-  <%- include('../partials/sidebar', { active: 'companies' }) %>
+  <% if (currentUser) { %>
+    <%- include('../partials/sidebar', { active: 'companies' }) %>
+  <% } %>
 
-  <main class="student-main">
+  <main class="student-main <%= currentUser ? '' : 'student-main-public' %>">
+    <div id="pageContent">
     <div class="student-topbar">
       <h1><%= t('companies.partnerCompanies') %></h1>
     </div>
@@ -35,10 +38,10 @@
     </div>
 
     <%- include('../partials/pagination', { pagination: pagination, baseUrl: baseUrl, baseQuery: baseQuery }) %>
+  </div>
   </main>
 </div>
 
 <%- include('../partials/footer') %>
 </body>
 </html>
-
