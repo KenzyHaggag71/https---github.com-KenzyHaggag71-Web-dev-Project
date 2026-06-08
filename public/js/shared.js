@@ -117,3 +117,11 @@
     if (e.target.closest('[data-print]')) { window.print(); }
   });
 })();
+
+(function () {
+  document.addEventListener('submit', function (e) {
+    var form = e.target;
+    var msg = form && form.getAttribute && form.getAttribute('data-confirm');
+    if (msg && !window.confirm(msg)) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
+})();
