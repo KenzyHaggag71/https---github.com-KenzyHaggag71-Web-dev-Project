@@ -23,7 +23,8 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
   tls: {
-   
+    
+    
     rejectUnauthorized: false
   }
 });
@@ -57,7 +58,6 @@ function formatStipend(currency, amount) {
   return currency === 'USD' ? `$${n}/mo` : `EGP ${n}/mo`;
 }
 
-
 function validateInternship(body) {
   const need        = [];  
   const title       = (body.title || '').trim();
@@ -81,7 +81,7 @@ function validateInternship(body) {
   if (!Number.isInteger(weeks) || weeks < 1 || weeks > 104)
     need.push('a duration in weeks (1–104)');
 
- 
+  
   let price = 0, stipend = '';
   if (type === 'Paid') {
     const amount = parseFloat(body.price);
@@ -92,15 +92,18 @@ function validateInternship(body) {
       stipend = formatStipend(currency, price);
     }
   }
+
+  
   const skills = (body.skills || '').split(',').map(s => s.trim()).filter(Boolean);
   if (skills.length < 1)       need.push('at least one skill');
   else if (skills.length > 15) need.push('no more than 15 skills');
   else if (skills.some(s => s.length > 40)) need.push('shorter skill names (max 40 characters each)');
 
+  
   if (link && !/^https?:\/\/[^\s.]+\.[^\s]{2,}$/i.test(link))
     need.push('a valid application link (starting with http:// or https://)');
 
- 
+  
   let lat = body.lat ? parseFloat(body.lat) : null;
   let lng = body.lng ? parseFloat(body.lng) : null;
   if (lat == null || isNaN(lat)) lat = null;
@@ -416,4 +419,3 @@ router.post('/give-feedback', async (req, res) => {
 });
 
 module.exports = router;
-
