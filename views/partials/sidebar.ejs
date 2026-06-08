@@ -1,4 +1,5 @@
 <%
+  // One consistent sidebar for students and mentors so nav items never
   // "appear and disappear" between pages. Pass { active: '<key>' }.
   var active = (typeof active !== 'undefined') ? active : '';
   var isMentor = currentUser && currentUser.role === 'mentor';
