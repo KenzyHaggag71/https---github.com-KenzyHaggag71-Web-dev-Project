@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+
 const applicationSchema = new mongoose.Schema(
   {
     studentId: {
@@ -18,7 +19,7 @@ const applicationSchema = new mongoose.Schema(
       required: true
     },
 
-    cvFilePath: { type: String, default: '' },
+        cvFilePath: { type: String, default: '' },
     cvFileName: { type: String, default: '' },
 
     status: {
