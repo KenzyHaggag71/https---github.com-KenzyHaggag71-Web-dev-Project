@@ -16,6 +16,7 @@ function getFlash(req) {
   return null;
 }
 
+
 router.get('/dashboard', async (req, res) => {
   try {
     const [totalUsers, companies, mentors, students, internships, applications,
@@ -43,7 +44,7 @@ router.get('/dashboard', async (req, res) => {
       User.find({ status: 'pending', role: 'mentor' }).lean()
     ]);
 
-   
+    
     const [catAgg, statusAgg] = await Promise.all([
       Internship.aggregate([{ $group: { _id: '$category', count: { $sum: 1 } } }, { $sort: { count: -1 } }]),
       Application.aggregate([{ $group: { _id: '$status', count: { $sum: 1 } } }])
@@ -177,6 +178,7 @@ router.post('/reject/:id', async (req, res) => {
   }
 });
 
+
 router.post('/toggle-block/:id', async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -204,6 +206,7 @@ router.post('/delete-user/:id', async (req, res) => {
     res.status(500).render('error', { title: 'Error', message: 'Could not delete user.' });
   }
 });
+
 
 router.post('/delete-internship/:id', async (req, res) => {
   try {
