@@ -44,6 +44,7 @@ const userSchema = new mongoose.Schema({
 
   resetToken: { type: String, default: null },
   resetTokenExpiry: { type: Date, default: null },
+
   internshipAlerts: { type: Boolean, default: true },
   unsubscribeToken: { type: String, default: null }
 }, { timestamps: true });
