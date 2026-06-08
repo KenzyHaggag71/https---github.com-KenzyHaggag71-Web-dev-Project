@@ -1,4 +1,3 @@
-
 <%- include('../partials/head', { title: 'My Listings — InternHub', extraCSS: ['/css/company.css'] }) %>
 
 <body class="company-page">
@@ -55,7 +54,7 @@
             <% } %>
             <div class="listing-actions">
               <a href="/company/edit-internship/<%= l._id %>" class="btn-sm btn-edit"><i class="fas fa-edit"></i> <%= t('common.edit') %></a>
-              <form action="/company/delete-internship/<%= l._id %>" method="POST" style="display:inline" data-ajax="remove" data-ajax-confirm="<%= t('company.deleteListingConfirm') %>">
+              <form action="/company/delete-internship/<%= l._id %>" method="POST" class="u-inline" data-ajax="remove" data-ajax-confirm="<%= t('company.deleteListingConfirm') %>">
                 <button class="btn-sm btn-delete"><i class="fas fa-trash"></i> <%= t('common.delete') %></button>
               </form>
             </div>
@@ -69,4 +68,3 @@
 <%- include('../partials/footer') %>
 </body>
 </html>
-
