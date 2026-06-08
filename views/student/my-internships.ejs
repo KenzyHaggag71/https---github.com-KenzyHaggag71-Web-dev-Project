@@ -7,6 +7,7 @@
   <%- include('../partials/sidebar', { active: 'my-internships' }) %>
 
   <main class="student-main">
+    <div id="pageContent">
     <div class="student-topbar">
       <h1><%= t('student.myApplications') %></h1>
     </div>
@@ -36,7 +37,7 @@
             </div>
           <% } %>
           <% if (app.status === 'accepted') { %>
-            <div class="listing-actions" style="margin-top:12px;">
+            <div class="listing-actions u-mt-12">
               <a href="/student/acceptance-letter/<%= app._id %>" class="btn-sm btn-primary"><i class="fas fa-file-download"></i> <%= t('student.acceptanceLetter') %></a>
               <a href="/student/calendar/<%= app._id %>" class="btn-sm btn-outline"><i class="fas fa-calendar-plus"></i> <%= t('student.addToCalendar') %></a>
             </div>
@@ -46,6 +47,7 @@
     <% } %>
 
     <%- include('../partials/pagination', { pagination: pagination, baseUrl: baseUrl, baseQuery: baseQuery }) %>
+  </div>
   </main>
 </div>
 
