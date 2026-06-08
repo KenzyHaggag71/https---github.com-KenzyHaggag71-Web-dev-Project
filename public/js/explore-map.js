@@ -1,4 +1,4 @@
-
+(function(){try{var el=document.getElementById("internships-data");if(el&&!window.__INTERNSHIPS){window.__INTERNSHIPS=JSON.parse(el.textContent||"[]");}}catch(e){}})();
 (function () {
   var COORDS = {
     'AUC Avenue, New Cairo': [30.018, 31.499],
@@ -47,9 +47,9 @@
       maxZoom: 18, attribution: '&copy; OpenStreetMap'
     }).addTo(map);
 
-    // A dedicated layer we can clear & repopulate when filters change.
+    
     var markersLayer = L.layerGroup().addTo(map);
-    // A small caption shown when the current filter has no map-able locations.
+    
     var emptyNote = document.getElementById('exploreMapEmpty');
 
     function render(data) {
@@ -60,11 +60,11 @@
       data.forEach(function (it) {
         var lat, lng;
         if (it.lat != null && it.lng != null) {
-          lat = it.lat; lng = it.lng;               // exact pin set by the company
+          lat = it.lat; lng = it.lng;               
         } else {
           var c = coordsFor(it.location);
-          if (!c) return;                            // remote / unknown — no marker
-          lat = c[0] + (Math.random() - 0.5) * 0.012; // jitter so they don't stack
+          if (!c) return;                            
+          lat = c[0] + (Math.random() - 0.5) * 0.012; 
           lng = c[1] + (Math.random() - 0.5) * 0.012;
         }
         L.marker([lat, lng]).addTo(markersLayer).bindPopup(
@@ -76,21 +76,20 @@
 
       if (bounds.length) {
         map.fitBounds(bounds, { padding: [30, 30], maxZoom: 11 });
-        if (emptyNote) emptyNote.style.display = 'none';
+        if (emptyNote) emptyNote.classList.add('u-hidden');
       } else {
-        // Nothing to place (e.g. only Remote results) — reset to the default view.
+        
         map.setView(DEFAULT_CENTER, DEFAULT_ZOOM);
-        if (emptyNote) emptyNote.style.display = '';
+        if (emptyNote) emptyNote.classList.remove('u-hidden');
       }
-      // Leaflet needs a nudge after the container/markers change.
+      
       setTimeout(function () { map.invalidateSize(); }, 50);
     }
 
-    // Initial render from the data injected on page load.
+    
     render(window.__INTERNSHIPS || []);
 
-    // Let the live-search script refresh the markers with each filter change.
+    
     window.exploreMapUpdate = render;
   });
 })();
-
