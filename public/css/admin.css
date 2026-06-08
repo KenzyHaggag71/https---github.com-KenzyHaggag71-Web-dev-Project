@@ -1,4 +1,5 @@
 
+
 .page-header
 {
   margin-bottom: 2.5rem;
@@ -371,7 +372,7 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ---- Utility overrides (moved from inline HTML) ---- */
+
 .container-spacing {
   padding-top: 2rem;
   padding-bottom: 3rem;
@@ -721,3 +722,12 @@
     text-align: center;
     color: #64748B;
   }
+
+
+.charts-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; padding: 18px; }
+.charts-grid .chart-title { text-align: center; font-size: .95rem; margin-bottom: 8px; }
+@media (max-width: 900px) { .charts-grid { grid-template-columns: 1fr; } }
+
+
+.table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+@media (max-width: 768px) { .table-scroll .admin-table { min-width: 640px; } }
