@@ -99,6 +99,14 @@
         <% } %>
       </div>
     </div>
+
+    <div class="panel danger-zone">
+      <h3><i class="fas fa-triangle-exclamation"></i> <%= t('profile.dangerZone') %></h3>
+      <p><%= t('profile.deleteAccountHint') %></p>
+      <form action="/delete-account" method="POST" data-confirm="<%= t('profile.deleteAccountConfirm') %>">
+        <button type="submit" class="btn-danger"><i class="fas fa-trash-alt"></i> <%= t('profile.deleteAccount') %></button>
+      </form>
+    </div>
   </main>
 </div>
 
