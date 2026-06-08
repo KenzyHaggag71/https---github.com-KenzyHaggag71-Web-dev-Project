@@ -1,11 +1,11 @@
-
+(function(){try{var el=document.getElementById("category-labels-data");if(el&&!window.CATEGORY_LABELS){window.CATEGORY_LABELS=JSON.parse(el.textContent||"{}");}}catch(e){}})();
 
 (function () {
   'use strict';
 
   document.addEventListener('DOMContentLoaded', function () {
 
-    var d = document.getElementById('cbDays');
+        var d = document.getElementById('cbDays');
     var h = document.getElementById('cbHrs');
     var m = document.getElementById('cbMins');
     var s = document.getElementById('cbSecs');
@@ -37,7 +37,7 @@
       setInterval(tick, 1000);
     }
 
-    var video = document.getElementById('spotlightVideo');
+        var video = document.getElementById('spotlightVideo');
     if (video) {
       video.addEventListener('error', function () { video.style.display = 'none'; });
       setTimeout(function () {
@@ -45,8 +45,7 @@
       }, 4000);
     }
 
-   
-    var categories = [
+        var categories = [
       { name: 'Computer Science',   icon: 'fa-laptop-code',         desc: 'Software, AI, Cloud, Cybersecurity' },
       { name: 'Engineering',        icon: 'fa-cogs',                desc: 'Mechanical, Electrical, Civil' },
       { name: 'Business',           icon: 'fa-chart-pie',           desc: 'Marketing, Finance, Consulting' },
@@ -62,7 +61,6 @@
     if (track) {
       var labels = window.CATEGORY_LABELS || {};
       var html = '';
-    
       for (var pass = 0; pass < 2; pass++) {
         for (var i = 0; i < categories.length; i++) {
           var cat = categories[i];
