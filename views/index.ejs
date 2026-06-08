@@ -219,9 +219,7 @@
     "Science":            { name: t('cat.science'),            desc: t('cat.scienceDesc') }
   };
 %>
-<script>
-  window.CATEGORY_LABELS = <%- JSON.stringify(__catLabels) %>;
-</script>
+<script id="category-labels-data" type="application/json"><%- JSON.stringify(__catLabels) %></script>
 <script src="/js/home.js"></script>
 </body>
 </html>
