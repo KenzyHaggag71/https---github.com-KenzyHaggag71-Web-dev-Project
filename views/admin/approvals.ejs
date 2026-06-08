@@ -24,7 +24,8 @@
       <a href="/logout" class="nav-item nav-logout"><i class="fas fa-sign-out-alt"></i> <%= t('nav.logout') %></a>
     </nav>
   </aside>
- <main class="admin-main">
+
+  <main class="admin-main">
     <div class="admin-topbar">
       <h1><%= t('admin.approvals') %></h1>
     </div>
@@ -79,7 +80,8 @@
                     <div class="desc-text"><%= c.description %></div>
                   <% } %>
                 </div>
-            <div class="approval-actions">
+
+                <div class="approval-actions">
                   <form action="/admin/approve/<%= c._id %>" method="POST" data-ajax="remove">
                     <button class="btn-approve"><i class="fas fa-check"></i> <%= t('admin.approve') %></button>
                   </form>
