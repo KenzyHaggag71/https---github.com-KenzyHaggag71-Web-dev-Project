@@ -177,7 +177,11 @@
 
       <% if (currentUser) { %>
         <span class="nav-user-badge">
-          <i class="fas fa-user-circle"></i>
+          <% if (currentUser.profile && currentUser.profile.avatar) { %>
+            <img class="nav-avatar" src="/uploads/<%= currentUser.profile.avatar %>" alt="">
+          <% } else { %>
+            <i class="fas fa-user-circle"></i>
+          <% } %>
           <%= currentUser.name %>
         </span>
         <a href="/logout" class="btn-outline nav-logout-btn">
