@@ -19,13 +19,10 @@ fs.readdirSync(LOCALES_DIR)
 
 const SUPPORTED = Object.keys(dictionaries);
 
-/* List of { code, name } used to render the language switcher. */
 const availableLocales = SUPPORTED.map(code => ({
   code,
   name: (dictionaries[code] && dictionaries[code]['_meta.name']) || code
 }));
-
-
 
 function makeTranslator(locale) {
   const dict     = dictionaries[locale]         || {};
@@ -42,7 +39,6 @@ function makeTranslator(locale) {
     return str;
   };
 }
-
 
 const ENUM_KEYS = {
   workMode: {
@@ -73,7 +69,6 @@ const ENUM_KEYS = {
     'rejected': 'status.rejected', 'approved': 'status.approved'
   }
 };
-
 function i18n(req, res, next) {
   let locale = req.session && req.session.lang;
   if (!locale || SUPPORTED.indexOf(locale) === -1) locale = DEFAULT_LOCALE;
@@ -85,8 +80,7 @@ function i18n(req, res, next) {
   res.locals.dir              = dict['_meta.dir'] || 'ltr';
   res.locals.t                = t;
   res.locals.availableLocales = availableLocales;
-  /* Translate a known enum value (workMode/type/category/location); unknown values pass through. */
-  res.locals.tEnum = function tEnum(kind, value) {
+    res.locals.tEnum = function tEnum(kind, value) {
     if (kind === 'location' && value != null) {
       const key = 'loc.' + value;
       const translated = t(key);
@@ -96,8 +90,7 @@ function i18n(req, res, next) {
     if (map && value != null && map[value]) return t(map[value]);
     return value;
   };
-  /* Localize a duration string like "10 weeks" / "3 months". */
-  res.locals.tDuration = function tDuration(value) {
+    res.locals.tDuration = function tDuration(value) {
     if (!value) return value;
     const m = String(value).match(/^\s*(\d+)\s*(weeks?|months?)\s*$/i);
     if (!m) return value;
@@ -107,13 +100,13 @@ function i18n(req, res, next) {
       : (n === 1 ? 'unit.month' : 'unit.months');
     return n + ' ' + t(unit);
   };
-  res.locals.tStipend = function tStipend(value) {
+    res.locals.tStipend = function tStipend(value) {
     if (!value) return value;
     return String(value)
       .replace(/EGP/g, t('cur.egp'))
       .replace(/\/mo\b/g, t('unit.perMonth'));
   };
-  res.locals.tIndustry = function tIndustry(value) {
+    res.locals.tIndustry = function tIndustry(value) {
     if (!value) return value;
     const sep = (dict['_meta.dir'] === 'rtl') ? '، ' : ', ';
     return String(value).split(',').map(function (part) {
@@ -127,4 +120,3 @@ function i18n(req, res, next) {
 }
 
 module.exports = { i18n, SUPPORTED, DEFAULT_LOCALE, availableLocales };
-
