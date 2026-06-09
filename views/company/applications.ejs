@@ -20,6 +20,7 @@
   </aside>
 
   <main class="company-main">
+    <div id="pageContent">
     <div class="company-topbar">
       <h1><%= t('company.applications') %> (<%= applications.length %>)</h1>
     </div>
@@ -60,10 +61,10 @@
           <% } %>
           <% if (app.status === 'pending') { %>
             <div class="app-actions" data-ajax-actions>
-              <form action="/company/accept-application/<%= app._id %>" method="POST" style="display:inline" data-ajax="status" data-ajax-done="<%= t('status.accepted') %>">
+              <form action="/company/accept-application/<%= app._id %>" method="POST" class="u-inline" data-ajax="status" data-ajax-done="<%= t('status.accepted') %>">
                 <button class="btn-approve"><i class="fas fa-check"></i> <%= t('company.accept') %></button>
               </form>
-              <form action="/company/reject-application/<%= app._id %>" method="POST" style="display:inline" data-ajax="status" data-ajax-done="<%= t('status.rejected') %>" data-ajax-confirm="Reject this application?">
+              <form action="/company/reject-application/<%= app._id %>" method="POST" class="u-inline" data-ajax="status" data-ajax-done="<%= t('status.rejected') %>" data-ajax-confirm="Reject this application?">
                 <button class="btn-reject"><i class="fas fa-times"></i> <%= t('admin.reject') %></button>
               </form>
             </div>
@@ -73,10 +74,10 @@
     <% } %>
 
     <%- include('../partials/pagination', { pagination: pagination, baseUrl: baseUrl, baseQuery: baseQuery }) %>
+  </div>
   </main>
 </div>
 
 <%- include('../partials/footer') %>
 </body>
 </html>
-

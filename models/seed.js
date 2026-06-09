@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const User = require('./User');
 const Internship = require('./Internship');
 
+
 const DEFAULT_INTERNSHIPS = [
   {
     title: 'Software Engineering Intern',
@@ -180,7 +181,7 @@ const DEFAULT_INTERNSHIPS = [
     postedDate: '2026-02-03'
   },
 
-  // AI
+  
   {
     title: 'AI Research Intern',
     company: 'Huawei Egypt R&D Center',
@@ -230,7 +231,7 @@ const DEFAULT_INTERNSHIPS = [
     postedDate: '2026-02-01'
   },
 
-  // Software Development
+  
   {
     title: 'Mobile Development Intern',
     company: 'Fawry',
@@ -280,7 +281,7 @@ const DEFAULT_INTERNSHIPS = [
     postedDate: '2026-01-25'
   },
 
-  // Engineering
+  
   {
     title: 'Electrical Engineering Intern',
     company: 'Siemens Egypt',
@@ -330,7 +331,7 @@ const DEFAULT_INTERNSHIPS = [
     postedDate: '2026-02-05'
   },
 
-  // Mass Communication
+  
   {
     title: 'Digital Journalism Intern',
     company: 'Al-Masry Al-Youm',
@@ -380,7 +381,7 @@ const DEFAULT_INTERNSHIPS = [
     postedDate: '2026-02-12'
   },
 
-  // Law
+  
   {
     title: 'Corporate Law Intern',
     company: 'Matouk Bassiouny & Hennawy',
@@ -414,7 +415,7 @@ const DEFAULT_INTERNSHIPS = [
     postedDate: '2026-02-03'
   },
 
-  // Psychology
+  
   {
     title: 'Clinical Psychology Intern',
     company: 'Behman Hospital',
@@ -448,7 +449,7 @@ const DEFAULT_INTERNSHIPS = [
     postedDate: '2026-02-06'
   },
 
-  // Business
+  
   {
     title: 'Business Development Intern',
     company: 'Maxab',

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+
 const projectSchema = new mongoose.Schema(
   {
     mentorId: {
@@ -18,8 +19,10 @@ const projectSchema = new mongoose.Schema(
     description: { type: String, default: '' },
     deadline: { type: Date },
     instructions: { type: String, default: '' },
+
     targetYear: { type: String, default: 'any' },
-    assignedTo: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+
+        assignedTo: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
   },
   { timestamps: true }
 );

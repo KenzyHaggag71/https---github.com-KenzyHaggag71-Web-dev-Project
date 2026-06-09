@@ -1,4 +1,3 @@
-
 (function () {
   'use strict';
 
@@ -14,7 +13,7 @@
     var debounceTimer = null;
     var currentController = null;
 
-    function buildParams(extra) {
+        function buildParams(extra) {
       var params = new URLSearchParams();
       var data = new FormData(form);
       data.forEach(function (value, key) {
@@ -24,9 +23,10 @@
       return params;
     }
 
-    function loadResults(extra, push) {
+        function loadResults(extra, push) {
       var params = buildParams(extra);
 
+      
       if (currentController) currentController.abort();
       currentController = new AbortController();
 
@@ -43,12 +43,12 @@
         .then(function (json) {
           grid.innerHTML = json.gridHtml;
           if (pager) pager.innerHTML = json.pagerHtml || '';
-          
           if (typeof window.exploreMapUpdate === 'function') {
             window.exploreMapUpdate(json.mapData || []);
           }
           grid.classList.remove('is-loading');
 
+          
           if (push !== false) {
             var url = '/student/explore' + (params.toString() ? '?' + params.toString() : '');
             window.history.pushState({ explore: true }, '', url);
@@ -56,30 +56,30 @@
           window.scrollTo({ top: grid.offsetTop - 90, behavior: 'smooth' });
         })
         .catch(function (err) {
-          if (err.name === 'AbortError') return; // superseded by a newer request
+          if (err.name === 'AbortError') return; 
           grid.classList.remove('is-loading');
           console.error('Explore search error:', err.message);
         });
     }
 
-    if (searchInput) {
+        if (searchInput) {
       searchInput.addEventListener('input', function () {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(function () { loadResults(); }, 300);
       });
     }
 
-    form.addEventListener('change', function (e) {
+        form.addEventListener('change', function (e) {
       if (e.target === searchInput) return;
       loadResults();
     });
 
-    form.addEventListener('submit', function (e) {
+        form.addEventListener('submit', function (e) {
       e.preventDefault();
       loadResults();
     });
 
-    if (pager) {
+        if (pager) {
       pager.addEventListener('click', function (e) {
         var link = e.target.closest('a');
         if (!link || !pager.contains(link)) return;
@@ -92,10 +92,9 @@
       });
     }
 
-    window.addEventListener('popstate', function () {
+        window.addEventListener('popstate', function () {
       var qs = window.location.search.replace(/^\?/, '');
       var p = new URLSearchParams(qs);
-      // Reflect URL values back into the form controls.
       if (searchInput) searchInput.value = p.get('search') || '';
       form.querySelectorAll('input[name="workMode"]').forEach(function (r) {
         r.checked = (r.value === (p.get('workMode') || ''));
@@ -114,4 +113,3 @@
     init();
   }
 })();
-

@@ -1,4 +1,3 @@
-
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
@@ -41,7 +40,6 @@ function requireLogin(req, res, next) {
   if (!req.currentUser) return res.redirect('/login');
   next();
 }
-/* True when the request came from our client-side fetch() calls. */
 function isAjax(req) { return req.get('X-Requested-With') === 'fetch'; }
 function handleUpload(fieldName, redirectTo) {
   return (req, res, next) => {
@@ -127,8 +125,6 @@ router.get('/explore', async (req, res) => {
   }
 });
 
-/* AJAX endpoint — returns the filtered results + pagination as HTML fragments
-   (JSON), so the Explore page can update live without a full reload. */
 router.get('/explore/results', async (req, res) => {
   try {
     const { search, workMode, category, sort, company: companyFilter } = req.query;
@@ -181,7 +177,6 @@ router.get('/explore/results', async (req, res) => {
     res.status(500).json({ error: 'Could not load internships.' });
   }
 });
-
 
 router.get('/internship/:id', async (req, res) => {
   try {
@@ -261,7 +256,7 @@ router.post('/apply', requireLogin, handleUpload('cv', '/student/explore'), asyn
 
     notify(`\u{1F4E8} New application for ${internship.title}`).catch(() => {});
 
-    // Notify the posting company of the new application (fire-and-forget, never blocks)
+    
     if (internship.postedByUserId) {
       User.findById(internship.postedByUserId, 'email').lean().then(function (company) {
         if (company && company.email) {
@@ -283,6 +278,7 @@ router.post('/apply', requireLogin, handleUpload('cv', '/student/explore'), asyn
   }
 });
 
+
 router.get('/my-internships', requireLogin, async (req, res) => {
   try {
     const pagination = await paginate(Application,
@@ -299,6 +295,7 @@ router.get('/my-internships', requireLogin, async (req, res) => {
   }
 });
 
+
 router.get('/projects', requireLogin, async (req, res) => {
   try {
     const [projects, submissions] = await Promise.all([
@@ -312,6 +309,7 @@ router.get('/projects', requireLogin, async (req, res) => {
     res.status(500).render('error', { title: 'Error', message: 'Could not load projects.' });
   }
 });
+
 
 router.post('/submit-project', requireLogin, async (req, res) => {
   try {
@@ -360,7 +358,7 @@ try {
   status: 'submitted'
 });
 
-    // Notify the project's mentor by email (fire-and-forget, never blocks the response)
+    
     const studentName = req.currentUser.name || 'A student';
     const appUrl = process.env.APP_URL || 'http://localhost:8080';
     Project.findById(projectId).populate('mentorId', 'email name').lean()
@@ -393,6 +391,7 @@ try {
     res.status(500).render('error', { title: 'Error', message: 'Could not submit project.' });
   }
 });
+
 
 router.get('/companies', async (req, res) => {
   try {
@@ -448,6 +447,7 @@ router.get('/companies', async (req, res) => {
   }
 });
 
+
 router.get('/profile', requireLogin, (req, res) => {
   res.render('student/profile', { title: 'My Profile — InternHub', error: null, flash: getFlash(req) });
 });
@@ -479,9 +479,11 @@ router.post('/update-profile', requireLogin, handleUpload('avatar', '/student/pr
   }
 });
 
+
 router.get('/resources', requireLogin, (req, res) => {
   res.render('student/resources', { title: 'Resources — InternHub' });
 });
+
 
 router.get('/my-feedback', requireLogin, async (req, res) => {
   try {
@@ -497,6 +499,7 @@ router.get('/my-feedback', requireLogin, async (req, res) => {
   }
 });
 
+
 router.get('/calendar/:id', requireLogin, async (req, res) => {
   try {
     const application = await Application.findOne({
@@ -508,7 +511,7 @@ router.get('/calendar/:id', requireLogin, async (req, res) => {
     const it = application.internshipId;
     const esc = s => String(s || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
     const fmt = d => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-    const start = new Date(); start.setDate(start.getDate() + 14); // tentative start (~2 weeks)
+    const start = new Date(); start.setDate(start.getDate() + 14); 
     const end = new Date(start.getTime() + 60 * 60 * 1000);
     const summary = `${res.locals.t(it.title)} — ${it.company}`;
     const ics = [
@@ -531,6 +534,7 @@ router.get('/calendar/:id', requireLogin, async (req, res) => {
     res.status(500).render('error', { title: 'Error', message: 'Something went wrong.' });
   }
 });
+
 
 router.get('/acceptance-letter/:id', requireLogin, async (req, res) => {
   try {

@@ -1,5 +1,5 @@
-
-
+(function(){try{var el=document.getElementById("explore-i18n-data");if(el&&!window.__EXPLORE_I18N){window.__EXPLORE_I18N=JSON.parse(el.textContent||"{}");}}catch(e){}})();
+window.openApplyModalFromButton=function(button){var i18n=window.__EXPLORE_I18N||{};var idEl=document.getElementById("applyInternshipId");var nameEl=document.getElementById("applyInternshipName");var modal=document.getElementById("applyModal");if(idEl)idEl.value=button.dataset.id;if(nameEl)nameEl.textContent=(i18n.applyingFor||"")+button.dataset.title;if(modal)modal.style.display="flex";};
 (function () {
   'use strict';
 
@@ -11,8 +11,7 @@
   }
 
   function init() {
-   
-    var applyForm = document.getElementById('applyForm');
+        var applyForm = document.getElementById('applyForm');
     var applyModal = document.getElementById('applyModal');
 
     if (applyForm) {
@@ -21,13 +20,13 @@
         var submitBtn = applyForm.querySelector('button[type="submit"]');
         var idField = document.getElementById('applyInternshipId');
         var internshipId = idField ? idField.value : '';
-        var data = new FormData(applyForm); // includes the CV file + internshipId
+        var data = new FormData(applyForm);
 
         if (submitBtn) submitBtn.disabled = true;
 
         fetch('/student/apply', {
           method: 'POST',
-          headers: { 'X-Requested-With': 'fetch' }, // do NOT set Content-Type; browser adds the multipart boundary
+          headers: { 'X-Requested-With': 'fetch' }, 
           body: data
         })
           .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { status: r.status, body: j }; }); })
@@ -37,7 +36,7 @@
               if (applyModal) applyModal.style.display = 'none';
               applyForm.reset();
               notify(res.body.message || L('appliedMsg', 'Application submitted!'), true);
-              // Turn that card's Apply button into a non-clickable "Applied" badge.
+              
               var btn = document.querySelector('.btn-primary.btn-sm[data-id="' + internshipId + '"]');
               if (btn) {
                 var done = document.createElement('span');
@@ -56,8 +55,7 @@
       });
     }
 
-   
-    document.addEventListener('submit', function (e) {
+        document.addEventListener('submit', function (e) {
       var form = e.target;
       if (!form || !form.matches || !form.matches('form[action^="/student/save-internship/"]')) return;
       e.preventDefault();
@@ -97,3 +95,9 @@
     init();
   }
 })();
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest('[data-apply-open]');
+  if (btn && typeof window.openApplyModalFromButton === 'function') {
+    window.openApplyModalFromButton(btn);
+  }
+});

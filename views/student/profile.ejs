@@ -33,6 +33,11 @@
     <label for="avatar"><%= t("profile.picture") %></label>
     <input id="avatar" type="file" name="avatar" accept="image/*">
     <small><%= t("profile.picHint") %></small>
+    <% if (currentUser.profile && currentUser.profile.avatar) { %>
+      <button type="submit" formaction="/delete-avatar" formmethod="post" class="btn-sm btn-outline u-mt-2">
+        <i class="fas fa-trash"></i> <%= t('profile.removePhoto') %>
+      </button>
+    <% } %>
   </div>
 </div>
 
@@ -81,6 +86,14 @@
         <div class="form-actions">
           <button type="submit" class="btn-primary"><%= t('student.saveChanges') %></button>
         </div>
+      </form>
+    </div>
+
+    <div class="panel danger-zone">
+      <h3><i class="fas fa-triangle-exclamation"></i> <%= t('profile.dangerZone') %></h3>
+      <p><%= t('profile.deleteAccountHint') %></p>
+      <form action="/delete-account" method="POST" data-confirm="<%= t('profile.deleteAccountConfirm') %>">
+        <button type="submit" class="btn-danger"><i class="fas fa-trash-alt"></i> <%= t('profile.deleteAccount') %></button>
       </form>
     </div>
   </main>

@@ -512,5 +512,11 @@
   "explore.about": "About this internship",
   "explore.skills": "Skills",
   "explore.applyHint": "Upload your CV (PDF or Word) to apply.",
-  "explore.mapEmpty": "No map locations for this filter — remote roles have no fixed location."
+  "explore.mapEmpty": "No map locations for this filter — remote roles have no fixed location.",
+  "nav.menu": "Menu",
+  "profile.removePhoto": "Remove photo",
+  "profile.dangerZone": "Danger Zone",
+  "profile.deleteAccount": "Delete account",
+  "profile.deleteAccountHint": "Permanently delete your account and everything linked to it (applications, listings, projects, submissions, feedback). This cannot be undone.",
+  "profile.deleteAccountConfirm": "This will permanently delete your account and all related data. Continue?"
 }

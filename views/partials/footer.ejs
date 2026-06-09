@@ -15,6 +15,7 @@
     generic:  t('validation.generic')
   };
 %>
-<script>window.APP_I18N = <%- JSON.stringify(__i18n) %>;</script>
+<script id="app-i18n-data" type="application/json"><%- JSON.stringify(__i18n) %></script>
 <script src="/js/shared.js"></script>
 <script src="/js/ajax-actions.js"></script>
+<script src="/js/ajax-pagination.js"></script>

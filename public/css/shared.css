@@ -1,3 +1,5 @@
+
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 :root
@@ -4056,3 +4058,10 @@ input[type="password"]::-webkit-contacts-auto-fill-button
 
 #pageContent { display: contents; }
 #pageContent.is-loading { opacity: .6; }
+
+.nav-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; vertical-align: middle; }
+.btn-danger { background: #DC2626; color: #fff; border: none; border-radius: 10px; padding: 10px 18px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.btn-danger:hover { background: #B91C1C; }
+.panel.danger-zone { border: 1px solid #FECACA; background: #FEF2F2; margin-top: 20px; }
+.panel.danger-zone h3 { color: #B91C1C; margin: 0 0 6px; display: flex; align-items: center; gap: 8px; }
+.panel.danger-zone p { color: #7F1D1D; margin: 0 0 12px; font-size: .9rem; }

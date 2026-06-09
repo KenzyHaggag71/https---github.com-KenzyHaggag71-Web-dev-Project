@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+
 const internshipSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },

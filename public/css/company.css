@@ -1,4 +1,5 @@
 
+
 .page-header
 {
   margin-bottom: 2.5rem;
@@ -641,6 +642,7 @@
   letter-spacing: -0.005em;
 }
 
+
 .applications-table tbody td:nth-child(2) {
   color: var(--text-light);
   font-size: 0.82rem;
@@ -671,6 +673,7 @@
   font-size: 0.75rem;
 }
 
+
 .application-status-badge {
   display: inline-block;
   padding: 0.32rem 0.85rem;
@@ -696,6 +699,7 @@
   background: rgba(220,38,38,0.10);
   color: #7F1D1D;
 }
+
 
 .accept-btn,
 .reject-btn {
@@ -753,6 +757,7 @@
   padding: 3rem 1rem;
   font-style: italic;
 }
+
 
 @media (max-width: 900px) {
   .applications-table th:nth-child(3),
@@ -1046,6 +1051,9 @@ a.btn-cancel {
 }
 .map-coords { font-size: 0.85rem; color: var(--text-light); }
 
+
+
+
 .application-card,
 .student-card {
   display: block;
@@ -1143,6 +1151,7 @@ a.btn-cancel {
 .app-internship i { color: var(--accent); }
 .app-cv { margin-bottom: 0.85rem; }
 .app-actions { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+
 
 .feedback-form {
   margin-top: 1rem;
