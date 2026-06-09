@@ -86,6 +86,16 @@ router.post('/assign-project', async (req, res) => {
       return res.redirect('/mentor/dashboard');
     }
 
+    // Merge in every active student of the chosen target year, BEFORE saving,
+    // so they are stored on the project (and emailed). "any" = manual only.
+    if (targetYear && targetYear !== 'any') {
+      const yearStudents = await User.find(
+        { role: 'user', status: 'active', year: Number(targetYear) }, '_id'
+      ).lean();
+      const yearIds = yearStudents.map(s => s._id.toString());
+      assignedTo = [...new Set([...assignedTo.map(String), ...yearIds])];
+    }
+
     let company = '';
     let category = '';
 
@@ -239,6 +249,16 @@ router.post('/update-project/:id', async (req, res) => {
     if (deadline && isPastDate(deadline)) {
       req.session.flash = { type: 'error', message: 'Deadline cannot be in the past.' };
       return res.redirect('/mentor/edit-project/' + req.params.id);
+    }
+
+    // Merge in every active student of the chosen target year, BEFORE saving,
+    // so they are stored on the project. "any" = manual only.
+    if (targetYear && targetYear !== 'any') {
+      const yearStudents = await User.find(
+        { role: 'user', status: 'active', year: Number(targetYear) }, '_id'
+      ).lean();
+      const yearIds = yearStudents.map(s => s._id.toString());
+      assignedTo = [...new Set([...assignedTo.map(String), ...yearIds])];
     }
 
     let company = '';
